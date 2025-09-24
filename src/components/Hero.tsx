@@ -1,0 +1,74 @@
+import { Button } from "@/components/ui/button";
+import { ArrowRight, Play, Zap, Shield, TrendingUp } from "lucide-react";
+import heroImage from "@/assets/hero-invoice-ai.jpg";
+
+const Hero = () => {
+  return (
+    <section className="relative min-h-screen flex items-center bg-gradient-subtle overflow-hidden">
+      <div className="container mx-auto px-6 py-20">
+        <div className="grid lg:grid-cols-2 gap-12 items-center">
+          <div className="space-y-8">
+            <div className="space-y-4">
+              <div className="inline-flex items-center px-4 py-2 bg-brand-primary/10 border border-brand-primary/20 rounded-full text-sm text-brand-primary font-medium">
+                <Zap className="w-4 h-4 mr-2" />
+                AI-Powered Invoice Automation
+              </div>
+              
+              <h1 className="text-4xl md:text-6xl font-bold leading-tight">
+                Transform Your{" "}
+                <span className="text-gradient">Invoice Processing</span>{" "}
+                with AI
+              </h1>
+              
+              <p className="text-xl text-muted-foreground leading-relaxed">
+                Stop wasting hours on manual invoice processing. InvoiceIQ's AI agent 
+                extracts, validates, and processes invoices with 99% accuracy, saving 
+                you time and eliminating costly errors.
+              </p>
+            </div>
+            
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Button variant="hero" size="lg" className="shadow-elegant">
+                Start Free Trial
+                <ArrowRight className="w-5 h-5 ml-2" />
+              </Button>
+              <Button variant="outline" size="lg" className="border-2">
+                <Play className="w-5 h-5 mr-2" />
+                Watch Demo
+              </Button>
+            </div>
+            
+            <div className="flex items-center space-x-8 pt-4">
+              <div className="flex items-center space-x-2">
+                <Shield className="w-5 h-5 text-brand-accent" />
+                <span className="text-sm text-muted-foreground">99% Accuracy</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <TrendingUp className="w-5 h-5 text-brand-accent" />
+                <span className="text-sm text-muted-foreground">80% Time Saved</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Zap className="w-5 h-5 text-brand-accent" />
+                <span className="text-sm text-muted-foreground">5min Setup</span>
+              </div>
+            </div>
+          </div>
+          
+          <div className="relative">
+            <div className="relative z-10">
+              <img 
+                src={heroImage} 
+                alt="AI-powered invoice processing dashboard showing automated data extraction and validation"
+                className="w-full h-auto rounded-2xl shadow-glow"
+              />
+            </div>
+            <div className="absolute top-4 right-4 w-72 h-72 bg-gradient-primary opacity-20 rounded-full blur-3xl"></div>
+            <div className="absolute bottom-4 left-4 w-48 h-48 bg-brand-accent opacity-20 rounded-full blur-2xl"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default Hero;
