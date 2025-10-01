@@ -1,36 +1,31 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Brain, FileText, CheckCircle, BarChart3, Shield, Zap } from "lucide-react";
+import { UploadCloud, ScanText, GitMerge, Mail, FileBarChart } from "lucide-react";
 
 const features = [
   {
-    icon: Brain,
-    title: "AI-Powered Extraction",
-    description: "Advanced OCR and machine learning algorithms extract data from any invoice format with 99% accuracy."
+    icon: UploadCloud,
+    title: "Upload Invoices Instantly",
+    description: "Drag and drop or upload invoices in any format - PDF, images, or scanned documents. Get started in seconds."
   },
   {
-    icon: FileText,
-    title: "Smart Document Processing",
-    description: "Automatically categorize, validate, and route invoices through your approval workflow."
+    icon: ScanText,
+    title: "Automatic Parsing & Categorization",
+    description: "AI automatically extracts and categorizes all invoice data - vendor details, amounts, dates, and line items."
   },
   {
-    icon: CheckCircle,
-    title: "Automated Validation",
-    description: "Cross-reference PO numbers, vendor details, and line items to catch errors before they cost you."
+    icon: GitMerge,
+    title: "Bank Transaction Matching",
+    description: "Seamlessly match invoices with bank transactions to reconcile accounts and track payments effortlessly."
   },
   {
-    icon: BarChart3,
-    title: "Real-time Analytics",
-    description: "Track processing times, approval rates, and cost savings with comprehensive dashboards."
+    icon: Mail,
+    title: "Smart Payment Reminders",
+    description: "Never miss a payment deadline. Automated email reminders keep you and your vendors on track."
   },
   {
-    icon: Shield,
-    title: "Enterprise Security",
-    description: "Bank-level encryption and SOC 2 compliance ensure your financial data stays protected."
-  },
-  {
-    icon: Zap,
-    title: "Lightning Fast",
-    description: "Process hundreds of invoices in minutes, not hours. Scale effortlessly as your business grows."
+    icon: FileBarChart,
+    title: "One-Click Reports",
+    description: "Generate comprehensive financial reports instantly. Export to Excel, PDF, or your accounting software."
   }
 ];
 
