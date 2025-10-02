@@ -30,7 +30,19 @@ const Header = () => {
                   Pricing
                 </a>
               </>
-            ) : null}
+            ) : (
+              <>
+                <Link to="/#features" className="text-muted-foreground hover:text-foreground transition-smooth">
+                  Features
+                </Link>
+                <Link to="/#how-it-works" className="text-muted-foreground hover:text-foreground transition-smooth">
+                  How It Works
+                </Link>
+                <Link to="/#pricing" className="text-muted-foreground hover:text-foreground transition-smooth">
+                  Pricing
+                </Link>
+              </>
+            )}
             <Link 
               to="/about" 
               className={`transition-smooth ${location.pathname === '/about' ? 'text-foreground font-semibold' : 'text-muted-foreground hover:text-foreground'}`}
