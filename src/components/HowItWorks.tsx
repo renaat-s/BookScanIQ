@@ -1,26 +1,21 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { Upload, Brain, CheckCircle, TrendingUp } from "lucide-react";
+import { Upload, Brain, Bell } from "lucide-react";
 
 const steps = [
   {
     icon: Upload,
-    title: "Upload & Scan",
-    description: "Simply upload invoices via email, API, or drag & drop. Our AI instantly scans and identifies document types."
+    title: "Upload Invoice",
+    description: "Upload invoices directly from Google Drive or Email. Seamlessly integrated with your Google Workspace."
   },
   {
     icon: Brain,
-    title: "AI Extraction",
-    description: "Advanced machine learning extracts all relevant data: vendor info, amounts, line items, and due dates."
+    title: "AI Agent Extracts & Matches",
+    description: "Our AI Agent automatically extracts invoice data and matches it with your bank transactions in real-time."
   },
   {
-    icon: CheckCircle,
-    title: "Smart Validation",
-    description: "Cross-reference with your systems to validate PO numbers, budgets, and approval workflows automatically."
-  },
-  {
-    icon: TrendingUp,
-    title: "Seamless Integration",
-    description: "Approved invoices flow directly into your ERP, accounting software, or payment systems for processing."
+    icon: Bell,
+    title: "Payment Tracking & Follow-up",
+    description: "Automated payment tracking and smart reminders ensure nothing falls through the cracks."
   }
 ];
 
@@ -38,7 +33,7 @@ const HowItWorks = () => {
           </p>
         </div>
         
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
           {steps.map((step, index) => (
             <div key={index} className="relative">
               <Card className="h-full border-0 shadow-card bg-background/80 backdrop-blur-sm hover:shadow-elegant transition-smooth">
@@ -61,6 +56,13 @@ const HowItWorks = () => {
               )}
             </div>
           ))}
+        </div>
+        
+        <div className="mt-16 text-center space-y-4">
+          <p className="text-muted-foreground max-w-3xl mx-auto">
+            Fully integrated with <span className="font-semibold text-foreground">Google Workspace</span> for seamless document management. 
+            Works perfectly with modern fintech banks including <span className="font-semibold text-foreground">Tide</span>, <span className="font-semibold text-foreground">Revolut</span>, and other online banking platforms.
+          </p>
         </div>
       </div>
     </section>
