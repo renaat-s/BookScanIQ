@@ -2,10 +2,17 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Card, CardContent } from "@/components/ui/card";
 import { Shield, Lock, Server, Eye, FileCheck, Database } from "lucide-react";
+import { Helmet } from "react-helmet-async";
 
 const Compliance = () => {
   return (
     <div className="min-h-screen">
+      <Helmet>
+        <title>Security & Compliance - InvoiceIQ Data Protection</title>
+        <meta name="description" content="InvoiceIQ security measures: AES-256 encryption, GDPR compliance, EU/UK data hosting, and enterprise-grade data protection for your financial information." />
+        <meta name="keywords" content="invoice security, GDPR compliance, data encryption, financial data protection, secure invoice processing" />
+        <link rel="canonical" href="https://invoiceiq.com/compliance" />
+      </Helmet>
       <Header />
       <main>
         <section className="py-20 md:py-32 bg-gradient-subtle">

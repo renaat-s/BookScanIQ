@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
@@ -32,11 +33,11 @@ const Footer = () => {
             </div>
             
             <div className="flex space-x-8 text-sm text-white/80">
-              <a href="/about" className="hover:text-white transition-smooth">About</a>
-              <a href="/compliance" className="hover:text-white transition-smooth">Security</a>
-              <a href="/privacy" className="hover:text-white transition-smooth">Privacy Policy</a>
-              <a href="/terms" className="hover:text-white transition-smooth">Terms of Service</a>
-              <a href="/faq" className="hover:text-white transition-smooth">FAQ</a>
+              <Link to="/about" className="hover:text-white transition-smooth">About</Link>
+              <Link to="/compliance" className="hover:text-white transition-smooth">Security</Link>
+              <Link to="/privacy" className="hover:text-white transition-smooth">Privacy Policy</Link>
+              <Link to="/terms" className="hover:text-white transition-smooth">Terms of Service</Link>
+              <Link to="/faq" className="hover:text-white transition-smooth">FAQ</Link>
             </div>
             
             <p className="text-sm text-white/60">

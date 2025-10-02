@@ -2,10 +2,17 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Card, CardContent } from "@/components/ui/card";
 import { Heart, Target, Users, Zap } from "lucide-react";
+import { Helmet } from "react-helmet-async";
 
 const About = () => {
   return (
     <div className="min-h-screen">
+      <Helmet>
+        <title>About InvoiceIQ - Our Story & Mission</title>
+        <meta name="description" content="Learn about InvoiceIQ - built by an indie developer to solve real small business invoice management challenges. Discover our mission and values." />
+        <meta name="keywords" content="about InvoiceIQ, invoice automation story, small business solutions, indie developer" />
+        <link rel="canonical" href="https://invoiceiq.com/about" />
+      </Helmet>
       <Header />
       <main>
         <section className="py-20 md:py-32 bg-gradient-subtle">

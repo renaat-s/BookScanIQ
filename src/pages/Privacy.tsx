@@ -1,9 +1,16 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { Helmet } from "react-helmet-async";
 
 const Privacy = () => {
   return (
     <div className="min-h-screen">
+      <Helmet>
+        <title>Privacy Policy - InvoiceIQ</title>
+        <meta name="description" content="InvoiceIQ Privacy Policy: How we collect, use, and protect your invoice and financial data. GDPR compliant with full transparency." />
+        <meta name="keywords" content="privacy policy, data protection, GDPR, invoice data privacy" />
+        <link rel="canonical" href="https://invoiceiq.com/privacy" />
+      </Helmet>
       <Header />
       <main>
         <section className="py-20 md:py-32 bg-gradient-subtle">

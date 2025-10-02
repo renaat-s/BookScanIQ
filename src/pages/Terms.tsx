@@ -1,9 +1,16 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { Helmet } from "react-helmet-async";
 
 const Terms = () => {
   return (
     <div className="min-h-screen">
+      <Helmet>
+        <title>Terms of Service - InvoiceIQ</title>
+        <meta name="description" content="InvoiceIQ Terms of Service: User agreements, subscription terms, AI accuracy disclaimers, and legal terms for using our invoice automation service." />
+        <meta name="keywords" content="terms of service, user agreement, subscription terms, legal terms" />
+        <link rel="canonical" href="https://invoiceiq.com/terms" />
+      </Helmet>
       <Header />
       <main>
         <section className="py-20 md:py-32 bg-gradient-subtle">

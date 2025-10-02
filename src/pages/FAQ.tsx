@@ -6,6 +6,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { Helmet } from "react-helmet-async";
 
 const faqs = [
   {
@@ -53,6 +54,12 @@ const faqs = [
 const FAQ = () => {
   return (
     <div className="min-h-screen">
+      <Helmet>
+        <title>FAQ - InvoiceIQ Frequently Asked Questions</title>
+        <meta name="description" content="Find answers to common questions about InvoiceIQ invoice automation. Learn about supported banks, security, pricing, AI accuracy, and more." />
+        <meta name="keywords" content="InvoiceIQ FAQ, invoice automation questions, bank support, security questions, pricing" />
+        <link rel="canonical" href="https://invoiceiq.com/faq" />
+      </Helmet>
       <Header />
       <main>
         <section className="py-20 md:py-32 bg-gradient-subtle">

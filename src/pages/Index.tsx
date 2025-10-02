@@ -4,10 +4,17 @@ import Features from "@/components/Features";
 import HowItWorks from "@/components/HowItWorks";
 import Pricing from "@/components/Pricing";
 import Footer from "@/components/Footer";
+import { Helmet } from "react-helmet-async";
 
 const Index = () => {
   return (
     <div className="min-h-screen">
+      <Helmet>
+        <title>InvoiceIQ - AI-Powered Invoice Processing & Automation</title>
+        <meta name="description" content="Automate invoice processing with AI. Upload, parse, match bank transactions, and track payments effortlessly. Integrated with Google Workspace, Tide, and Revolut." />
+        <meta name="keywords" content="invoice automation, AI invoice processing, bank transaction matching, payment reminders, Google Workspace integration" />
+        <link rel="canonical" href="https://invoiceiq.com/" />
+      </Helmet>
       <Header />
       <main>
         <Hero />
