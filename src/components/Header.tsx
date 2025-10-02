@@ -23,6 +23,12 @@ const Header = () => {
             <a href="#pricing" className="text-muted-foreground hover:text-foreground transition-smooth">
               Pricing
             </a>
+            <a href="/about" className="text-muted-foreground hover:text-foreground transition-smooth">
+              About
+            </a>
+            <a href="/faq" className="text-muted-foreground hover:text-foreground transition-smooth">
+              FAQ
+            </a>
           </div>
           
           <div className="hidden md:flex items-center space-x-4">

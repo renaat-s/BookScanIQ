@@ -32,9 +32,11 @@ const Footer = () => {
             </div>
             
             <div className="flex space-x-8 text-sm text-white/80">
-              <a href="#" className="hover:text-white transition-smooth">Privacy Policy</a>
-              <a href="#" className="hover:text-white transition-smooth">Terms of Service</a>
-              <a href="#" className="hover:text-white transition-smooth">Support</a>
+              <a href="/about" className="hover:text-white transition-smooth">About</a>
+              <a href="/compliance" className="hover:text-white transition-smooth">Security</a>
+              <a href="/privacy" className="hover:text-white transition-smooth">Privacy Policy</a>
+              <a href="/terms" className="hover:text-white transition-smooth">Terms of Service</a>
+              <a href="/faq" className="hover:text-white transition-smooth">FAQ</a>
             </div>
             
             <p className="text-sm text-white/60">

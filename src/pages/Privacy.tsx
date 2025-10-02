@@ -1,0 +1,158 @@
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+
+const Privacy = () => {
+  return (
+    <div className="min-h-screen">
+      <Header />
+      <main>
+        <section className="py-20 md:py-32 bg-gradient-subtle">
+          <div className="container mx-auto px-6">
+            <div className="max-w-4xl mx-auto text-center space-y-6">
+              <h1 className="text-4xl md:text-5xl font-bold">Privacy Policy</h1>
+              <p className="text-xl text-muted-foreground">
+                Last updated: January 2025
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section className="py-16 md:py-24">
+          <div className="container mx-auto px-6">
+            <div className="max-w-4xl mx-auto prose prose-lg prose-headings:font-bold prose-headings:text-foreground prose-p:text-muted-foreground">
+              <h2>1. Introduction</h2>
+              <p>
+                InvoiceIQ ("we," "our," or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our invoice processing service.
+              </p>
+
+              <h2>2. Information We Collect</h2>
+              <h3>2.1 Information You Provide</h3>
+              <ul>
+                <li><strong>Account Information:</strong> Name, email address, company name, and billing information</li>
+                <li><strong>Invoice Data:</strong> Invoices, receipts, and related financial documents you upload</li>
+                <li><strong>Bank Statements:</strong> Transaction data for matching purposes</li>
+                <li><strong>Communications:</strong> Messages you send to our support team</li>
+              </ul>
+
+              <h3>2.2 Automatically Collected Information</h3>
+              <ul>
+                <li><strong>Usage Data:</strong> Pages visited, features used, time spent on the platform</li>
+                <li><strong>Device Information:</strong> Browser type, operating system, IP address</li>
+                <li><strong>Cookies:</strong> We use essential cookies for authentication and preferences</li>
+              </ul>
+
+              <h2>3. How We Use Your Information</h2>
+              <p>We use your information to:</p>
+              <ul>
+                <li>Provide and maintain our invoice processing service</li>
+                <li>Process and match your invoices with bank transactions</li>
+                <li>Send payment reminders and notifications</li>
+                <li>Improve our AI matching algorithms</li>
+                <li>Provide customer support</li>
+                <li>Send important service updates and security alerts</li>
+                <li>Generate anonymized usage statistics</li>
+              </ul>
+
+              <h2>4. Data Processing and AI</h2>
+              <p>
+                Your invoice data is processed by our AI Agent to extract information such as vendor names, amounts, dates, and line items. This processing happens automatically and securely. We use machine learning to improve matching accuracy, but your specific invoice data is never used to train models for other customers.
+              </p>
+
+              <h2>5. How We Share Your Information</h2>
+              <p>We do NOT sell, rent, or trade your personal information. We only share data in these limited circumstances:</p>
+              <ul>
+                <li><strong>Service Providers:</strong> Trusted third parties who help us operate our service (e.g., cloud hosting, email delivery)</li>
+                <li><strong>Legal Requirements:</strong> When required by law or to protect our legal rights</li>
+                <li><strong>Business Transfers:</strong> In the event of a merger, acquisition, or sale of assets</li>
+              </ul>
+
+              <h2>6. Data Security</h2>
+              <p>We implement industry-standard security measures:</p>
+              <ul>
+                <li>AES-256 encryption for data at rest</li>
+                <li>TLS 1.3 encryption for data in transit</li>
+                <li>Secure, GDPR-compliant EU/UK data centers</li>
+                <li>Regular security audits and updates</li>
+                <li>Access controls and authentication requirements</li>
+              </ul>
+
+              <h2>7. Your Rights (GDPR)</h2>
+              <p>If you're located in the EU/UK, you have the following rights:</p>
+              <ul>
+                <li><strong>Right to Access:</strong> Request a copy of your personal data</li>
+                <li><strong>Right to Rectification:</strong> Correct inaccurate or incomplete data</li>
+                <li><strong>Right to Erasure:</strong> Request deletion of your data</li>
+                <li><strong>Right to Data Portability:</strong> Export your data in a standard format</li>
+                <li><strong>Right to Object:</strong> Object to certain types of data processing</li>
+                <li><strong>Right to Withdraw Consent:</strong> Withdraw consent at any time</li>
+              </ul>
+
+              <h2>8. Data Retention</h2>
+              <p>
+                We retain your data as long as your account is active. If you cancel your subscription:
+              </p>
+              <ul>
+                <li>Data is retained for 30 days (grace period)</li>
+                <li>After 30 days, all data is permanently deleted</li>
+                <li>You can request immediate deletion at any time</li>
+                <li>Backups are retained for 30 days then automatically deleted</li>
+              </ul>
+
+              <h2>9. Cookies and Tracking</h2>
+              <p>We use the following types of cookies:</p>
+              <ul>
+                <li><strong>Essential Cookies:</strong> Required for authentication and core functionality</li>
+                <li><strong>Analytics Cookies:</strong> Anonymized usage statistics to improve our service</li>
+              </ul>
+              <p>We do NOT use advertising or tracking cookies.</p>
+
+              <h2>10. Third-Party Services</h2>
+              <p>We integrate with:</p>
+              <ul>
+                <li><strong>Google Workspace:</strong> For invoice uploads and document management</li>
+                <li><strong>Email Providers:</strong> For sending payment reminders and notifications</li>
+                <li><strong>Payment Processors:</strong> For handling subscription payments (we do not store credit card details)</li>
+              </ul>
+
+              <h2>11. Children's Privacy</h2>
+              <p>
+                Our service is not intended for users under 18 years of age. We do not knowingly collect personal information from children.
+              </p>
+
+              <h2>12. International Data Transfers</h2>
+              <p>
+                Your data is stored on servers located in the EU and UK. If you're accessing our service from outside these regions, your data will be transferred to and processed in the EU/UK under GDPR protection.
+              </p>
+
+              <h2>13. Changes to This Policy</h2>
+              <p>
+                We may update this Privacy Policy from time to time. We'll notify you of significant changes via email or through the platform. Continued use of the service after changes constitutes acceptance of the updated policy.
+              </p>
+
+              <h2>14. Contact Us</h2>
+              <p>
+                If you have questions about this Privacy Policy or want to exercise your data rights:
+              </p>
+              <ul>
+                <li><strong>Email:</strong> privacy@invoiceiq.com</li>
+                <li><strong>Data Protection Officer:</strong> dpo@invoiceiq.com</li>
+              </ul>
+
+              <h2>15. Legal Basis for Processing (GDPR)</h2>
+              <p>We process your data based on:</p>
+              <ul>
+                <li><strong>Contract Performance:</strong> To provide the service you've subscribed to</li>
+                <li><strong>Legitimate Interests:</strong> To improve our service and prevent fraud</li>
+                <li><strong>Legal Obligations:</strong> To comply with applicable laws and regulations</li>
+                <li><strong>Consent:</strong> For marketing communications (you can opt out anytime)</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+      </main>
+      <Footer />
+    </div>
+  );
+};
+
+export default Privacy;

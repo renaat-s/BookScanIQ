@@ -1,0 +1,111 @@
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import { Card, CardContent } from "@/components/ui/card";
+import { Heart, Target, Users, Zap } from "lucide-react";
+
+const About = () => {
+  return (
+    <div className="min-h-screen">
+      <Header />
+      <main>
+        <section className="py-20 md:py-32 bg-gradient-subtle">
+          <div className="container mx-auto px-6">
+            <div className="max-w-4xl mx-auto text-center space-y-6">
+              <h1 className="text-4xl md:text-5xl font-bold">Our Story</h1>
+              <p className="text-xl text-muted-foreground">
+                Built by an indie developer who experienced the invoice chaos firsthand
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section className="py-16 md:py-24">
+          <div className="container mx-auto px-6">
+            <div className="max-w-4xl mx-auto space-y-12">
+              <Card className="border-0 shadow-elegant">
+                <CardContent className="p-8 md:p-12">
+                  <div className="flex items-start gap-4 mb-6">
+                    <div className="p-3 rounded-full bg-primary/10 text-primary">
+                      <Heart className="w-6 h-6" />
+                    </div>
+                    <h2 className="text-2xl md:text-3xl font-bold">Who Built This</h2>
+                  </div>
+                  <div className="prose prose-lg max-w-none text-muted-foreground space-y-4">
+                    <p>
+                      InvoiceIQ was created by an independent developer who spent years watching small businesses struggle with invoice management. After helping countless friends and clients manually organize their invoices, it became clear: there had to be a better way.
+                    </p>
+                    <p>
+                      What started as a side project to automate my own invoice workflow has grown into a tool that helps businesses save hours every week. As a solo developer, I'm committed to building software that actually solves real problems—not just adding features for the sake of it.
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="border-0 shadow-elegant">
+                <CardContent className="p-8 md:p-12">
+                  <div className="flex items-start gap-4 mb-6">
+                    <div className="p-3 rounded-full bg-primary/10 text-primary">
+                      <Target className="w-6 h-6" />
+                    </div>
+                    <h2 className="text-2xl md:text-3xl font-bold">Why It Matters</h2>
+                  </div>
+                  <div className="prose prose-lg max-w-none text-muted-foreground space-y-4">
+                    <p>
+                      Small businesses don't have time to chase invoices, manually match bank transactions, or hunt down missing payments. Every hour spent on invoice admin is an hour not spent growing your business.
+                    </p>
+                    <p>
+                      InvoiceIQ automates the boring stuff—parsing invoices, matching transactions, sending reminders—so you can focus on what matters. It's not just about saving time; it's about reducing stress and preventing costly mistakes.
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="border-0 shadow-elegant">
+                <CardContent className="p-8 md:p-12">
+                  <div className="flex items-start gap-4 mb-6">
+                    <div className="p-3 rounded-full bg-primary/10 text-primary">
+                      <Users className="w-6 h-6" />
+                    </div>
+                    <h2 className="text-2xl md:text-3xl font-bold">Our Mission</h2>
+                  </div>
+                  <div className="prose prose-lg max-w-none text-muted-foreground space-y-4">
+                    <p>
+                      To give small businesses the same powerful automation tools that big companies have—without the enterprise price tag or complexity. Every business deserves efficient invoice management, regardless of size.
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <div className="grid md:grid-cols-3 gap-6 mt-16">
+                <div className="text-center space-y-3">
+                  <div className="p-4 rounded-full bg-primary/10 text-primary w-16 h-16 mx-auto flex items-center justify-center">
+                    <Zap className="w-8 h-8" />
+                  </div>
+                  <h3 className="font-bold text-lg">Fast & Reliable</h3>
+                  <p className="text-muted-foreground">Built to handle hundreds of invoices without breaking a sweat</p>
+                </div>
+                <div className="text-center space-y-3">
+                  <div className="p-4 rounded-full bg-primary/10 text-primary w-16 h-16 mx-auto flex items-center justify-center">
+                    <Heart className="w-8 h-8" />
+                  </div>
+                  <h3 className="font-bold text-lg">Made with Care</h3>
+                  <p className="text-muted-foreground">Every feature designed to solve real business problems</p>
+                </div>
+                <div className="text-center space-y-3">
+                  <div className="p-4 rounded-full bg-primary/10 text-primary w-16 h-16 mx-auto flex items-center justify-center">
+                    <Users className="w-8 h-8" />
+                  </div>
+                  <h3 className="font-bold text-lg">Customer First</h3>
+                  <p className="text-muted-foreground">Direct access to the developer, no middlemen</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+      <Footer />
+    </div>
+  );
+};
+
+export default About;
