@@ -10,6 +10,7 @@ import FAQ from "./pages/FAQ";
 import Compliance from "./pages/Compliance";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
+import DocumentCapture from "./pages/DocumentCapture";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -28,6 +29,7 @@ const App = () => (
           <Route path="/compliance" element={<Compliance />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/terms" element={<Terms />} />
+          <Route path="/capture" element={<DocumentCapture />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

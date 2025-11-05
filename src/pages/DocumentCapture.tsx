@@ -1,0 +1,234 @@
+import { useState, useRef } from "react";
+import { Helmet } from "react-helmet-async";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Camera, Upload, X, Send } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+
+const DocumentCapture = () => {
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [file, setFile] = useState<File | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const cameraInputRef = useRef<HTMLInputElement>(null);
+  const { toast } = useToast();
+
+  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      if (file.size > 10 * 1024 * 1024) {
+        toast({
+          title: "File too large",
+          description: "Please select an image under 10MB",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      setFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setSelectedImage(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleClearImage = () => {
+    setSelectedImage(null);
+    setFile(null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+    if (cameraInputRef.current) cameraInputRef.current.value = "";
+  };
+
+  const handleUpload = async () => {
+    if (!file) return;
+
+    setIsUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("filename", file.name);
+      formData.append("timestamp", new Date().toISOString());
+
+      // Replace with your n8n webhook URL
+      const n8nWebhookUrl = import.meta.env.VITE_N8N_WEBHOOK_URL || "https://your-n8n-instance.com/webhook/invoice-upload";
+      
+      const response = await fetch(n8nWebhookUrl, {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error("Upload failed");
+      }
+
+      toast({
+        title: "Success!",
+        description: "Your invoice has been uploaded successfully",
+      });
+
+      handleClearImage();
+    } catch (error) {
+      console.error("Upload error:", error);
+      toast({
+        title: "Upload failed",
+        description: "There was an error uploading your invoice. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  return (
+    <>
+      <Helmet>
+        <title>Capture Invoice - InvoiceIQ</title>
+        <meta name="description" content="Capture and upload invoices and receipts with InvoiceIQ's document capture tool" />
+      </Helmet>
+
+      <div className="min-h-screen flex flex-col">
+        <Header />
+        
+        <main className="flex-1 container mx-auto px-4 py-8">
+          <div className="max-w-2xl mx-auto">
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-2xl">Capture Invoice or Receipt</CardTitle>
+                <CardDescription>
+                  Take a photo or upload an image of your invoice or receipt
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {!selectedImage ? (
+                  <div className="space-y-4">
+                    {/* Camera Capture - Mobile Optimized */}
+                    <Button
+                      variant="hero"
+                      size="lg"
+                      className="w-full h-32"
+                      onClick={() => cameraInputRef.current?.click()}
+                    >
+                      <div className="flex flex-col items-center gap-2">
+                        <Camera size={32} />
+                        <span className="text-lg">Take Photo</span>
+                      </div>
+                    </Button>
+                    <input
+                      ref={cameraInputRef}
+                      type="file"
+                      accept="image/*"
+                      capture="environment"
+                      onChange={handleFileSelect}
+                      className="hidden"
+                    />
+
+                    <div className="relative">
+                      <div className="absolute inset-0 flex items-center">
+                        <span className="w-full border-t" />
+                      </div>
+                      <div className="relative flex justify-center text-xs uppercase">
+                        <span className="bg-background px-2 text-muted-foreground">Or</span>
+                      </div>
+                    </div>
+
+                    {/* File Upload - Desktop Optimized */}
+                    <Button
+                      variant="outline"
+                      size="lg"
+                      className="w-full h-32"
+                      onClick={() => fileInputRef.current?.click()}
+                    >
+                      <div className="flex flex-col items-center gap-2">
+                        <Upload size={32} />
+                        <span className="text-lg">Upload from Device</span>
+                      </div>
+                    </Button>
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/*"
+                      onChange={handleFileSelect}
+                      className="hidden"
+                    />
+
+                    <p className="text-sm text-muted-foreground text-center">
+                      Supported formats: JPG, PNG, HEIC (max 10MB)
+                    </p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {/* Image Preview */}
+                    <div className="relative bg-muted rounded-lg overflow-hidden">
+                      <img
+                        src={selectedImage}
+                        alt="Invoice preview"
+                        className="w-full h-auto max-h-96 object-contain"
+                      />
+                      <Button
+                        variant="destructive"
+                        size="icon"
+                        className="absolute top-2 right-2"
+                        onClick={handleClearImage}
+                      >
+                        <X size={20} />
+                      </Button>
+                    </div>
+
+                    {/* Upload Actions */}
+                    <div className="flex gap-3">
+                      <Button
+                        variant="outline"
+                        className="flex-1"
+                        onClick={handleClearImage}
+                        disabled={isUploading}
+                      >
+                        <X className="mr-2" size={18} />
+                        Cancel
+                      </Button>
+                      <Button
+                        variant="hero"
+                        className="flex-1"
+                        onClick={handleUpload}
+                        disabled={isUploading}
+                      >
+                        <Send className="mr-2" size={18} />
+                        {isUploading ? "Uploading..." : "Upload"}
+                      </Button>
+                    </div>
+
+                    <p className="text-sm text-muted-foreground text-center">
+                      File: {file?.name}
+                    </p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Tips Card */}
+            <Card className="mt-6">
+              <CardHeader>
+                <CardTitle className="text-lg">Tips for Best Results</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-2 text-sm text-muted-foreground">
+                  <li>• Ensure the entire invoice is visible and in focus</li>
+                  <li>• Use good lighting to avoid shadows</li>
+                  <li>• Keep the camera parallel to the document</li>
+                  <li>• Make sure all text is readable</li>
+                </ul>
+              </CardContent>
+            </Card>
+          </div>
+        </main>
+
+        <Footer />
+      </div>
+    </>
+  );
+};
+
+export default DocumentCapture;

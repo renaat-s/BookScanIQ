@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Menu } from "lucide-react";
+import { Menu, Camera } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 
 const Header = () => {
@@ -59,7 +59,12 @@ const Header = () => {
           
           <div className="hidden md:flex items-center space-x-4">
             <Button variant="ghost">Sign In</Button>
-            <Button variant="hero">Get Started</Button>
+            <Link to="/capture">
+              <Button variant="hero">
+                <Camera className="mr-2" size={16} />
+                Capture Invoice
+              </Button>
+            </Link>
           </div>
           
           <button className="md:hidden">
