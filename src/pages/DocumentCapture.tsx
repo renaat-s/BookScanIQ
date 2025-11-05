@@ -6,11 +6,14 @@ import { Camera, Upload, X, Send } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import ChatDialog from "@/components/ChatDialog";
 
 const DocumentCapture = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [file, setFile] = useState<File | null>(null);
+  const [showChatDialog, setShowChatDialog] = useState(false);
+  const [userName, setUserName] = useState("there");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
@@ -65,12 +68,21 @@ const DocumentCapture = () => {
         throw new Error("Upload failed");
       }
 
-      toast({
-        title: "Success!",
-        description: "Your invoice has been uploaded successfully",
-      });
-
-      handleClearImage();
+      const result = await response.json();
+      
+      // Check if categorization failed
+      if (result.categorizationFailed || result.needsMoreInfo) {
+        setShowChatDialog(true);
+        if (result.userName) {
+          setUserName(result.userName);
+        }
+      } else {
+        toast({
+          title: "Success!",
+          description: "Your invoice has been uploaded and categorized successfully",
+        });
+        handleClearImage();
+      }
     } catch (error) {
       console.error("Upload error:", error);
       toast({
@@ -226,6 +238,20 @@ const DocumentCapture = () => {
         </main>
 
         <Footer />
+
+        <ChatDialog
+          open={showChatDialog}
+          onOpenChange={setShowChatDialog}
+          userName={userName}
+          onCategorize={(category) => {
+            toast({
+              title: "Categorized!",
+              description: `Receipt categorized as: ${category}`,
+            });
+            handleClearImage();
+            setShowChatDialog(false);
+          }}
+        />
       </div>
     </>
   );
