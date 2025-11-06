@@ -5,21 +5,17 @@ import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Send, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-
-interface Message {
-  role: "user" | "assistant";
-  content: string;
-}
+import { ChatMessage, EdgeFunctionResponse } from "@/types/document-capture";
 
 interface ChatDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   userName?: string;
-  onCategorize?: (category: string) => void;
+  onCategorize: (category: string) => void;
 }
 
 const ChatDialog = ({ open, onOpenChange, userName = "there", onCategorize }: ChatDialogProps) => {
-  const [messages, setMessages] = useState<Message[]>([
+  const [messages, setMessages] = useState<ChatMessage[]>([
     {
       role: "assistant",
       content: `Hello ${userName}. It seems I wasn't able to scan this Receipt because of some missing details. Could you tell me what this expenditure was for?`,
@@ -38,24 +34,42 @@ const ChatDialog = ({ open, onOpenChange, userName = "there", onCategorize }: Ch
   const handleSend = async () => {
     if (!input.trim() || isLoading) return;
 
-    const userMessage: Message = { role: "user", content: input };
+    const userMessage: ChatMessage = { role: "user", content: input };
     setMessages((prev) => [...prev, userMessage]);
     setInput("");
     setIsLoading(true);
 
     try {
-      const { data, error } = await supabase.functions.invoke("chat-assistant", {
+      const { data, error } = await supabase.functions.invoke<EdgeFunctionResponse>("chat-assistant", {
         body: { messages: [...messages, userMessage], userName },
       });
 
-      if (error) throw error;
+      if (error) {
+        throw new Error(error.message || "Failed to get response from assistant");
+      }
 
-      if (data?.choices?.[0]?.message?.content) {
-        const assistantMessage: Message = {
+      const response = data as EdgeFunctionResponse;
+      
+      if (response?.choices?.[0]?.message?.content) {
+        const assistantMessage: ChatMessage = {
           role: "assistant",
-          content: data.choices[0].message.content,
+          content: response.choices[0].message.content,
         };
         setMessages((prev) => [...prev, assistantMessage]);
+
+        // Check if the assistant has determined a category
+        const content = response.choices[0].message.content.toLowerCase();
+        if (content.includes("categorized as") || content.includes("category:") || content.includes("this is a")) {
+          // Extract category and call onCategorize
+          const categoryMatch = content.match(/(?:categorized as|category:|this is a)\s+([a-z\s]+)/i);
+          if (categoryMatch) {
+            setTimeout(() => {
+              onCategorize(categoryMatch[1].trim());
+            }, 1000);
+          }
+        }
+      } else {
+        throw new Error("Invalid response format from assistant");
       }
     } catch (error) {
       console.error("Chat error:", error);
@@ -63,7 +77,7 @@ const ChatDialog = ({ open, onOpenChange, userName = "there", onCategorize }: Ch
         ...prev,
         {
           role: "assistant",
-          content: "I'm sorry, I encountered an error. Please try again.",
+          content: error instanceof Error ? error.message : "I'm sorry, I encountered an error. Please try again.",
         },
       ]);
     } finally {

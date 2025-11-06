@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ChatDialog from "@/components/ChatDialog";
+import { N8nUploadResponse } from "@/types/document-capture";
 
 const DocumentCapture = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -56,8 +57,11 @@ const DocumentCapture = () => {
       formData.append("filename", file.name);
       formData.append("timestamp", new Date().toISOString());
 
-      // Replace with your n8n webhook URL
-      const n8nWebhookUrl = import.meta.env.VITE_N8N_WEBHOOK_URL || "https://your-n8n-instance.com/webhook/invoice-upload";
+      const n8nWebhookUrl = import.meta.env.VITE_N8N_WEBHOOK_URL;
+      
+      if (!n8nWebhookUrl) {
+        throw new Error("Webhook URL not configured. Please set VITE_N8N_WEBHOOK_URL in your environment variables.");
+      }
       
       const response = await fetch(n8nWebhookUrl, {
         method: "POST",
@@ -65,10 +69,15 @@ const DocumentCapture = () => {
       });
 
       if (!response.ok) {
-        throw new Error("Upload failed");
+        throw new Error(`Upload failed with status: ${response.status}`);
       }
 
-      const result = await response.json();
+      const result: N8nUploadResponse = await response.json();
+      
+      // Validate response structure
+      if (typeof result !== 'object' || result === null) {
+        throw new Error("Invalid response format from server");
+      }
       
       // Check if categorization failed
       if (result.categorizationFailed || result.needsMoreInfo) {
@@ -76,18 +85,20 @@ const DocumentCapture = () => {
         if (result.userName) {
           setUserName(result.userName);
         }
-      } else {
+      } else if (result.success !== false) {
         toast({
           title: "Success!",
-          description: "Your invoice has been uploaded and categorized successfully",
+          description: result.message || "Your invoice has been uploaded and categorized successfully",
         });
         handleClearImage();
+      } else {
+        throw new Error(result.message || "Upload processing failed");
       }
     } catch (error) {
       console.error("Upload error:", error);
       toast({
         title: "Upload failed",
-        description: "There was an error uploading your invoice. Please try again.",
+        description: error instanceof Error ? error.message : "There was an error uploading your invoice. Please try again.",
         variant: "destructive",
       });
     } finally {
