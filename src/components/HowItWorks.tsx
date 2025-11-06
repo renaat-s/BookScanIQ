@@ -1,5 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { Upload, Brain, Bell } from "lucide-react";
+import { Upload, Brain, Bell, Send } from "lucide-react";
 
 const steps = [
   {
@@ -16,6 +16,11 @@ const steps = [
     icon: Bell,
     title: "Payment Tracking & Follow-up",
     description: "Automated payment tracking and smart reminders ensure nothing falls through the cracks."
+  },
+  {
+    icon: Send,
+    title: "Export to Xero",
+    description: "Verified invoice data is automatically sent to Xero for seamless accounting integration."
   }
 ];
 
@@ -33,7 +38,7 @@ const HowItWorks = () => {
           </p>
         </div>
         
-        <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
           {steps.map((step, index) => (
             <div key={index} className="relative">
               <Card className="h-full border-0 shadow-card bg-background/80 backdrop-blur-sm hover:shadow-elegant transition-smooth">

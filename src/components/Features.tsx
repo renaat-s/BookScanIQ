@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { UploadCloud, ScanText, GitMerge, Mail, FileBarChart } from "lucide-react";
+import { UploadCloud, ScanText, GitMerge } from "lucide-react";
 
 const features = [
   {
@@ -16,16 +16,6 @@ const features = [
     icon: GitMerge,
     title: "Bank Transaction Matching",
     description: "Seamlessly match invoices with bank transactions to reconcile accounts and track payments effortlessly."
-  },
-  {
-    icon: Mail,
-    title: "Smart Payment Reminders",
-    description: "Never miss a payment deadline. Automated email reminders keep you and your vendors on track."
-  },
-  {
-    icon: FileBarChart,
-    title: "One-Click Reports",
-    description: "Generate comprehensive financial reports instantly. Export to Excel, PDF, or your accounting software."
   }
 ];
 
