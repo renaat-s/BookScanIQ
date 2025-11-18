@@ -43,7 +43,7 @@ const HowItWorks = () => {
           <img 
             src={howItWorksImage} 
             alt="Invoice processing workflow illustration showing AI-powered invoice extraction and verification"
-            className="w-full max-w-md h-auto"
+            className="w-full max-w-2xl h-auto rounded-2xl"
           />
         </div>
         
