@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Play, Zap, Shield, TrendingUp, Camera } from "lucide-react";
 import { Link } from "react-router-dom";
-import heroImage from "@/assets/hero-invoice-ai.jpg";
+import heroImage from "@/assets/hero-invoice-illustration.png";
 
 const Hero = () => {
   return (
