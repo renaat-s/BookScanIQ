@@ -59,13 +59,20 @@ const ChatDialog = ({ open, onOpenChange, userName = "there", onCategorize }: Ch
 
         // Check if the assistant has determined a category
         const content = response.choices[0].message.content.toLowerCase();
-        if (content.includes("categorized as") || content.includes("category:") || content.includes("this is a")) {
-          // Extract category and call onCategorize
-          const categoryMatch = content.match(/(?:categorized as|category:|this is a)\s+([a-z\s]+)/i);
-          if (categoryMatch) {
+        const categoryPatterns = [
+          /categorized as\s+([a-z\s]+)/i,
+          /category:\s*([a-z\s]+)/i,
+          /this is a\s+([a-z\s]+)/i,
+          /type:\s*([a-z\s]+)/i
+        ];
+        
+        for (const pattern of categoryPatterns) {
+          const match = content.match(pattern);
+          if (match) {
             setTimeout(() => {
-              onCategorize(categoryMatch[1].trim());
+              onCategorize(match[1].trim());
             }, 1000);
+            break;
           }
         }
       } else {

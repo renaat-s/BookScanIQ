@@ -67,9 +67,9 @@ const Header = () => {
             </Link>
           </div>
           
-          <button className="md:hidden">
+          <Button variant="ghost" size="icon" className="md:hidden" aria-label="Open menu">
             <Menu className="h-6 w-6" />
-          </button>
+          </Button>
         </div>
       </nav>
     </header>
