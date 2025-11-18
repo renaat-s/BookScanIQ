@@ -1,5 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Upload, Brain, Bell, Send } from "lucide-react";
+import howItWorksImage from "@/assets/how-it-works-illustration.png";
 
 const steps = [
   {
@@ -63,7 +64,15 @@ const HowItWorks = () => {
           ))}
         </div>
         
-        <div className="mt-16 text-center space-y-4">
+        <div className="mt-16 flex justify-center">
+          <img 
+            src={howItWorksImage} 
+            alt="Invoice processing workflow illustration showing AI-powered invoice extraction and verification"
+            className="w-full max-w-md h-auto"
+          />
+        </div>
+        
+        <div className="mt-12 text-center space-y-4">
           <p className="text-muted-foreground max-w-3xl mx-auto">
             Fully integrated with <span className="font-semibold text-foreground">Google Workspace</span> for seamless document management. 
             Works perfectly with modern fintech banks including <span className="font-semibold text-foreground">Tide</span>, <span className="font-semibold text-foreground">Revolut</span>, and other online banking platforms.
