@@ -39,7 +39,7 @@ const HowItWorks = () => {
             How <span className="text-gradient">InvoiceIQ</span> Works
           </h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            From upload to payment in four simple steps. Our AI handles the complexity 
+            From collection to export in five seamless steps. Our AI handles the complexity 
             while you focus on growing your business.
           </p>
         </div>
