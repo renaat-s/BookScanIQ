@@ -1,22 +1,27 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { Upload, Brain, Bell, Send } from "lucide-react";
+import { Mail, Camera, MessageSquare, Brain, Send } from "lucide-react";
 import howItWorksImage from "@/assets/how-it-works-illustration.png";
 
 const steps = [
   {
-    icon: Upload,
-    title: "Upload Invoice",
-    description: "Upload invoices directly from Google Drive or Email. Seamlessly integrated with your Google Workspace."
+    icon: Mail,
+    title: "Connect Your Email",
+    description: "Link your email with InvoiceIQ and the automation will detect all the receipts in your inbox."
+  },
+  {
+    icon: Camera,
+    title: "Snap & Submit Receipts",
+    description: "Capture receipt photos instantly via the app—our AI transforms them into structured data automatically."
+  },
+  {
+    icon: MessageSquare,
+    title: "Weekly Smart Review",
+    description: "Quick weekly prompts help clarify unclear expenses. Once answered, InvoiceIQ automatically resolves and categorizes them."
   },
   {
     icon: Brain,
     title: "AI Agent Extracts & Matches",
     description: "Our AI Agent automatically extracts invoice data and matches it with your bank transactions in real-time."
-  },
-  {
-    icon: Bell,
-    title: "Payment Tracking & Follow-up",
-    description: "Automated payment tracking and smart reminders ensure nothing falls through the cracks."
   },
   {
     icon: Send,
@@ -47,7 +52,7 @@ const HowItWorks = () => {
           />
         </div>
         
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
+        <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-8 max-w-7xl mx-auto">
           {steps.map((step, index) => (
             <div key={index} className="relative">
               <Card className="h-full border-0 shadow-card bg-background/80 backdrop-blur-sm hover:shadow-elegant transition-smooth">
