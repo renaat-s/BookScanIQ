@@ -1,11 +1,11 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { UploadCloud, ScanText, GitMerge } from "lucide-react";
+import { Mail, ScanText, GitMerge, Camera, MessageSquare, Send } from "lucide-react";
 
 const features = [
   {
-    icon: UploadCloud,
-    title: "Upload Invoices Instantly",
-    description: "Drag and drop or upload invoices in any format - PDF, images, or scanned documents. Get started in seconds."
+    icon: Mail,
+    title: "Automated Email Collection",
+    description: "InvoiceIQ automatically collects receipts from your email inbox, extracts the data, and sends them into the main workflow."
   },
   {
     icon: ScanText,
@@ -16,6 +16,21 @@ const features = [
     icon: GitMerge,
     title: "Bank Transaction Matching",
     description: "Seamlessly match invoices with bank transactions to reconcile accounts and track payments effortlessly."
+  },
+  {
+    icon: Camera,
+    title: "Photo Upload & Conversion",
+    description: "Upload a photo of a receipt through the InvoiceIQ app, which then converts it to structured invoice data."
+  },
+  {
+    icon: MessageSquare,
+    title: "Smart Weekly Clarification",
+    description: "At the end of the week, InvoiceIQ asks you to clarify expense categories for receipts where the category couldn't be determined, then automatically resolves them."
+  },
+  {
+    icon: Send,
+    title: "Xero Integration",
+    description: "All verified receipt data is automatically sent to Xero for final verification and seamless accounting integration."
   }
 ];
 
