@@ -26,9 +26,6 @@ const Header = () => {
                 <a href="#how-it-works" className="text-muted-foreground hover:text-foreground transition-smooth">
                   How It Works
                 </a>
-                <a href="#pricing" className="text-muted-foreground hover:text-foreground transition-smooth">
-                  Pricing
-                </a>
               </>
             ) : (
               <>
@@ -37,9 +34,6 @@ const Header = () => {
                 </Link>
                 <Link to="/#how-it-works" className="text-muted-foreground hover:text-foreground transition-smooth">
                   How It Works
-                </Link>
-                <Link to="/#pricing" className="text-muted-foreground hover:text-foreground transition-smooth">
-                  Pricing
                 </Link>
               </>
             )}
