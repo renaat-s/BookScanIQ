@@ -9,6 +9,7 @@ import {
 import { Helmet } from "react-helmet-async";
 import faqHeroBg from "@/assets/faq-hero-bg.jpg";
 
+// Move FAQ data outside component to prevent recreation on each render
 const faqs = [
   {
     question: "Do I need a technical team to use this?",
