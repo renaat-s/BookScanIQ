@@ -30,12 +30,6 @@ const Header = () => {
             >
               FAQ
             </Link>
-            <Link 
-              to="/capture" 
-              className={`transition-smooth ${location.pathname === '/capture' ? 'text-foreground font-semibold' : 'text-muted-foreground hover:text-foreground'}`}
-            >
-              Capture Invoice
-            </Link>
           </div>
           
           <div className="hidden md:flex items-center space-x-4">
