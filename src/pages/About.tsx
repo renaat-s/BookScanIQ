@@ -42,10 +42,7 @@ const About = () => {
                   </div>
                   <div className="prose prose-lg max-w-none text-muted-foreground space-y-4">
                     <p>
-                      InvoiceIQ was created by an independent developer who spent years watching small businesses struggle with invoice management. After helping countless friends and clients manually organize their invoices, it became clear: there had to be a better way.
-                    </p>
-                    <p>
-                      What started as a side project to automate my own invoice workflow has grown into a tool that helps businesses save hours every week. As a solo developer, I'm committed to building software that actually solves real problems—not just adding features for the sake of it.
+                      InvoiceIQ was created by a small, independent software company focused on building practical automation tools for modern businesses. Our team combines expertise in artificial intelligence, cloud automation, and financial operations to deliver a system that handles receipts, invoices, and bookkeeping workflows with precision. We built InvoiceIQ to give business owners access to enterprise-level automation without enterprise-level complexity or cost.
                     </p>
                   </div>
                 </CardContent>
