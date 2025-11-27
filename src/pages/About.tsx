@@ -58,10 +58,10 @@ const About = () => {
                   </div>
                   <div className="prose prose-lg max-w-none text-muted-foreground space-y-4">
                     <p>
-                      Small businesses don't have time to chase invoices, manually match bank transactions, or hunt down missing payments. Every hour spent on invoice admin is an hour not spent growing your business.
+                      Most businesses lose hours every week hunting for receipts, categorizing expenses, processing invoices, or manually cleaning messy data. Errors slip through, reconciliation is delayed, and financial clarity suffers. InvoiceIQ eliminates that burden entirely.
                     </p>
                     <p>
-                      InvoiceIQ automates the boring stuff—parsing invoices, matching transactions, sending reminders—so you can focus on what matters. It's not just about saving time; it's about reducing stress and preventing costly mistakes.
+                      Our system automatically collects receipts from email, processes receipt images uploaded by your team, extracts accurate financial data using AI, classifies expenses, and pushes clean, validated records directly into your accounting platform. The result? Zero paper trails, zero manual entry, zero guesswork. Just accurate, real-time bookkeeping handled effortlessly in the background.
                     </p>
                   </div>
                 </CardContent>
@@ -77,7 +77,7 @@ const About = () => {
                   </div>
                   <div className="prose prose-lg max-w-none text-muted-foreground space-y-4">
                     <p>
-                      To give small businesses the same powerful automation tools that big companies have—without the enterprise price tag or complexity. Every business deserves efficient invoice management, regardless of size.
+                      To remove the friction from financial administration by giving every business—big or small—access to effortless, accurate, fully automated bookkeeping workflows. We believe financial clarity should be instant, reliable, and stress-free.
                     </p>
                   </div>
                 </CardContent>
