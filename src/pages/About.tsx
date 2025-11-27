@@ -29,7 +29,7 @@ const About = () => {
           </div>
         </section>
 
-        <section className="py-16 md:py-24">
+        <section className="py-16 md:py-24 bg-dark-indigo">
           <div className="container mx-auto px-6">
             <div className="max-w-4xl mx-auto space-y-12">
               <Card className="border-0 shadow-elegant">
