@@ -62,6 +62,7 @@ export default {
           secondary: "hsl(var(--brand-secondary))",
           accent: "hsl(var(--brand-accent))",
         },
+        "dark-indigo": "hsl(var(--dark-indigo))",
       },
       borderRadius: {
         lg: "var(--radius)",
