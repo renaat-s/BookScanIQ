@@ -12,15 +12,11 @@ import faqHeroBg from "@/assets/faq-hero-bg.jpg";
 const faqs = [
   {
     question: "Do I need a technical team to use this?",
-    answer: "Not at all! InvoiceIQ is designed for non-technical users. Simply upload your invoices via email or Google Drive, and our AI handles the rest. No coding, no complex setup—just straightforward automation that works out of the box."
+    answer: "Not at all! InvoiceIQ is designed for non-technical users. Simply create your account, link your Email and our AI will handle the rest. No coding, no complex setup—just straightforward automation that works out of the box."
   },
   {
-    question: "What banks do you support?",
-    answer: "InvoiceIQ works seamlessly with modern fintech banks including Tide, Revolut, Starling Bank, and traditional banks. We support standard bank statement formats and can match transactions from any bank that provides CSV or PDF statements."
-  },
-  {
-    question: "What happens if an invoice doesn't match?",
-    answer: "If our AI can't find a matching bank transaction, you'll receive a notification in your dashboard. You can then manually review and match the invoice, or mark it as pending. Our smart algorithms learn from your corrections to improve future matching accuracy."
+    question: "What happens if the InvoiceIQ can't identify my invoice's expenditure type?",
+    answer: "If our AI can't identify the expenditure type of your invoice, you'll receive a notification on your dashboard. You can then manually review and categorize the invoice. Our smart algorithms learn from your corrections to improve future matching accuracy."
   },
   {
     question: "How secure is my data?",
@@ -28,11 +24,11 @@ const faqs = [
   },
   {
     question: "Can I integrate InvoiceIQ with my accounting software?",
-    answer: "Yes! InvoiceIQ supports exports to popular accounting software formats including Xero, QuickBooks, and FreeAgent. You can export your matched invoices and transactions with one click, ready to import into your accounting system."
+    answer: "Yes! InvoiceIQ supports exports to popular accounting software platforms including Xero and QuickBooks. Our AI automation exports your matched invoice data to Xero once it has successfully resolved it."
   },
   {
     question: "What file formats can I upload?",
-    answer: "InvoiceIQ accepts PDF, JPG, PNG, and scanned documents. Our AI OCR technology can extract data from even poor-quality scans, handwritten invoices, and mobile phone photos."
+    answer: "InvoiceIQ accepts PDF and scanned documents. Our AI OCR technology can extract data from even poor-quality scans, mobile phone photos and embedded email data."
   },
   {
     question: "How does the AI matching work?",
@@ -41,14 +37,6 @@ const faqs = [
   {
     question: "What happens to my data if I cancel?",
     answer: "You can export all your data at any time before canceling. After cancellation, your data is retained for 30 days (in case you change your mind), then permanently deleted from our servers. You maintain full ownership of your data throughout."
-  },
-  {
-    question: "Do you offer a free trial?",
-    answer: "Yes! We offer a 14-day free trial with full access to all features. No credit card required to start. You can process up to 50 invoices during your trial period."
-  },
-  {
-    question: "Can I automate payment reminders?",
-    answer: "Absolutely! InvoiceIQ automatically sends email reminders to vendors for upcoming and overdue invoices. You can customize reminder schedules and email templates to match your business style."
   }
 ];
 
