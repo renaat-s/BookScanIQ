@@ -7,6 +7,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Helmet } from "react-helmet-async";
+import faqHeroBg from "@/assets/faq-hero-bg.jpg";
 
 const faqs = [
   {
@@ -62,13 +63,14 @@ const FAQ = () => {
       </Helmet>
       <Header />
       <main>
-        <section className="py-20 md:py-32 bg-gradient-subtle">
-          <div className="container mx-auto px-6">
-            <div className="max-w-4xl mx-auto text-center space-y-6">
-              <h1 className="text-4xl md:text-5xl font-bold">Frequently Asked Questions</h1>
-              <p className="text-xl text-muted-foreground">
-                Everything you need to know about InvoiceIQ
-              </p>
+        <section 
+          className="py-20 md:py-32 relative bg-cover bg-center"
+          style={{ backgroundImage: `url(${faqHeroBg})` }}
+        >
+          <div className="absolute inset-0 bg-primary/40"></div>
+          <div className="container mx-auto px-6 relative z-10">
+            <div className="max-w-4xl mx-auto text-center">
+              <h1 className="text-4xl md:text-5xl font-bold text-white">Frequently Asked Questions</h1>
             </div>
           </div>
         </section>
