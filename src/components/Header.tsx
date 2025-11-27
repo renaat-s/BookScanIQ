@@ -18,25 +18,6 @@ const Header = () => {
           </Link>
           
           <div className="hidden md:flex items-center space-x-8">
-            {isHomePage ? (
-              <>
-                <a href="#features" className="text-muted-foreground hover:text-foreground transition-smooth">
-                  Features
-                </a>
-                <a href="#how-it-works" className="text-muted-foreground hover:text-foreground transition-smooth">
-                  How It Works
-                </a>
-              </>
-            ) : (
-              <>
-                <Link to="/#features" className="text-muted-foreground hover:text-foreground transition-smooth">
-                  Features
-                </Link>
-                <Link to="/#how-it-works" className="text-muted-foreground hover:text-foreground transition-smooth">
-                  How It Works
-                </Link>
-              </>
-            )}
             <Link 
               to="/about" 
               className={`transition-smooth ${location.pathname === '/about' ? 'text-foreground font-semibold' : 'text-muted-foreground hover:text-foreground'}`}
@@ -48,6 +29,12 @@ const Header = () => {
               className={`transition-smooth ${location.pathname === '/faq' ? 'text-foreground font-semibold' : 'text-muted-foreground hover:text-foreground'}`}
             >
               FAQ
+            </Link>
+            <Link 
+              to="/capture" 
+              className={`transition-smooth ${location.pathname === '/capture' ? 'text-foreground font-semibold' : 'text-muted-foreground hover:text-foreground'}`}
+            >
+              Capture Invoice
             </Link>
           </div>
           
