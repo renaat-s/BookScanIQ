@@ -84,7 +84,7 @@ const FAQ = () => {
                 ))}
               </Accordion>
 
-              <div className="mt-16 text-center space-y-6 p-8 bg-primary/5 rounded-lg">
+              <div className="mt-16 text-center space-y-6 p-8 bg-gradient-to-br from-white to-primary/20 rounded-lg">
                 <h2 className="text-2xl font-bold">Still have questions?</h2>
                 <p className="text-muted-foreground">
                   Can't find the answer you're looking for? Reach out to our support team.
