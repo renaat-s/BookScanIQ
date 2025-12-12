@@ -7,6 +7,7 @@ interface RequestBody {
   email: string;
   userId: string;
   scanType: 'forward' | 'backfill';
+  backlogWeeks?: 4 | 8 | 12;
 }
 
 Deno.serve(async (req) => {
@@ -16,7 +17,7 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const { email, userId, scanType = 'forward' } = await req.json() as RequestBody;
+    const { email, userId, scanType = 'forward', backlogWeeks } = await req.json() as RequestBody;
 
     if (!email || !userId) {
       console.error('Missing required fields:', { email: !!email, userId: !!userId });
@@ -26,7 +27,7 @@ Deno.serve(async (req) => {
       );
     }
 
-    console.log('Connecting email to n8n webhook:', { email, userId, scanType });
+    console.log('Connecting email to n8n webhook:', { email, userId, scanType, backlogWeeks });
 
     // Select webhook URL based on scan type
     const webhookUrl = scanType === 'backfill' 
@@ -52,6 +53,7 @@ Deno.serve(async (req) => {
         email,
         userId,
         scanType,
+        ...(backlogWeeks && { backlogWeeks }),
         timestamp: new Date().toISOString(),
       }),
     });

@@ -8,16 +8,18 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { Mail, CheckCircle, Loader2, AlertCircle, Play, History } from 'lucide-react';
+import { Mail, CheckCircle, Loader2, AlertCircle, Play, History, Calendar } from 'lucide-react';
 
 type ScanType = 'forward' | 'backfill';
+type BacklogDuration = 4 | 8 | 12;
 
 const DetectInvoices = () => {
   const { user, loading, signInWithGoogle } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
-  const [step, setStep] = useState<'auth' | 'confirm' | 'select-scan' | 'connecting' | 'connected'>('auth');
+  const [step, setStep] = useState<'auth' | 'confirm' | 'select-scan' | 'select-backlog-duration' | 'connecting' | 'connected'>('auth');
   const [selectedScanType, setSelectedScanType] = useState<ScanType | null>(null);
+  const [backlogDuration, setBacklogDuration] = useState<BacklogDuration | null>(null);
 
   useEffect(() => {
     if (!loading && user) {
@@ -42,10 +44,18 @@ const DetectInvoices = () => {
     setStep('select-scan');
   };
 
-  const handleStartScan = async (scanType: ScanType) => {
+  const handleSelectScanType = (scanType: ScanType) => {
+    setSelectedScanType(scanType);
+    if (scanType === 'backfill') {
+      setStep('select-backlog-duration');
+    } else {
+      handleStartScan(scanType);
+    }
+  };
+
+  const handleStartScan = async (scanType: ScanType, duration?: BacklogDuration) => {
     if (!user?.email) return;
     
-    setSelectedScanType(scanType);
     setStep('connecting');
 
     try {
@@ -53,7 +63,8 @@ const DetectInvoices = () => {
         body: { 
           email: user.email,
           userId: user.id,
-          scanType
+          scanType,
+          ...(duration && { backlogWeeks: duration })
         },
       });
 
@@ -66,11 +77,12 @@ const DetectInvoices = () => {
         .eq('user_id', user.id);
 
       setStep('connected');
+      setBacklogDuration(duration || null);
       toast({
         title: scanType === 'forward' ? 'Forward Scan Started!' : 'Backlog Scan Started!',
         description: scanType === 'forward' 
           ? 'Your inbox is now linked and will detect new invoices.'
-          : 'We\'re scanning your existing emails for invoices.',
+          : `We're scanning your emails from the past ${duration} weeks for invoices.`,
       });
     } catch (error) {
       console.error('Connection error:', error);
@@ -189,7 +201,7 @@ const DetectInvoices = () => {
               </CardHeader>
               <CardContent className="space-y-4">
                 <Button 
-                  onClick={() => handleStartScan('forward')} 
+                  onClick={() => handleSelectScanType('forward')} 
                   className="w-full h-auto py-4 flex flex-col items-center gap-2" 
                   size="lg"
                   variant="hero"
@@ -199,7 +211,7 @@ const DetectInvoices = () => {
                   <span className="text-sm opacity-80 font-normal">Detect new invoices as they arrive</span>
                 </Button>
                 <Button 
-                  onClick={() => handleStartScan('backfill')} 
+                  onClick={() => handleSelectScanType('backfill')} 
                   className="w-full h-auto py-4 flex flex-col items-center gap-2" 
                   size="lg"
                   variant="outline"
@@ -215,6 +227,44 @@ const DetectInvoices = () => {
                   size="sm"
                 >
                   Use a Different Email
+                </Button>
+              </CardContent>
+            </Card>
+          )}
+
+          {step === 'select-backlog-duration' && user && (
+            <Card className="border-2">
+              <CardHeader className="text-center space-y-4">
+                <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
+                  <Calendar className="w-8 h-8 text-primary" />
+                </div>
+                <CardTitle className="text-2xl">How Far Back?</CardTitle>
+                <CardDescription className="text-base">
+                  Choose how many weeks of past emails to scan for invoices.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {([4, 8, 12] as BacklogDuration[]).map((weeks) => (
+                  <Button 
+                    key={weeks}
+                    onClick={() => handleStartScan('backfill', weeks)} 
+                    className="w-full h-auto py-4 flex flex-col items-center gap-1" 
+                    size="lg"
+                    variant="outline"
+                  >
+                    <span className="text-lg font-semibold">{weeks} Weeks</span>
+                    <span className="text-sm text-muted-foreground font-normal">
+                      Scan emails from the past {weeks} weeks
+                    </span>
+                  </Button>
+                ))}
+                <Button 
+                  onClick={() => setStep('select-scan')} 
+                  variant="ghost" 
+                  className="w-full" 
+                  size="sm"
+                >
+                  Go Back
                 </Button>
               </CardContent>
             </Card>
@@ -246,10 +296,10 @@ const DetectInvoices = () => {
                   {selectedScanType === 'forward' ? 'Forward Scan Active!' : 'Backlog Scan Started!'}
                 </CardTitle>
                 <CardDescription className="text-base">
-                  {selectedScanType === 'forward' 
+                {selectedScanType === 'forward' 
                     ? 'Your email inbox is now linked. We\'ll automatically detect new invoices from your emails.'
-                    : 'We\'re scanning your existing emails for invoices. This may take a few minutes.'}
-                </CardDescription>
+                    : `We're scanning your emails from the past ${backlogDuration} weeks for invoices. This may take a few minutes.`}
+              </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <Button 
