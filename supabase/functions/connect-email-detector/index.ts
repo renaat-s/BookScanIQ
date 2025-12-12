@@ -1,5 +1,3 @@
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.79.0';
-
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
@@ -8,6 +6,7 @@ const corsHeaders = {
 interface RequestBody {
   email: string;
   userId: string;
+  scanType: 'forward' | 'backfill';
 }
 
 Deno.serve(async (req) => {
@@ -17,7 +16,7 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const { email, userId } = await req.json() as RequestBody;
+    const { email, userId, scanType = 'forward' } = await req.json() as RequestBody;
 
     if (!email || !userId) {
       console.error('Missing required fields:', { email: !!email, userId: !!userId });
@@ -27,12 +26,15 @@ Deno.serve(async (req) => {
       );
     }
 
-    console.log('Connecting email to n8n webhook:', { email, userId });
+    console.log('Connecting email to n8n webhook:', { email, userId, scanType });
 
-    const n8nWebhookUrl = Deno.env.get('N8N_WEBHOOK_URL');
+    // Select webhook URL based on scan type
+    const webhookUrl = scanType === 'backfill' 
+      ? Deno.env.get('N8N_BACKFILL_WEBHOOK_URL')
+      : Deno.env.get('N8N_WEBHOOK_URL');
     
-    if (!n8nWebhookUrl) {
-      console.error('N8N_WEBHOOK_URL not configured');
+    if (!webhookUrl) {
+      console.error(`${scanType === 'backfill' ? 'N8N_BACKFILL_WEBHOOK_URL' : 'N8N_WEBHOOK_URL'} not configured`);
       return new Response(
         JSON.stringify({ error: 'Email detector service not configured' }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -40,15 +42,16 @@ Deno.serve(async (req) => {
     }
 
     // Send the email connection request to n8n
-    const n8nResponse = await fetch(n8nWebhookUrl, {
+    const n8nResponse = await fetch(webhookUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        action: 'connect_email',
+        action: scanType === 'backfill' ? 'start_backfill' : 'connect_email',
         email,
         userId,
+        scanType,
         timestamp: new Date().toISOString(),
       }),
     });
@@ -61,10 +64,10 @@ Deno.serve(async (req) => {
       );
     }
 
-    console.log('Successfully connected email to n8n');
+    console.log(`Successfully initiated ${scanType} scan for email`);
 
     return new Response(
-      JSON.stringify({ success: true, message: 'Email connected successfully' }),
+      JSON.stringify({ success: true, message: `${scanType} scan initiated successfully` }),
       { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
 

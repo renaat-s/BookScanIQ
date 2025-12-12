@@ -8,14 +8,17 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { Mail, CheckCircle, Loader2, AlertCircle } from 'lucide-react';
+import { Mail, CheckCircle, Loader2, AlertCircle, Play, History } from 'lucide-react';
+
+type ScanType = 'forward' | 'backfill';
 
 const DetectInvoices = () => {
   const { user, loading, signInWithGoogle } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
-  const [step, setStep] = useState<'auth' | 'confirm' | 'connecting' | 'connected'>('auth');
+  const [step, setStep] = useState<'auth' | 'confirm' | 'select-scan' | 'connecting' | 'connected'>('auth');
   const [isConnecting, setIsConnecting] = useState(false);
+  const [selectedScanType, setSelectedScanType] = useState<ScanType | null>(null);
 
   useEffect(() => {
     if (!loading && user) {
@@ -36,9 +39,14 @@ const DetectInvoices = () => {
     }
   };
 
-  const handleConfirmEmail = async () => {
+  const handleConfirmEmail = () => {
+    setStep('select-scan');
+  };
+
+  const handleStartScan = async (scanType: ScanType) => {
     if (!user?.email) return;
     
+    setSelectedScanType(scanType);
     setStep('connecting');
     setIsConnecting(true);
 
@@ -46,7 +54,8 @@ const DetectInvoices = () => {
       const { error } = await supabase.functions.invoke('connect-email-detector', {
         body: { 
           email: user.email,
-          userId: user.id 
+          userId: user.id,
+          scanType
         },
       });
 
@@ -60,15 +69,17 @@ const DetectInvoices = () => {
 
       setStep('connected');
       toast({
-        title: 'Email Connected!',
-        description: 'Your inbox is now linked to the Invoice Detector AI.',
+        title: scanType === 'forward' ? 'Forward Scan Started!' : 'Backlog Scan Started!',
+        description: scanType === 'forward' 
+          ? 'Your inbox is now linked and will detect new invoices.'
+          : 'We\'re scanning your existing emails for invoices.',
       });
     } catch (error) {
       console.error('Connection error:', error);
-      setStep('confirm');
+      setStep('select-scan');
       toast({
         title: 'Connection Failed',
-        description: 'Unable to connect your email. Please try again.',
+        description: 'Unable to start the scan. Please try again.',
         variant: 'destructive',
       });
     } finally {
@@ -169,13 +180,59 @@ const DetectInvoices = () => {
             </Card>
           )}
 
+          {step === 'select-scan' && user && (
+            <Card className="border-2">
+              <CardHeader className="text-center space-y-4">
+                <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
+                  <Mail className="w-8 h-8 text-primary" />
+                </div>
+                <CardTitle className="text-2xl">Choose Scan Type</CardTitle>
+                <CardDescription className="text-base">
+                  How would you like to detect invoices in <span className="font-medium">{user.email}</span>?
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <Button 
+                  onClick={() => handleStartScan('forward')} 
+                  className="w-full h-auto py-4 flex flex-col items-center gap-2" 
+                  size="lg"
+                  variant="hero"
+                >
+                  <Play className="w-6 h-6" />
+                  <span className="text-lg font-semibold">Forward Scan</span>
+                  <span className="text-sm opacity-80 font-normal">Detect new invoices as they arrive</span>
+                </Button>
+                <Button 
+                  onClick={() => handleStartScan('backfill')} 
+                  className="w-full h-auto py-4 flex flex-col items-center gap-2" 
+                  size="lg"
+                  variant="outline"
+                >
+                  <History className="w-6 h-6" />
+                  <span className="text-lg font-semibold">Backlog Scan</span>
+                  <span className="text-sm text-muted-foreground font-normal">Scan existing emails for past invoices</span>
+                </Button>
+                <Button 
+                  onClick={handleUseDifferentEmail} 
+                  variant="ghost" 
+                  className="w-full" 
+                  size="sm"
+                >
+                  Use a Different Email
+                </Button>
+              </CardContent>
+            </Card>
+          )}
+
           {step === 'connecting' && (
             <Card className="border-2">
               <CardHeader className="text-center space-y-4">
                 <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
                   <Loader2 className="w-8 h-8 text-primary animate-spin" />
                 </div>
-                <CardTitle className="text-2xl">Connecting Your Inbox...</CardTitle>
+                <CardTitle className="text-2xl">
+                  {selectedScanType === 'forward' ? 'Starting Forward Scan...' : 'Starting Backlog Scan...'}
+                </CardTitle>
                 <CardDescription className="text-base">
                   Please wait while we set up the Invoice Detector AI for your email.
                 </CardDescription>
@@ -189,9 +246,13 @@ const DetectInvoices = () => {
                 <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
                   <CheckCircle className="w-8 h-8 text-green-600" />
                 </div>
-                <CardTitle className="text-2xl text-green-700">Successfully Connected!</CardTitle>
+                <CardTitle className="text-2xl text-green-700">
+                  {selectedScanType === 'forward' ? 'Forward Scan Active!' : 'Backlog Scan Started!'}
+                </CardTitle>
                 <CardDescription className="text-base">
-                  Your email inbox is now linked to the Invoice Detector AI. We'll automatically detect and process invoices from your emails.
+                  {selectedScanType === 'forward' 
+                    ? 'Your email inbox is now linked. We\'ll automatically detect new invoices from your emails.'
+                    : 'We\'re scanning your existing emails for invoices. This may take a few minutes.'}
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
