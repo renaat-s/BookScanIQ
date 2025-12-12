@@ -1,1 +1,7 @@
 project_id = "wdnlblakhdfrpobyxlsa"
+
+[functions.chat-assistant]
+verify_jwt = false
+
+[functions.connect-email-detector]
+verify_jwt = true

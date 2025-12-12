@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Play, Zap, Shield, TrendingUp, Camera } from "lucide-react";
+import { Zap, Shield, TrendingUp, Camera, Mail } from "lucide-react";
 import { Link } from "react-router-dom";
 import heroImage from "@/assets/hero-invoice-illustration.png";
 
@@ -35,10 +35,12 @@ const Hero = () => {
                   Capture Invoice Now
                 </Button>
               </Link>
-              <Button variant="outline" size="lg" className="border-2">
-                <Play className="w-5 h-5 mr-2" />
-                Watch Demo
-              </Button>
+              <Link to="/detect-invoices">
+                <Button variant="outline" size="lg" className="border-2 border-primary hover:bg-primary hover:text-primary-foreground">
+                  <Mail className="w-5 h-5 mr-2" />
+                  Detect Invoices Now
+                </Button>
+              </Link>
             </div>
             
             <div className="flex items-center space-x-8 pt-4">
