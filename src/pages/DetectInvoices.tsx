@@ -17,7 +17,6 @@ const DetectInvoices = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const [step, setStep] = useState<'auth' | 'confirm' | 'select-scan' | 'connecting' | 'connected'>('auth');
-  const [isConnecting, setIsConnecting] = useState(false);
   const [selectedScanType, setSelectedScanType] = useState<ScanType | null>(null);
 
   useEffect(() => {
@@ -48,7 +47,6 @@ const DetectInvoices = () => {
     
     setSelectedScanType(scanType);
     setStep('connecting');
-    setIsConnecting(true);
 
     try {
       const { error } = await supabase.functions.invoke('connect-email-detector', {
@@ -82,8 +80,6 @@ const DetectInvoices = () => {
         description: 'Unable to start the scan. Please try again.',
         variant: 'destructive',
       });
-    } finally {
-      setIsConnecting(false);
     }
   };
 
