@@ -36,7 +36,7 @@ const Hero = () => {
                 </Button>
               </Link>
               <Link to="/detect-invoices">
-                <Button variant="outline" size="lg" className="border-2 border-primary hover:bg-primary hover:text-primary-foreground">
+                <Button variant="hero-secondary" size="lg" className="shadow-elegant">
                   <Mail className="w-5 h-5 mr-2" />
                   Detect Invoices Now
                 </Button>
