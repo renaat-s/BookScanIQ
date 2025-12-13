@@ -1,10 +1,9 @@
 import { Button } from "@/components/ui/button";
-import { Menu, Camera } from "lucide-react";
+import { Menu } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 
 const Header = () => {
   const location = useLocation();
-  const isHomePage = location.pathname === '/';
 
   return (
     <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
@@ -34,12 +33,6 @@ const Header = () => {
           
           <div className="hidden md:flex items-center space-x-4">
             <Button variant="ghost">Sign In</Button>
-            <Link to="/capture">
-              <Button variant="hero">
-                <Camera className="mr-2" size={16} />
-                Capture Invoice
-              </Button>
-            </Link>
           </div>
           
           <Button variant="ghost" size="icon" className="md:hidden" aria-label="Open menu">
