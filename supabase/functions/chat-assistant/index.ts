@@ -9,7 +9,48 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const { messages, userName } = await req.json();
+    const { messages, userName, submitCategory, category, receiptData } = await req.json();
+    
+    // If this is a category submission, send it to the n8n webhook
+    if (submitCategory && category) {
+      const N8N_CLASSIFY_WEBHOOK = Deno.env.get("N8N_CLASSIFY_RECEIPT_WEBHOOK_URL");
+      if (!N8N_CLASSIFY_WEBHOOK) {
+        console.error("N8N_CLASSIFY_RECEIPT_WEBHOOK_URL is not configured");
+        return new Response(JSON.stringify({ error: "Classification webhook not configured" }), {
+          status: 500,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+      
+      console.log("Sending category to n8n:", { category, receiptData });
+      
+      const webhookResponse = await fetch(N8N_CLASSIFY_WEBHOOK, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          category,
+          receiptData,
+          userName,
+          timestamp: new Date().toISOString(),
+        }),
+      });
+      
+      if (!webhookResponse.ok) {
+        const errorText = await webhookResponse.text();
+        console.error("n8n webhook error:", webhookResponse.status, errorText);
+        return new Response(JSON.stringify({ error: "Failed to submit classification" }), {
+          status: 500,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+      
+      const webhookData = await webhookResponse.json().catch(() => ({}));
+      console.log("n8n webhook response:", webhookData);
+      
+      return new Response(JSON.stringify({ success: true, ...webhookData }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
     
     // Validate input
     if (!messages || !Array.isArray(messages) || messages.length === 0) {
