@@ -5,6 +5,7 @@ export interface N8nUploadResponse {
   userName?: string;
   category?: string;
   message?: string;
+  receiptData?: Record<string, unknown>;
 }
 
 export interface ChatMessage {

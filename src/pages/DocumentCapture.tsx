@@ -8,6 +8,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ChatDialog from "@/components/ChatDialog";
 import { N8nUploadResponse } from "@/types/document-capture";
+import { supabase } from "@/integrations/supabase/client";
 
 const DocumentCapture = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -15,6 +16,7 @@ const DocumentCapture = () => {
   const [file, setFile] = useState<File | null>(null);
   const [showChatDialog, setShowChatDialog] = useState(false);
   const [userName, setUserName] = useState("there");
+  const [receiptData, setReceiptData] = useState<Record<string, unknown> | undefined>(undefined);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
@@ -57,22 +59,15 @@ const DocumentCapture = () => {
       formData.append("filename", file.name);
       formData.append("timestamp", new Date().toISOString());
 
-      const n8nWebhookUrl = import.meta.env.VITE_N8N_WEBHOOK_URL;
-      
-      if (!n8nWebhookUrl) {
-        throw new Error("Webhook URL not configured. Please set VITE_N8N_WEBHOOK_URL in your environment variables.");
-      }
-      
-      const response = await fetch(n8nWebhookUrl, {
-        method: "POST",
+      const { data, error } = await supabase.functions.invoke("upload-receipt", {
         body: formData,
       });
 
-      if (!response.ok) {
-        throw new Error(`Upload failed with status: ${response.status}`);
+      if (error) {
+        throw new Error(error.message || "Upload failed");
       }
 
-      const result: N8nUploadResponse = await response.json();
+      const result: N8nUploadResponse = data;
       
       // Validate response structure
       if (typeof result !== 'object' || result === null) {
@@ -81,6 +76,10 @@ const DocumentCapture = () => {
       
       // Check if categorization failed
       if (result.categorizationFailed || result.needsMoreInfo) {
+        // Store receipt data for chat dialog
+        if (result.receiptData) {
+          setReceiptData(result.receiptData as Record<string, unknown>);
+        }
         setShowChatDialog(true);
         if (result.userName) {
           setUserName(result.userName);
@@ -254,12 +253,14 @@ const DocumentCapture = () => {
           open={showChatDialog}
           onOpenChange={setShowChatDialog}
           userName={userName}
+          receiptData={receiptData}
           onCategorize={(category) => {
             toast({
               title: "Categorized!",
               description: `Receipt categorized as: ${category}`,
             });
             handleClearImage();
+            setReceiptData(undefined);
             setShowChatDialog(false);
           }}
         />
