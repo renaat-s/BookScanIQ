@@ -11,10 +11,11 @@ interface ChatDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   userName?: string;
+  receiptData?: Record<string, unknown>;
   onCategorize: (category: string) => void;
 }
 
-const ChatDialog = ({ open, onOpenChange, userName = "there", onCategorize }: ChatDialogProps) => {
+const ChatDialog = ({ open, onOpenChange, userName = "there", receiptData, onCategorize }: ChatDialogProps) => {
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       role: "assistant",
@@ -30,6 +31,28 @@ const ChatDialog = ({ open, onOpenChange, userName = "there", onCategorize }: Ch
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [messages]);
+
+  const submitCategoryToN8n = async (category: string) => {
+    try {
+      console.log("Submitting category to n8n:", category);
+      const { data, error } = await supabase.functions.invoke("chat-assistant", {
+        body: { 
+          submitCategory: true, 
+          category, 
+          receiptData,
+          userName 
+        },
+      });
+
+      if (error) {
+        console.error("Failed to submit category to n8n:", error);
+      } else {
+        console.log("Category submitted successfully:", data);
+      }
+    } catch (err) {
+      console.error("Error submitting category:", err);
+    }
+  };
 
   const handleSend = async () => {
     if (!input.trim() || isLoading) return;
@@ -60,17 +83,20 @@ const ChatDialog = ({ open, onOpenChange, userName = "there", onCategorize }: Ch
         // Check if the assistant has determined a category
         const content = response.choices[0].message.content.toLowerCase();
         const categoryPatterns = [
-          /categorized as\s+([a-z\s]+)/i,
-          /category:\s*([a-z\s]+)/i,
-          /this is a\s+([a-z\s]+)/i,
-          /type:\s*([a-z\s]+)/i
+          /categorized as\s+([a-z\s\/]+)/i,
+          /category:\s*([a-z\s\/]+)/i,
+          /this is a\s+([a-z\s\/]+)/i,
+          /type:\s*([a-z\s\/]+)/i
         ];
         
         for (const pattern of categoryPatterns) {
           const match = content.match(pattern);
           if (match) {
+            const extractedCategory = match[1].trim();
+            // Submit to n8n backend
+            await submitCategoryToN8n(extractedCategory);
             setTimeout(() => {
-              onCategorize(match[1].trim());
+              onCategorize(extractedCategory);
             }, 1000);
             break;
           }
