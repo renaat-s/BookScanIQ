@@ -5,3 +5,6 @@ verify_jwt = false
 
 [functions.connect-email-detector]
 verify_jwt = true
+
+[functions.upload-receipt]
+verify_jwt = false
