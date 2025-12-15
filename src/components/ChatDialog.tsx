@@ -118,7 +118,7 @@ const ChatDialog = ({ open, onOpenChange, userName = "there", receiptData, onCat
     }
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
+  const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSend();
@@ -167,7 +167,7 @@ const ChatDialog = ({ open, onOpenChange, userName = "there", receiptData, onCat
           <Input
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            onKeyPress={handleKeyPress}
+            onKeyDown={handleKeyDown}
             placeholder="Type your response..."
             disabled={isLoading}
           />
