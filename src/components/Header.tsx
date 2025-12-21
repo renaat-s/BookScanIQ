@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
+import logoImage from "@/assets/InvoiceIQ_Logo.png";
 
 const Header = () => {
   const location = useLocation();
@@ -10,9 +11,7 @@ const Header = () => {
       <nav className="container mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
           <Link to="/" className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-lg">IQ</span>
-            </div>
+            <img src={logoImage} alt="InvoiceIQ Logo" className="w-8 h-8 rounded-lg" />
             <span className="text-xl font-bold text-foreground">InvoiceIQ</span>
           </Link>
           
