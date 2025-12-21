@@ -7,34 +7,34 @@ const Header = () => {
   const location = useLocation();
 
   return (
-    <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
+    <header className="sticky top-0 z-50 bg-gradient-header backdrop-blur-md border-b border-border">
       <nav className="container mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
           <Link to="/" className="flex items-center space-x-2">
             <img src={logoImage} alt="InvoiceIQ Logo" className="w-8 h-8 rounded-lg" />
-            <span className="text-xl font-bold text-foreground">InvoiceIQ</span>
+            <span className="text-xl font-bold text-white">InvoiceIQ</span>
           </Link>
           
           <div className="hidden md:flex items-center space-x-8">
             <Link 
               to="/about" 
-              className={`transition-smooth ${location.pathname === '/about' ? 'text-foreground font-semibold' : 'text-muted-foreground hover:text-foreground'}`}
+              className={`transition-smooth ${location.pathname === '/about' ? 'text-white font-semibold' : 'text-white/80 hover:text-white'}`}
             >
               About
             </Link>
             <Link 
               to="/faq" 
-              className={`transition-smooth ${location.pathname === '/faq' ? 'text-foreground font-semibold' : 'text-muted-foreground hover:text-foreground'}`}
+              className={`transition-smooth ${location.pathname === '/faq' ? 'text-white font-semibold' : 'text-white/80 hover:text-white'}`}
             >
               FAQ
             </Link>
           </div>
           
           <div className="hidden md:flex items-center space-x-4">
-            <Button variant="ghost">Sign In</Button>
+            <Button variant="ghost" className="text-white hover:bg-white/20 hover:text-white">Sign In</Button>
           </div>
           
-          <Button variant="ghost" size="icon" className="md:hidden" aria-label="Open menu">
+          <Button variant="ghost" size="icon" className="md:hidden text-white hover:bg-white/20" aria-label="Open menu">
             <Menu className="h-6 w-6" />
           </Button>
         </div>
