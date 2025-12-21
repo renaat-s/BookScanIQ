@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
+import logoImage from "@/assets/InvoiceIQ_Logo.png";
 
 const Footer = () => {
   return (
@@ -26,9 +27,7 @@ const Footer = () => {
         <div className="border-t border-white/20 mt-16 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-lg">IQ</span>
-              </div>
+              <img src={logoImage} alt="InvoiceIQ Logo" className="w-8 h-8 rounded-lg" />
               <span className="text-xl font-bold">InvoiceIQ</span>
             </div>
             
@@ -41,7 +40,7 @@ const Footer = () => {
             </div>
             
             <p className="text-sm text-white/60">
-              © 2024 InvoiceIQ. All rights reserved.
+              © {new Date().getFullYear()} InvoiceIQ. All rights reserved.
             </p>
           </div>
         </div>
