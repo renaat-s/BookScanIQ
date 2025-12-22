@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Zap, Shield, TrendingUp, Camera, Mail } from "lucide-react";
 import { Link } from "react-router-dom";
 import heroImage from "@/assets/hero-invoice-illustration.png";
+import logoImage from "@/assets/InvoiceIQ_Logo.png";
 
 const Hero = () => {
   return (
@@ -9,6 +10,18 @@ const Hero = () => {
       <div className="container mx-auto px-6 py-20">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-8">
+            {/* Logo + Brand Name */}
+            <div className="flex items-center gap-4">
+              <img 
+                src={logoImage} 
+                alt="InvoiceIQ Logo" 
+                className="w-16 h-16 md:w-20 md:h-20"
+              />
+              <span className="text-3xl md:text-4xl font-bold text-foreground">
+                InvoiceIQ
+              </span>
+            </div>
+            
             <div className="space-y-4">
               <div className="inline-flex items-center px-4 py-2 bg-brand-primary/10 border border-brand-primary/20 rounded-full text-sm text-brand-primary font-medium">
                 <Zap className="w-4 h-4 mr-2" />
