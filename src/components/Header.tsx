@@ -8,11 +8,11 @@ const Header = () => {
 
   return (
     <header className="sticky top-0 z-50 bg-gradient-header backdrop-blur-md border-b border-border">
-      <nav className="container mx-auto px-6 py-4">
+      <nav className="container mx-auto px-6 py-5">
         <div className="flex items-center justify-between">
-          <Link to="/" className="flex items-center space-x-2">
-            <img src={logoImage} alt="InvoiceIQ Logo" className="w-8 h-8 rounded-lg" />
-            <span className="text-xl font-bold text-white">InvoiceIQ</span>
+          <Link to="/" className="flex items-center space-x-3">
+            <img src={logoImage} alt="InvoiceIQ Logo" className="w-12 h-12 rounded-xl shadow-lg" />
+            <span className="text-2xl font-bold text-white tracking-tight">InvoiceIQ</span>
           </Link>
           
           <div className="hidden md:flex items-center space-x-8">
