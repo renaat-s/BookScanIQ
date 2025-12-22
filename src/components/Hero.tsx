@@ -15,9 +15,9 @@ const Hero = () => {
               <img 
                 src={logoImage} 
                 alt="InvoiceIQ Logo" 
-                className="w-16 h-16 md:w-20 md:h-20 rounded-xl"
+                className="w-16 h-16 md:w-20 md:h-20 rounded-xl shadow-lg"
               />
-              <span className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-indigo-500 via-purple-500 to-violet-500 bg-clip-text text-transparent">
+              <span className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-indigo-500 via-purple-500 to-violet-500 bg-clip-text text-transparent drop-shadow-lg">
                 InvoiceIQ
               </span>
             </div>
