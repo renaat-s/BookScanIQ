@@ -8,20 +8,20 @@ const Hero = () => {
   return (
     <section className="relative min-h-screen flex items-center bg-gradient-subtle overflow-hidden">
       <div className="container mx-auto px-6 py-20">
+        {/* Logo + Brand Name - Centered at Top */}
+        <div className="flex flex-col items-center justify-center gap-4 mb-12">
+          <img 
+            src={logoImage} 
+            alt="InvoiceIQ Logo" 
+            className="w-32 h-32 md:w-40 md:h-40 rounded-xl shadow-2xl"
+          />
+          <span className="text-5xl md:text-7xl font-bold bg-gradient-to-r from-indigo-500 via-purple-500 to-violet-500 bg-clip-text text-transparent [text-shadow:_0_4px_12px_rgb(139_92_246_/_0.4)]">
+            InvoiceIQ
+          </span>
+        </div>
+
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-8">
-            {/* Logo + Brand Name - Centered */}
-            <div className="flex flex-col items-center justify-center gap-4 -mt-8 mb-8">
-              <img 
-                src={logoImage} 
-                alt="InvoiceIQ Logo" 
-                className="w-32 h-32 md:w-40 md:h-40 rounded-xl shadow-2xl"
-              />
-              <span className="text-5xl md:text-7xl font-bold bg-gradient-to-r from-indigo-500 via-purple-500 to-violet-500 bg-clip-text text-transparent [text-shadow:_0_4px_12px_rgb(139_92_246_/_0.4)]">
-                InvoiceIQ
-              </span>
-            </div>
-            
             <div className="space-y-4">
               <div className="inline-flex items-center px-4 py-2 bg-brand-primary/10 border border-brand-primary/20 rounded-full text-sm text-brand-primary font-medium">
                 <Zap className="w-4 h-4 mr-2" />
