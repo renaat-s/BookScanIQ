@@ -10,14 +10,14 @@ const Hero = () => {
       <div className="container mx-auto px-6 py-20">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-8">
-            {/* Logo + Brand Name */}
-            <div className="flex items-center gap-4">
+            {/* Logo + Brand Name - Centered */}
+            <div className="flex flex-col items-center justify-center gap-4 -mt-8 mb-8">
               <img 
                 src={logoImage} 
                 alt="InvoiceIQ Logo" 
-                className="w-16 h-16 md:w-20 md:h-20 rounded-xl shadow-2xl"
+                className="w-32 h-32 md:w-40 md:h-40 rounded-xl shadow-2xl"
               />
-              <span className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-indigo-500 via-purple-500 to-violet-500 bg-clip-text text-transparent [text-shadow:_0_4px_12px_rgb(139_92_246_/_0.4)]">
+              <span className="text-5xl md:text-7xl font-bold bg-gradient-to-r from-indigo-500 via-purple-500 to-violet-500 bg-clip-text text-transparent [text-shadow:_0_4px_12px_rgb(139_92_246_/_0.4)]">
                 InvoiceIQ
               </span>
             </div>
