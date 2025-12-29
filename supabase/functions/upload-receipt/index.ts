@@ -1,9 +1,38 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
+
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/heic", "image/heif", "image/webp", "image/gif"];
+
+// Magic bytes for image file detection
+const IMAGE_SIGNATURES: { [key: string]: number[] } = {
+  jpeg: [0xFF, 0xD8, 0xFF],
+  png: [0x89, 0x50, 0x4E, 0x47],
+  gif: [0x47, 0x49, 0x46],
+  webp: [0x52, 0x49, 0x46, 0x46], // RIFF header for WebP
+};
+
+function isValidImageSignature(bytes: Uint8Array): boolean {
+  for (const [, signature] of Object.entries(IMAGE_SIGNATURES)) {
+    if (signature.every((byte, i) => bytes[i] === byte)) {
+      return true;
+    }
+  }
+  // HEIC/HEIF files have 'ftyp' at offset 4
+  if (bytes[4] === 0x66 && bytes[5] === 0x74 && bytes[6] === 0x79 && bytes[7] === 0x70) {
+    return true;
+  }
+  return false;
+}
+
+function sanitizeFilename(filename: string): string {
+  return filename.replace(/[^a-zA-Z0-9._-]/g, "_");
+}
 
 serve(async (req) => {
   // Handle CORS preflight requests
@@ -12,6 +41,33 @@ serve(async (req) => {
   }
 
   try {
+    // Authenticate user
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader) {
+      console.error("No authorization header provided");
+      return new Response(
+        JSON.stringify({ error: "Unauthorized" }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    const supabaseClient = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_ANON_KEY") ?? "",
+      { global: { headers: { Authorization: authHeader } } }
+    );
+
+    const { data: { user }, error: authError } = await supabaseClient.auth.getUser();
+    if (authError || !user) {
+      console.error("Authentication failed:", authError?.message);
+      return new Response(
+        JSON.stringify({ error: "Unauthorized" }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    console.log("Authenticated user:", user.id);
+
     const N8N_WEBHOOK_URL = Deno.env.get("N8N_UPLOAD_RECEIPT_WEBHOOK_URL");
     
     if (!N8N_WEBHOOK_URL) {
@@ -36,13 +92,54 @@ serve(async (req) => {
       );
     }
 
-    console.log("Uploading receipt:", { filename, timestamp, fileSize: file.size });
+    // Server-side file size validation
+    if (file.size > MAX_FILE_SIZE) {
+      console.error("File too large:", file.size);
+      return new Response(
+        JSON.stringify({ error: "File too large. Maximum size is 10MB" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
 
-    // Forward the file to n8n webhook
+    // Server-side MIME type validation
+    if (!ALLOWED_TYPES.includes(file.type)) {
+      console.error("Invalid file type:", file.type);
+      return new Response(
+        JSON.stringify({ error: "Invalid file type. Only images are allowed (JPEG, PNG, HEIC, HEIF, WebP, GIF)" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // Verify magic bytes to ensure file content matches MIME type
+    const buffer = await file.arrayBuffer();
+    const bytes = new Uint8Array(buffer).slice(0, 12);
+    
+    if (!isValidImageSignature(bytes)) {
+      console.error("File content does not match image signature");
+      return new Response(
+        JSON.stringify({ error: "Invalid file content. File does not appear to be a valid image" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // Sanitize filename to prevent path traversal
+    const sanitizedFilename = sanitizeFilename(filename || file.name);
+
+    console.log("Uploading receipt:", { 
+      filename: sanitizedFilename, 
+      timestamp, 
+      fileSize: file.size, 
+      fileType: file.type,
+      userId: user.id 
+    });
+
+    // Forward the file to n8n webhook - recreate the file from buffer
     const n8nFormData = new FormData();
-    n8nFormData.append("file", file, filename);
-    n8nFormData.append("filename", filename);
+    const newFile = new File([buffer], sanitizedFilename, { type: file.type });
+    n8nFormData.append("file", newFile, sanitizedFilename);
+    n8nFormData.append("filename", sanitizedFilename);
     n8nFormData.append("timestamp", timestamp);
+    n8nFormData.append("userId", user.id);
 
     const webhookResponse = await fetch(N8N_WEBHOOK_URL, {
       method: "POST",

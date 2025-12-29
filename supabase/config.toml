@@ -1,10 +1,10 @@
 project_id = "wdnlblakhdfrpobyxlsa"
 
 [functions.chat-assistant]
-verify_jwt = false
+verify_jwt = true
 
 [functions.connect-email-detector]
 verify_jwt = true
 
 [functions.upload-receipt]
-verify_jwt = false
+verify_jwt = true
