@@ -1,3 +1,5 @@
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
@@ -5,7 +7,6 @@ const corsHeaders = {
 
 interface RequestBody {
   email: string;
-  userId: string;
   scanType: 'forward' | 'backfill';
   backlogWeeks?: 4 | 8 | 12;
 }
@@ -17,17 +18,44 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const { email, userId, scanType = 'forward', backlogWeeks } = await req.json() as RequestBody;
-
-    if (!email || !userId) {
-      console.error('Missing required fields:', { email: !!email, userId: !!userId });
+    // Authenticate user
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader) {
+      console.error("No authorization header provided");
       return new Response(
-        JSON.stringify({ error: 'Email and userId are required' }),
+        JSON.stringify({ error: "Unauthorized" }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const supabaseClient = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_ANON_KEY") ?? "",
+      { global: { headers: { Authorization: authHeader } } }
+    );
+
+    const { data: { user }, error: authError } = await supabaseClient.auth.getUser();
+    if (authError || !user) {
+      console.error("Authentication failed:", authError?.message);
+      return new Response(
+        JSON.stringify({ error: "Unauthorized" }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    console.log("Authenticated user:", user.id);
+
+    const { email, scanType = 'forward', backlogWeeks } = await req.json() as RequestBody;
+
+    if (!email) {
+      console.error('Missing required email field');
+      return new Response(
+        JSON.stringify({ error: 'Email is required' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
-    console.log('Connecting email to n8n webhook:', { email, userId, scanType, backlogWeeks });
+    console.log('Connecting email to n8n webhook:', { email, userId: user.id, scanType, backlogWeeks });
 
     // Select webhook URL based on scan type
     const webhookUrl = scanType === 'backfill' 
@@ -51,7 +79,7 @@ Deno.serve(async (req) => {
       body: JSON.stringify({
         action: scanType === 'backfill' ? 'start_backfill' : 'connect_email',
         email,
-        userId,
+        userId: user.id,
         scanType,
         ...(backlogWeeks && { backlogWeeks }),
         timestamp: new Date().toISOString(),

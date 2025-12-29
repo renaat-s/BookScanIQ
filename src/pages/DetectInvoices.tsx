@@ -62,7 +62,6 @@ const DetectInvoices = () => {
       const { error } = await supabase.functions.invoke('connect-email-detector', {
         body: { 
           email: user.email,
-          userId: user.id,
           scanType,
           ...(duration && { backlogWeeks: duration })
         },
