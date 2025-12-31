@@ -42,7 +42,7 @@ const Hero = () => {
             </div>
             
             <div className="flex flex-col sm:flex-row gap-4">
-              <Link to="/capture">
+              <Link to="/capture-invoices">
                 <Button variant="hero" size="lg" className="shadow-elegant">
                   <Camera className="w-5 h-5 mr-2" />
                   Capture Invoice Now
