@@ -1,10 +1,20 @@
 import { Button } from "@/components/ui/button";
-import { Menu } from "lucide-react";
+import { Menu, LogOut } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import logoImage from "@/assets/InvoiceIQ_Logo.png";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Header = () => {
   const location = useLocation();
+  const { user, signInWithGoogle, signOut, loading } = useAuth();
+
+  const handleSignIn = async () => {
+    await signInWithGoogle();
+  };
+
+  const handleSignOut = async () => {
+    await signOut();
+  };
 
   return (
     <header className="sticky top-0 z-50 bg-gradient-header backdrop-blur-md border-b border-border">
@@ -31,7 +41,28 @@ const Header = () => {
           </div>
           
           <div className="hidden md:flex items-center space-x-4">
-            <Button variant="ghost" className="text-white hover:bg-white/20 hover:text-white">Sign In</Button>
+            {loading ? (
+              <Button variant="ghost" className="text-white hover:bg-white/20 hover:text-white" disabled>
+                Loading...
+              </Button>
+            ) : user ? (
+              <Button 
+                variant="ghost" 
+                className="text-white hover:bg-white/20 hover:text-white"
+                onClick={handleSignOut}
+              >
+                <LogOut className="h-4 w-4 mr-2" />
+                Sign Out
+              </Button>
+            ) : (
+              <Button 
+                variant="ghost" 
+                className="text-white hover:bg-white/20 hover:text-white"
+                onClick={handleSignIn}
+              >
+                Sign In
+              </Button>
+            )}
           </div>
           
           <Button variant="ghost" size="icon" className="md:hidden text-white hover:bg-white/20" aria-label="Open menu">
