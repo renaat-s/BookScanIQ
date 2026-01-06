@@ -55,7 +55,15 @@ Deno.serve(async (req) => {
       );
     }
 
-    console.log('Connecting email to n8n webhook:', { email, userId: user.id, scanType, backlogWeeks });
+    const requestId = crypto.randomUUID();
+
+    console.log('Connecting email to n8n webhook:', {
+      requestId,
+      email,
+      userId: user.id,
+      scanType,
+      backlogWeeks,
+    });
 
     // Select webhook URL based on scan type
     const webhookUrl = scanType === 'backfill' 
@@ -71,12 +79,17 @@ Deno.serve(async (req) => {
     }
 
     // Send the email connection request to n8n
+    // Add a short timeout so the UI doesn't hang indefinitely.
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 15_000);
+
     const n8nResponse = await fetch(webhookUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
+        requestId,
         action: scanType === 'backfill' ? 'start_backfill' : 'connect_email',
         email,
         userId: user.id,
@@ -84,20 +97,67 @@ Deno.serve(async (req) => {
         ...(backlogWeeks && { backlogWeeks }),
         timestamp: new Date().toISOString(),
       }),
+      signal: controller.signal,
+    }).finally(() => clearTimeout(timeout));
+
+    const contentType = n8nResponse.headers.get('content-type') ?? '';
+    const responseText = await n8nResponse.text();
+    const bodyPreview = responseText.slice(0, 500);
+
+    console.log('n8n response summary:', {
+      scanType,
+      status: n8nResponse.status,
+      contentType,
+      bodyPreview,
+      // Do NOT log the URL/path (it may contain secrets). Hostname is safe.
+      host: (() => {
+        try {
+          return new URL(webhookUrl).hostname;
+        } catch {
+          return 'invalid-url';
+        }
+      })(),
     });
 
-    if (!n8nResponse.ok) {
-      console.error('n8n webhook failed:', n8nResponse.status, await n8nResponse.text());
+    // If we got HTML back, it's almost certainly not the intended webhook endpoint.
+    const looksLikeHtml = contentType.includes('text/html') || /^\s*</.test(responseText);
+
+    if (!n8nResponse.ok || looksLikeHtml) {
+      console.error('n8n webhook failed:', {
+        status: n8nResponse.status,
+        contentType,
+        bodyPreview,
+        looksLikeHtml,
+      });
+
       return new Response(
-        JSON.stringify({ error: 'Failed to connect to email detector service' }),
-        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        JSON.stringify({
+          error: 'Failed to connect to email detector service',
+          requestId,
+          debug: {
+            status: n8nResponse.status,
+            contentType,
+            bodyPreview,
+            looksLikeHtml,
+          },
+        }),
+        { status: 502, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
     console.log(`Successfully initiated ${scanType} scan for email`);
 
     return new Response(
-      JSON.stringify({ success: true, message: `${scanType} scan initiated successfully` }),
+      JSON.stringify({
+        success: true,
+        requestId,
+        message: `${scanType} scan initiated successfully`,
+        debug: {
+          status: n8nResponse.status,
+          contentType,
+          bodyPreview,
+        },
+      }),
       { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
 
