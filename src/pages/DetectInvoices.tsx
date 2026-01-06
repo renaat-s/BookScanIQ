@@ -17,17 +17,22 @@ const DetectInvoices = () => {
   const { user, loading, signInWithGoogle } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
-  const [step, setStep] = useState<'auth' | 'confirm' | 'select-scan' | 'select-backlog-duration' | 'connecting' | 'connected'>('auth');
+  const [step, setStep] = useState<'auth' | 'confirm' | 'select-scan' | 'select-backlog-duration' | 'connecting' | 'connected' | 'failed'>('auth');
   const [selectedScanType, setSelectedScanType] = useState<ScanType | null>(null);
   const [backlogDuration, setBacklogDuration] = useState<BacklogDuration | null>(null);
+  const [hasInitialized, setHasInitialized] = useState(false);
 
+  // Only set initial step once when page loads - don't reset after scan starts
   useEffect(() => {
-    if (!loading && user) {
-      setStep('confirm');
-    } else if (!loading && !user) {
-      setStep('auth');
+    if (!loading && !hasInitialized) {
+      if (user) {
+        setStep('confirm');
+      } else {
+        setStep('auth');
+      }
+      setHasInitialized(true);
     }
-  }, [user, loading]);
+  }, [user, loading, hasInitialized]);
 
   const handleGoogleSignIn = async () => {
     const { error } = await signInWithGoogle();
@@ -85,7 +90,7 @@ const DetectInvoices = () => {
       });
     } catch (error) {
       console.error('Connection error:', error);
-      setStep('select-scan');
+      setStep('failed');
       toast({
         title: 'Connection Failed',
         description: 'Unable to start the scan. Please try again.',
@@ -306,6 +311,55 @@ const DetectInvoices = () => {
                   className="w-full" 
                   size="lg"
                   variant="outline"
+                >
+                  Return to Home
+                </Button>
+              </CardContent>
+            </Card>
+          )}
+
+          {step === 'failed' && (
+            <Card className="border-2 border-destructive/50">
+              <CardHeader className="text-center space-y-4">
+                <div className="mx-auto w-16 h-16 bg-destructive/10 rounded-full flex items-center justify-center">
+                  <AlertCircle className="w-8 h-8 text-destructive" />
+                </div>
+                <CardTitle className="text-2xl text-destructive">Scan Failed</CardTitle>
+                <CardDescription className="text-base">
+                  We couldn't start the {selectedScanType === 'forward' ? 'forward' : 'backlog'} scan. 
+                  Would you like to try again?
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <Button 
+                  onClick={() => {
+                    if (selectedScanType === 'backfill' && backlogDuration) {
+                      handleStartScan('backfill', backlogDuration);
+                    } else if (selectedScanType === 'forward') {
+                      handleStartScan('forward');
+                    } else {
+                      setStep('select-scan');
+                    }
+                  }} 
+                  className="w-full" 
+                  size="lg"
+                  variant="hero"
+                >
+                  Try Again
+                </Button>
+                <Button 
+                  onClick={() => setStep('select-scan')} 
+                  variant="outline" 
+                  className="w-full" 
+                  size="lg"
+                >
+                  Choose Different Scan Type
+                </Button>
+                <Button 
+                  onClick={() => navigate('/')} 
+                  variant="ghost" 
+                  className="w-full" 
+                  size="sm"
                 >
                   Return to Home
                 </Button>
