@@ -21,9 +21,3 @@ export interface EdgeFunctionResponse {
   }>;
   error?: string;
 }
-
-export interface CategoryResult {
-  category: string;
-  confidence: number;
-  details?: string;
-}
