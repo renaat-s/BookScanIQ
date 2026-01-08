@@ -47,6 +47,54 @@ export type Database = {
         }
         Relationships: []
       }
+      scan_jobs: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          email: string
+          error_message: string | null
+          id: string
+          invoices_found: number | null
+          processed_emails: number | null
+          scan_type: string
+          started_at: string | null
+          status: string
+          total_emails: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          email: string
+          error_message?: string | null
+          id?: string
+          invoices_found?: number | null
+          processed_emails?: number | null
+          scan_type: string
+          started_at?: string | null
+          status?: string
+          total_emails?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          email?: string
+          error_message?: string | null
+          id?: string
+          invoices_found?: number | null
+          processed_emails?: number | null
+          scan_type?: string
+          started_at?: string | null
+          status?: string
+          total_emails?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
