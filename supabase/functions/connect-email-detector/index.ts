@@ -9,6 +9,7 @@ interface RequestBody {
   email: string;
   scanType: 'forward' | 'backfill';
   backlogWeeks?: 4 | 8 | 12;
+  jobId?: string;
 }
 
 Deno.serve(async (req) => {
@@ -45,7 +46,7 @@ Deno.serve(async (req) => {
 
     console.log("Authenticated user:", user.id);
 
-    const { email, scanType = 'forward', backlogWeeks } = await req.json() as RequestBody;
+    const { email, scanType = 'forward', backlogWeeks, jobId } = await req.json() as RequestBody;
 
     if (!email) {
       console.error('Missing required email field');
@@ -63,6 +64,7 @@ Deno.serve(async (req) => {
       userId: user.id,
       scanType,
       backlogWeeks,
+      jobId,
     });
 
     // Select webhook URL based on scan type
@@ -94,8 +96,11 @@ Deno.serve(async (req) => {
         email,
         userId: user.id,
         scanType,
+        jobId,
         ...(backlogWeeks && { backlogWeeks }),
         timestamp: new Date().toISOString(),
+        // Include the progress update URL for n8n to call back
+        progressWebhookUrl: `${Deno.env.get("SUPABASE_URL")}/functions/v1/update-scan-progress`,
       }),
       signal: controller.signal,
     }).finally(() => clearTimeout(timeout));

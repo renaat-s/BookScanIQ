@@ -9,6 +9,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { Mail, CheckCircle, Loader2, AlertCircle, Play, History, Calendar } from 'lucide-react';
+import { ScanProgressCard } from '@/components/ScanProgressCard';
 
 type ScanType = 'forward' | 'backfill';
 type BacklogDuration = 4 | 8 | 12;
@@ -17,10 +18,11 @@ const DetectInvoices = () => {
   const { user, loading, signInWithGoogle } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
-  const [step, setStep] = useState<'auth' | 'confirm' | 'select-scan' | 'select-backlog-duration' | 'connecting' | 'connected' | 'failed'>('auth');
+  const [step, setStep] = useState<'auth' | 'confirm' | 'select-scan' | 'select-backlog-duration' | 'connecting' | 'scanning' | 'connected' | 'failed'>('auth');
   const [selectedScanType, setSelectedScanType] = useState<ScanType | null>(null);
   const [backlogDuration, setBacklogDuration] = useState<BacklogDuration | null>(null);
   const [hasInitialized, setHasInitialized] = useState(false);
+  const [currentJobId, setCurrentJobId] = useState<string | null>(null);
 
   // Only set initial step once when page loads - don't reset after scan starts
   useEffect(() => {
@@ -64,10 +66,28 @@ const DetectInvoices = () => {
     setStep('connecting');
 
     try {
-      const { error } = await supabase.functions.invoke('connect-email-detector', {
+      // Create scan job first
+      const { data: jobData, error: jobError } = await supabase
+        .from('scan_jobs')
+        .insert({
+          user_id: user.id,
+          email: user.email,
+          scan_type: scanType,
+          status: 'pending',
+        })
+        .select()
+        .single();
+
+      if (jobError) throw jobError;
+
+      const jobId = jobData.id;
+      setCurrentJobId(jobId);
+
+      const { data, error } = await supabase.functions.invoke('connect-email-detector', {
         body: { 
           email: user.email,
           scanType,
+          jobId,
           ...(duration && { backlogWeeks: duration })
         },
       });
@@ -80,14 +100,22 @@ const DetectInvoices = () => {
         .update({ n8n_webhook_connected: true })
         .eq('user_id', user.id);
 
-      setStep('connected');
       setBacklogDuration(duration || null);
-      toast({
-        title: scanType === 'forward' ? 'Forward Scan Started!' : 'Backlog Scan Started!',
-        description: scanType === 'forward' 
-          ? 'Your inbox is now linked and will detect new invoices.'
-          : `We're scanning your emails from the past ${duration} weeks for invoices.`,
-      });
+
+      // For backfill scans, show progress tracking; for forward scans, show connected
+      if (scanType === 'backfill') {
+        setStep('scanning');
+        toast({
+          title: 'Backlog Scan Started!',
+          description: 'You can track the progress below.',
+        });
+      } else {
+        setStep('connected');
+        toast({
+          title: 'Forward Scan Started!',
+          description: 'Your inbox is now linked and will detect new invoices.',
+        });
+      }
     } catch (error) {
       console.error('Connection error:', error);
       setStep('failed');
@@ -290,6 +318,14 @@ const DetectInvoices = () => {
             </Card>
           )}
 
+          {step === 'scanning' && currentJobId && (
+            <ScanProgressCard 
+              jobId={currentJobId}
+              onComplete={() => setStep('connected')}
+              onBack={() => setStep('select-scan')}
+            />
+          )}
+
           {step === 'connected' && (
             <Card className="border-2 border-green-200">
               <CardHeader className="text-center space-y-4">
@@ -297,12 +333,12 @@ const DetectInvoices = () => {
                   <CheckCircle className="w-8 h-8 text-green-600" />
                 </div>
                 <CardTitle className="text-2xl text-green-700">
-                  {selectedScanType === 'forward' ? 'Forward Scan Active!' : 'Backlog Scan Started!'}
+                  {selectedScanType === 'forward' ? 'Forward Scan Active!' : 'Backlog Scan Complete!'}
                 </CardTitle>
                 <CardDescription className="text-base">
                 {selectedScanType === 'forward' 
                     ? 'Your email inbox is now linked. We\'ll automatically detect new invoices from your emails.'
-                    : `We're scanning your emails from the past ${backlogDuration} weeks for invoices. This may take a few minutes.`}
+                    : 'Your backlog scan has completed successfully.'}
               </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
