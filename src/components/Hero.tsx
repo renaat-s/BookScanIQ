@@ -41,24 +41,24 @@ const Hero = () => {
               </p>
             </div>
             
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Link to="/capture-invoices">
-                <Button variant="hero" size="lg" className="shadow-elegant">
-                  <Camera className="w-5 h-5 mr-2" />
-                  Capture Invoice Now
-                </Button>
-              </Link>
-              <Link to="/detect-invoices" className="w-full sm:w-auto">
-                <Button variant="hero-secondary" size="lg" className="shadow-elegant w-full">
-                  <Mail className="w-5 h-5 mr-2" />
-                  Detect Invoices Now
-                </Button>
-              </Link>
-            </div>
-            
-            <div className="flex justify-center sm:justify-start">
-              <Link to="/file-invoices" className="w-full sm:w-auto">
-                <Button variant="outline" size="lg" className="shadow-elegant border-brand-primary/30 hover:bg-brand-primary/10 w-full sm:w-[calc(100%-0px)]" style={{ minWidth: '100%', maxWidth: '100%' }}>
+            <div className="flex flex-col gap-4">
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Link to="/capture-invoices">
+                  <Button variant="hero" size="lg" className="shadow-elegant">
+                    <Camera className="w-5 h-5 mr-2" />
+                    Capture Invoice Now
+                  </Button>
+                </Link>
+                <Link to="/detect-invoices">
+                  <Button variant="hero-secondary" size="lg" className="shadow-elegant">
+                    <Mail className="w-5 h-5 mr-2" />
+                    Detect Invoices Now
+                  </Button>
+                </Link>
+              </div>
+              
+              <Link to="/file-invoices" className="sm:self-start">
+                <Button variant="outline" size="lg" className="shadow-elegant border-brand-primary/30 hover:bg-brand-primary/10 px-12">
                   <FileText className="w-5 h-5 mr-2" />
                   File Invoices and Log Transactions
                 </Button>
