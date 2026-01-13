@@ -58,7 +58,7 @@ const Hero = () => {
               </div>
               
               <Link to="/file-invoices" className="sm:self-start">
-                <Button variant="outline" size="lg" className="shadow-elegant border-brand-primary/30 hover:bg-brand-primary/10 px-[111px]">
+                <Button variant="hero-tertiary" size="lg" className="px-[111px]">
                   <FileText className="w-5 h-5 mr-2" />
                   File Invoices and Log Transactions
                 </Button>
