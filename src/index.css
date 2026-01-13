@@ -49,7 +49,7 @@ All colors MUST be HSL.
     --gradient-hero: linear-gradient(135deg, hsl(221 83% 53%) 0%, hsl(267 57% 78%) 50%, hsl(200 98% 39%) 100%);
     --gradient-indigo-dark: linear-gradient(135deg, hsl(239 84% 67%) 0%, hsl(222 47% 11%) 100%);
     --gradient-subtle: linear-gradient(180deg, hsl(220 27% 98%) 0%, hsl(220 17% 96%) 100%);
-    --gradient-light-indigo: linear-gradient(135deg, hsl(239 84% 92%) 0%, hsl(250 70% 88%) 100%);
+    --gradient-light-indigo: linear-gradient(135deg, hsl(239 70% 60%) 0%, hsl(267 57% 55%) 100%);
     --gradient-header: linear-gradient(90deg, hsl(239 84% 67%) 0%, hsl(267 57% 78%) 100%);
     
     /* Shadows */
