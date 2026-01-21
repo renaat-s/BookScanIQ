@@ -15,14 +15,6 @@ const ALLOWED_TYPES = [
   'image/webp',
 ];
 
-// Magic byte signatures for file validation
-const FILE_SIGNATURES: { [key: string]: number[] } = {
-  '%PDF': [0x25, 0x50, 0x44, 0x46], // PDF
-  'JPEG': [0xFF, 0xD8, 0xFF],
-  'PNG': [0x89, 0x50, 0x4E, 0x47],
-  'HEIC': [0x00, 0x00, 0x00], // HEIC has variable header, check ftyp
-  'WEBP': [0x52, 0x49, 0x46, 0x46], // RIFF header
-};
 
 function isValidFileSignature(bytes: Uint8Array, mimeType: string): boolean {
   // PDF check
@@ -191,10 +183,11 @@ Deno.serve(async (req) => {
       { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
 
-  } catch (error) {
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     console.error('Error processing file invoice:', error);
     return new Response(
-      JSON.stringify({ error: 'Internal server error', details: error.message }),
+      JSON.stringify({ error: 'Internal server error', details: errorMessage }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }
