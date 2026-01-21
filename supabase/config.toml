@@ -11,3 +11,6 @@ verify_jwt = true
 
 [functions.update-scan-progress]
 verify_jwt = false
+
+[functions.file-invoice]
+verify_jwt = true
