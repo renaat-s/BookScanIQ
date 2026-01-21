@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { Helmet } from "react-helmet-async";
-import { useNavigate } from "react-router-dom";
+
 import { FileText, Upload, X, Check, Loader2, FileUp, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -23,7 +23,6 @@ const ALLOWED_MIME_TYPES = [
 
 const FileInvoices = () => {
   const { user, loading: authLoading, signInWithGoogle } = useAuth();
-  const navigate = useNavigate();
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -79,7 +78,7 @@ const FileInvoices = () => {
       formData.append('filename', selectedFile.name);
       formData.append('timestamp', new Date().toISOString());
 
-      const { data, error } = await supabase.functions.invoke('file-invoice', {
+      const { error } = await supabase.functions.invoke('file-invoice', {
         body: formData,
       });
 
