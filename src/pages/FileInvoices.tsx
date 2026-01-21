@@ -204,7 +204,7 @@ const FileInvoices = () => {
                       onChange={handleFileSelect}
                       className="hidden"
                     />
-                    <Button variant="hero-secondary" size="lg">
+                    <Button variant="hero-secondary" size="lg" className="pointer-events-none">
                       <Upload className="h-4 w-4 mr-2" />
                       Select File
                     </Button>
