@@ -171,8 +171,19 @@ Deno.serve(async (req) => {
       );
     }
 
-    const n8nResult = await n8nResponse.json();
-    console.log('n8n response:', JSON.stringify(n8nResult));
+    // Handle n8n response - may be JSON or plain text
+    let n8nResult: unknown = null;
+    const responseText = await n8nResponse.text();
+    console.log('n8n raw response:', responseText);
+
+    try {
+      n8nResult = JSON.parse(responseText);
+    } catch {
+      // n8n returned non-JSON (e.g. plain "OK") — that's fine, upload was accepted
+      n8nResult = { raw: responseText };
+    }
+
+    console.log('Invoice filed successfully for user:', user.id);
 
     return new Response(
       JSON.stringify({ 

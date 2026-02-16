@@ -78,18 +78,37 @@ const FileInvoices = () => {
       formData.append('filename', selectedFile.name);
       formData.append('timestamp', new Date().toISOString());
 
-      const { error } = await supabase.functions.invoke('file-invoice', {
+      const { data, error } = await supabase.functions.invoke('file-invoice', {
         body: formData,
       });
 
       if (error) {
-        throw new Error(error.message || 'Upload failed');
+        // Try to parse the error context for user-friendly messages
+        const errorMsg = error.message || '';
+        
+        // Check if it's a validation error (4xx from our edge function)
+        if (errorMsg.includes('File size exceeds') || errorMsg.includes('File too large')) {
+          toast({
+            title: "File Too Large",
+            description: "Your file exceeds the 10MB limit. Please select a smaller file.",
+            variant: "destructive",
+          });
+        } else if (errorMsg.includes('Invalid file type') || errorMsg.includes('file type')) {
+          toast({
+            title: "Invalid File Type",
+            description: "Please upload a PDF, HEIC, JPEG, or PNG file.",
+            variant: "destructive",
+          });
+        } else {
+          throw new Error(errorMsg);
+        }
+        return;
       }
 
       setUploadSuccess(true);
       toast({
-        title: "Invoice Filed Successfully",
-        description: "Your invoice has been archived and logged.",
+        title: "✅ Invoice Filed Successfully",
+        description: "Your invoice has been archived and logged to your Google Sheet.",
       });
 
       // Reset after delay
@@ -101,7 +120,7 @@ const FileInvoices = () => {
       console.error('Upload error:', error);
       toast({
         title: "Upload Failed",
-        description: error.message || "An error occurred while filing your invoice.",
+        description: "Something went wrong while processing your invoice. Please try again.",
         variant: "destructive",
       });
     } finally {
