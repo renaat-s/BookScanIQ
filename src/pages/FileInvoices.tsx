@@ -78,7 +78,7 @@ const FileInvoices = () => {
       formData.append('filename', selectedFile.name);
       formData.append('timestamp', new Date().toISOString());
 
-      const { data, error } = await supabase.functions.invoke('file-invoice', {
+      const { error } = await supabase.functions.invoke('file-invoice', {
         body: formData,
       });
 
@@ -257,9 +257,9 @@ const FileInvoices = () => {
 
                     {/* Upload Status */}
                     {uploadSuccess ? (
-                      <div className="flex items-center justify-center gap-2 p-4 bg-green-50 dark:bg-green-950/30 rounded-lg">
-                        <Check className="h-5 w-5 text-green-600" />
-                        <span className="text-green-700 dark:text-green-400 font-medium">
+                      <div className="flex items-center justify-center gap-2 p-4 bg-primary/10 rounded-lg">
+                        <Check className="h-5 w-5 text-primary" />
+                        <span className="text-primary font-medium">
                           Invoice filed successfully!
                         </span>
                       </div>

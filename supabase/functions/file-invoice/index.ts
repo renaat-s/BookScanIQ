@@ -2,7 +2,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version',
 };
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
@@ -174,7 +174,7 @@ Deno.serve(async (req) => {
     // Handle n8n response - may be JSON or plain text
     let n8nResult: unknown = null;
     const responseText = await n8nResponse.text();
-    console.log('n8n raw response:', responseText);
+    console.log('n8n response status:', n8nResponse.status);
 
     try {
       n8nResult = JSON.parse(responseText);
