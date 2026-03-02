@@ -26,6 +26,8 @@ export const ScanProgressCard = ({ jobId, onComplete, onBack }: ScanProgressCard
   const [job, setJob] = useState<ScanJob | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const [timedOut, setTimedOut] = useState(false);
+
   useEffect(() => {
     const fetchJob = async () => {
       const { data, error } = await supabase
@@ -45,8 +47,44 @@ export const ScanProgressCard = ({ jobId, onComplete, onBack }: ScanProgressCard
     // Poll for updates every 3 seconds
     const interval = setInterval(fetchJob, 3000);
 
-    return () => clearInterval(interval);
+    // Auto-fail after 60s if no progress
+    const timeout = setTimeout(() => {
+      setTimedOut(true);
+    }, 60_000);
+
+    return () => {
+      clearInterval(interval);
+      clearTimeout(timeout);
+    };
   }, [jobId]);
+
+  // When timed out and still no progress, mark as failed
+  useEffect(() => {
+    if (
+      timedOut &&
+      job &&
+      (job.status === 'pending' || job.status === 'running') &&
+      job.processed_emails === 0 &&
+      job.invoices_found === 0
+    ) {
+      // Update the job locally to show failure
+      setJob(prev => prev ? {
+        ...prev,
+        status: 'failed' as const,
+        error_message: 'The scan timed out — no emails were scanned within 60 seconds. Please check your inbox connection and try again.',
+        completed_at: new Date().toISOString(),
+      } : null);
+
+      // Also update the backend so the state is persisted
+      supabase.functions.invoke('update-scan-progress', {
+        body: {
+          jobId,
+          status: 'failed',
+          errorMessage: 'The scan timed out — no emails were scanned within 60 seconds. Please check your inbox connection and try again.',
+        },
+      });
+    }
+  }, [timedOut, job, jobId]);
 
   if (loading) {
     return (
