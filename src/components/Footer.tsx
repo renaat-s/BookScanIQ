@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import logoImage from "@/assets/InvoiceIQ_Logo.png";
+import nanocloneLogo from "@/assets/nanoclone-logo.png";
 
 const Footer = () => {
   return (
