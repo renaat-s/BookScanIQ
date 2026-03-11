@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import logoImage from "@/assets/InvoiceIQ_Logo.png";
+import nanocloneLogo from "@/assets/nanoclone-logo.png";
 
 const Footer = () => {
   return (
@@ -42,6 +43,12 @@ const Footer = () => {
             <p className="text-sm text-white/60">
               © {new Date().getFullYear()} InvoiceIQ. All rights reserved.
             </p>
+          </div>
+          
+          {/* Developed by NANOCLONE Systems */}
+          <div className="flex items-center justify-center space-x-3 mt-6 pt-6 border-t border-white/10">
+            <span className="text-sm text-white/70">InvoiceIQ - Developed by</span>
+            <img src={nanocloneLogo} alt="NANOCLONE Systems" className="h-6 w-auto object-contain" />
           </div>
         </div>
       </div>
