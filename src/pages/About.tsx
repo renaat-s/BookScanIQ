@@ -41,8 +41,8 @@ const About = () => {
                     <h2 className="text-2xl md:text-3xl font-bold">Who Built This</h2>
                   </div>
                   <div className="prose prose-lg max-w-none text-muted-foreground space-y-4">
-                    <p>
-                      InvoiceIQ was created by a small, independent software company focused on building practical automation tools for modern businesses. Our team combines expertise in artificial intelligence, cloud automation, and financial operations to deliver a system that handles receipts, invoices, and bookkeeping workflows with precision. We built InvoiceIQ to give business owners access to enterprise-level automation without enterprise-level complexity or cost.
+<p>
+                      InvoiceIQ was developed by NANOCLONE Systems which is a software company focused on building practical automation tools for modern businesses. Our team combines expertise in artificial intelligence, cloud automation, and financial operations to deliver a system that handles receipts, invoices, and bookkeeping workflows with precision. We built InvoiceIQ to give business owners access to enterprise-level automation without enterprise-level complexity or cost.
                     </p>
                   </div>
                 </CardContent>
