@@ -44,6 +44,12 @@ const Footer = () => {
               © {new Date().getFullYear()} InvoiceIQ. All rights reserved.
             </p>
           </div>
+          
+          {/* Developed by NANOCLONE Systems */}
+          <div className="flex items-center justify-center space-x-3 mt-6 pt-6 border-t border-white/10">
+            <span className="text-sm text-white/70">InvoiceIQ - Developed by</span>
+            <img src={nanocloneLogo} alt="NANOCLONE Systems" className="h-6 w-auto object-contain" />
+          </div>
         </div>
       </div>
     </footer>
