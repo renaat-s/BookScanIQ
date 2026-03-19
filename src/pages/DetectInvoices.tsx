@@ -81,24 +81,6 @@ const DetectInvoices = () => {
 
   const handleStartScan = async (scanType: ScanType, duration?: BacklogDuration) => {
     if (!user?.email) return;
-    
-    // Ensure we have a fresh provider token before starting
-    let token = providerToken;
-    if (!token) {
-      // Attempt to get a fresh session (won't restore provider_token if expired)
-      const { data: { session } } = await supabase.auth.getSession();
-      token = session?.provider_token ?? null;
-    }
-
-    if (!token) {
-      toast({
-        title: 'Re-authentication Required',
-        description: 'Your Google session has expired. Please sign in again to grant inbox access.',
-        variant: 'destructive',
-      });
-      setStep('auth');
-      return;
-    }
 
     setStep('connecting');
 
