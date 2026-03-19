@@ -106,6 +106,7 @@ const DetectInvoices = () => {
           email: user.email,
           scanType,
           jobId,
+          userToken: providerToken,
           ...(duration && { backlogWeeks: duration })
         },
       });

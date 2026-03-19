@@ -98,9 +98,9 @@ Deno.serve(async (req) => {
         userId: user.id,
         scanType,
         jobId,
+        userToken: userToken ?? null,
         ...(backlogWeeks && { backlogWeeks }),
         timestamp: new Date().toISOString(),
-        // Include the progress update URL for n8n to call back
         progressWebhookUrl: `${Deno.env.get("SUPABASE_URL")}/functions/v1/update-scan-progress`,
       }),
       signal: controller.signal,
