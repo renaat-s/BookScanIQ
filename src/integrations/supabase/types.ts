@@ -14,6 +14,65 @@ export type Database = {
   }
   public: {
     Tables: {
+      invoices: {
+        Row: {
+          created_at: string
+          file_id: string | null
+          id: string
+          invoice_category: string | null
+          invoice_date: string | null
+          invoice_number: string | null
+          invoice_total: string | null
+          invoice_type: string | null
+          invoice_vendor: string | null
+          month_folder: string | null
+          scan_job_id: string | null
+          user_id: string
+          web_view_link: string | null
+          year: string | null
+        }
+        Insert: {
+          created_at?: string
+          file_id?: string | null
+          id?: string
+          invoice_category?: string | null
+          invoice_date?: string | null
+          invoice_number?: string | null
+          invoice_total?: string | null
+          invoice_type?: string | null
+          invoice_vendor?: string | null
+          month_folder?: string | null
+          scan_job_id?: string | null
+          user_id: string
+          web_view_link?: string | null
+          year?: string | null
+        }
+        Update: {
+          created_at?: string
+          file_id?: string | null
+          id?: string
+          invoice_category?: string | null
+          invoice_date?: string | null
+          invoice_number?: string | null
+          invoice_total?: string | null
+          invoice_type?: string | null
+          invoice_vendor?: string | null
+          month_folder?: string | null
+          scan_job_id?: string | null
+          user_id?: string
+          web_view_link?: string | null
+          year?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invoices_scan_job_id_fkey"
+            columns: ["scan_job_id"]
+            isOneToOne: false
+            referencedRelation: "scan_jobs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
