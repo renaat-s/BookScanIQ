@@ -10,6 +10,7 @@ interface RequestBody {
   scanType: 'forward' | 'backfill';
   backlogWeeks?: 4 | 8 | 12;
   jobId?: string;
+  userToken?: string;
 }
 
 Deno.serve(async (req) => {
