@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Zap, Shield, TrendingUp, Camera, Mail, FileText } from "lucide-react";
 import { Link } from "react-router-dom";
 import heroImage from "@/assets/hero-invoice-illustration.png";
@@ -43,12 +44,15 @@ const Hero = () => {
             
             <div className="flex flex-col gap-4">
               <div className="flex flex-col sm:flex-row gap-4">
-                <Link to="/capture-invoices">
-                  <Button variant="hero" size="lg" className="shadow-elegant">
+                <div className="relative">
+                  <Button variant="hero" size="lg" className="shadow-elegant opacity-50 cursor-not-allowed" disabled>
                     <Camera className="w-5 h-5 mr-2" />
                     Capture Invoice Now
                   </Button>
-                </Link>
+                  <Badge variant="secondary" className="absolute -top-2 -right-2 text-xs">
+                    Coming Soon
+                  </Badge>
+                </div>
                 <Link to="/detect-invoices">
                   <Button variant="hero-secondary" size="lg" className="shadow-elegant">
                     <Mail className="w-5 h-5 mr-2" />
