@@ -4,27 +4,45 @@ import { Helmet } from 'react-helmet-async';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { Mail, CheckCircle, Loader2, AlertCircle, Play, History, Calendar } from 'lucide-react';
 import { ScanProgressCard } from '@/components/ScanProgressCard';
+import { InvoiceResultsCard } from '@/components/InvoiceResultsCard';
 
 type ScanType = 'forward' | 'backfill';
 type BacklogDuration = 4 | 8 | 12;
+
+/** Parse n8n error responses into user-friendly messages */
+const parseErrorMessage = (error: unknown): string => {
+  if (error && typeof error === 'object') {
+    const err = error as Record<string, unknown>;
+    // Future structured error codes from n8n Error Trigger node
+    if (err.error === 'AUTH_FAILURE') {
+      return 'Your email connection has expired. Please re-authenticate with Google and try again.';
+    }
+    if (err.error === 'RATE_LIMIT') {
+      return 'Too many requests. Please wait a few minutes and try again.';
+    }
+    if (typeof err.message === 'string') return err.message;
+    if (typeof err.error === 'string') return err.error;
+  }
+  return 'Unable to start the scan. Please try again.';
+};
 
 const DetectInvoices = () => {
   const { user, loading, signInWithGoogle } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
-  const [step, setStep] = useState<'auth' | 'confirm' | 'select-scan' | 'select-backlog-duration' | 'connecting' | 'scanning' | 'connected' | 'failed'>('auth');
+  const [step, setStep] = useState<'auth' | 'confirm' | 'select-scan' | 'select-backlog-duration' | 'connecting' | 'scanning' | 'results' | 'connected' | 'failed'>('auth');
   const [selectedScanType, setSelectedScanType] = useState<ScanType | null>(null);
   const [backlogDuration, setBacklogDuration] = useState<BacklogDuration | null>(null);
   const [hasInitialized, setHasInitialized] = useState(false);
   const [currentJobId, setCurrentJobId] = useState<string | null>(null);
 
-  // Only set initial step once when page loads - don't reset after scan starts
   useEffect(() => {
     if (!loading && !hasInitialized) {
       if (user) {
@@ -56,6 +74,7 @@ const DetectInvoices = () => {
     if (scanType === 'backfill') {
       setStep('select-backlog-duration');
     } else {
+      // Forward scan is deactivated
       handleStartScan(scanType);
     }
   };
@@ -66,7 +85,6 @@ const DetectInvoices = () => {
     setStep('connecting');
 
     try {
-      // Create scan job first
       const { data: jobData, error: jobError } = await supabase
         .from('scan_jobs')
         .insert({
@@ -92,9 +110,10 @@ const DetectInvoices = () => {
         },
       });
 
-      if (error) throw error;
+      if (error) {
+        throw error;
+      }
 
-      // Update profile to mark as connected
       await supabase
         .from('profiles')
         .update({ n8n_webhook_connected: true })
@@ -102,7 +121,6 @@ const DetectInvoices = () => {
 
       setBacklogDuration(duration || null);
 
-      // For backfill scans, show progress tracking; for forward scans, show connected
       if (scanType === 'backfill') {
         setStep('scanning');
         toast({
@@ -121,10 +139,15 @@ const DetectInvoices = () => {
       setStep('failed');
       toast({
         title: 'Connection Failed',
-        description: 'Unable to start the scan. Please try again.',
+        description: parseErrorMessage(error),
         variant: 'destructive',
       });
     }
+  };
+
+  const handleScanComplete = () => {
+    // Show invoice results instead of generic completion
+    setStep('results');
   };
 
   const handleUseDifferentEmail = async () => {
@@ -232,16 +255,26 @@ const DetectInvoices = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <Button 
-                  onClick={() => handleSelectScanType('forward')} 
-                  className="w-full h-auto py-4 flex flex-col items-center gap-2" 
-                  size="lg"
-                  variant="hero"
-                >
-                  <Play className="w-6 h-6" />
-                  <span className="text-lg font-semibold">Forward Scan</span>
-                  <span className="text-sm opacity-80 font-normal">Detect new invoices as they arrive</span>
-                </Button>
+                {/* Forward Scan — temporarily deactivated */}
+                <div className="relative">
+                  <Button 
+                    disabled
+                    className="w-full h-auto py-4 flex flex-col items-center gap-2 opacity-50 cursor-not-allowed" 
+                    size="lg"
+                    variant="hero"
+                  >
+                    <Play className="w-6 h-6" />
+                    <span className="text-lg font-semibold">Forward Scan</span>
+                    <span className="text-sm opacity-80 font-normal">Detect new invoices as they arrive</span>
+                  </Button>
+                  <Badge 
+                    variant="secondary" 
+                    className="absolute -top-2 -right-2 text-xs"
+                  >
+                    Coming Soon
+                  </Badge>
+                </div>
+
                 <Button 
                   onClick={() => handleSelectScanType('backfill')} 
                   className="w-full h-auto py-4 flex flex-col items-center gap-2" 
@@ -321,18 +354,26 @@ const DetectInvoices = () => {
           {step === 'scanning' && currentJobId && (
             <ScanProgressCard 
               jobId={currentJobId}
-              onComplete={() => setStep('connected')}
+              onComplete={handleScanComplete}
               onBack={() => setStep('select-scan')}
             />
           )}
 
+          {step === 'results' && currentJobId && (
+            <InvoiceResultsCard
+              jobId={currentJobId}
+              onBack={() => setStep('select-scan')}
+              onHome={() => navigate('/')}
+            />
+          )}
+
           {step === 'connected' && (
-            <Card className="border-2 border-green-200">
+            <Card className="border-2 border-primary/30">
               <CardHeader className="text-center space-y-4">
-                <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
-                  <CheckCircle className="w-8 h-8 text-green-600" />
+                <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
+                  <CheckCircle className="w-8 h-8 text-primary" />
                 </div>
-                <CardTitle className="text-2xl text-green-700">
+                <CardTitle className="text-2xl">
                   {selectedScanType === 'forward' ? 'Forward Scan Active!' : 'Backlog Scan Complete!'}
                 </CardTitle>
                 <CardDescription className="text-base">

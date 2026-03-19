@@ -80,9 +80,9 @@ export const InvoiceResultsCard = ({ jobId, onBack, onHome }: InvoiceResultsCard
 
   return (
     <div className="space-y-4">
-      <Card className="border-2 border-green-200">
+      <Card className="border-2 border-primary/30">
         <CardHeader className="text-center space-y-2">
-          <CardTitle className="text-2xl text-green-700">
+          <CardTitle className="text-2xl text-primary">
             {invoices.length} Invoice{invoices.length !== 1 ? 's' : ''} Found
           </CardTitle>
           <CardDescription className="text-base">
