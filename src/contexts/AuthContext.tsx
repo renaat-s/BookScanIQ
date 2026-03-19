@@ -6,6 +6,7 @@ interface AuthContextType {
   user: User | null;
   session: Session | null;
   loading: boolean;
+  providerToken: string | null;
   signInWithGoogle: () => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
   deleteAccount: () => Promise<{ error: Error | null }>;
@@ -17,6 +18,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
+  const [providerToken, setProviderToken] = useState<string | null>(null);
 
   useEffect(() => {
     // Set up auth state listener FIRST
@@ -24,6 +26,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       (event, session) => {
         setSession(session);
         setUser(session?.user ?? null);
+        // Capture the provider token (Google access token) on sign-in
+        if (session?.provider_token) {
+          setProviderToken(session.provider_token);
+        }
         setLoading(false);
       }
     );
@@ -45,7 +51,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       provider: 'google',
       options: {
         redirectTo: redirectUrl,
-        scopes: 'email profile',
+        scopes: 'email profile https://www.googleapis.com/auth/gmail.readonly',
       },
     });
     
@@ -67,7 +73,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, session, loading, signInWithGoogle, signOut, deleteAccount }}>
+    <AuthContext.Provider value={{ user, session, loading, providerToken, signInWithGoogle, signOut, deleteAccount }}>
       {children}
     </AuthContext.Provider>
   );

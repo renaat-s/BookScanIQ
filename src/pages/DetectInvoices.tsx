@@ -34,7 +34,7 @@ const parseErrorMessage = (error: unknown): string => {
 };
 
 const DetectInvoices = () => {
-  const { user, loading, signInWithGoogle } = useAuth();
+  const { user, loading, signInWithGoogle, providerToken } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
   const [step, setStep] = useState<'auth' | 'confirm' | 'select-scan' | 'select-backlog-duration' | 'connecting' | 'scanning' | 'results' | 'connected' | 'failed'>('auth');
@@ -106,6 +106,7 @@ const DetectInvoices = () => {
           email: user.email,
           scanType,
           jobId,
+          userToken: providerToken,
           ...(duration && { backlogWeeks: duration })
         },
       });
