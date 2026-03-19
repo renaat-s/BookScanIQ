@@ -51,7 +51,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       provider: 'google',
       options: {
         redirectTo: redirectUrl,
-        scopes: 'email profile',
+        scopes: 'email profile https://www.googleapis.com/auth/gmail.readonly',
       },
     });
     
