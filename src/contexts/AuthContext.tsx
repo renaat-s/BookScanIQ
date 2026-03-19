@@ -26,6 +26,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       (event, session) => {
         setSession(session);
         setUser(session?.user ?? null);
+        // Capture the provider token (Google access token) on sign-in
+        if (session?.provider_token) {
+          setProviderToken(session.provider_token);
+        }
         setLoading(false);
       }
     );
