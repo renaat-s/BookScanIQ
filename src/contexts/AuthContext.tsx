@@ -14,6 +14,25 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+/** Store the Google refresh token in the user_credentials table (upsert). */
+const storeRefreshToken = async (userId: string, refreshToken: string) => {
+  try {
+    const { error } = await supabase
+      .from('user_credentials' as any)
+      .upsert(
+        { user_id: userId, google_refresh_token: refreshToken } as any,
+        { onConflict: 'user_id' }
+      );
+    if (error) {
+      console.error('Failed to store refresh token:', error.message);
+    } else {
+      console.log('Google refresh token stored successfully');
+    }
+  } catch (err) {
+    console.error('Error storing refresh token:', err);
+  }
+};
+
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
@@ -29,6 +48,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         // Capture the provider token (Google access token) on sign-in
         if (session?.provider_token) {
           setProviderToken(session.provider_token);
+        }
+        // Store the Google refresh token when available (only on initial sign-in)
+        if (session?.provider_refresh_token && session?.user) {
+          // Use setTimeout to avoid potential Supabase deadlock during auth callback
+          setTimeout(() => {
+            storeRefreshToken(session.user.id, session.provider_refresh_token!);
+          }, 0);
         }
         setLoading(false);
       }
@@ -52,6 +78,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       options: {
         redirectTo: redirectUrl,
         scopes: 'email profile https://www.googleapis.com/auth/gmail.readonly',
+        queryParams: {
+          access_type: 'offline',
+          prompt: 'consent',
+        },
       },
     });
     
