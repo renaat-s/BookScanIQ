@@ -34,7 +34,7 @@ const parseErrorMessage = (error: unknown): string => {
 };
 
 const DetectInvoices = () => {
-  const { user, loading, signInWithGoogle, providerToken } = useAuth();
+  const { user, loading, signInWithGoogle } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
   const [step, setStep] = useState<'auth' | 'confirm' | 'select-scan' | 'select-backlog-duration' | 'connecting' | 'scanning' | 'results' | 'connected' | 'failed'>('auth');
@@ -81,24 +81,6 @@ const DetectInvoices = () => {
 
   const handleStartScan = async (scanType: ScanType, duration?: BacklogDuration) => {
     if (!user?.email) return;
-    
-    // Ensure we have a fresh provider token before starting
-    let token = providerToken;
-    if (!token) {
-      // Attempt to get a fresh session (won't restore provider_token if expired)
-      const { data: { session } } = await supabase.auth.getSession();
-      token = session?.provider_token ?? null;
-    }
-
-    if (!token) {
-      toast({
-        title: 'Re-authentication Required',
-        description: 'Your Google session has expired. Please sign in again to grant inbox access.',
-        variant: 'destructive',
-      });
-      setStep('auth');
-      return;
-    }
 
     setStep('connecting');
 
@@ -124,7 +106,7 @@ const DetectInvoices = () => {
           email: user.email,
           scanType,
           jobId,
-          user_token: token,
+          userId: user.id,
           ...(duration && { backlogWeeks: duration })
         },
       });
