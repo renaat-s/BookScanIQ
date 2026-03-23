@@ -14,6 +14,7 @@ import Terms from "./pages/Terms";
 import DocumentCapture from "./pages/DocumentCapture";
 import DetectInvoices from "./pages/DetectInvoices";
 import FileInvoices from "./pages/FileInvoices";
+import Pricing from "./pages/Pricing";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
