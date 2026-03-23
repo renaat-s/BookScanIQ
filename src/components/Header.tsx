@@ -72,6 +72,12 @@ const Header = () => {
             >
               FAQ
             </Link>
+            <Link 
+              to="/pricing" 
+              className={`transition-smooth ${location.pathname === '/pricing' ? 'text-white font-semibold' : 'text-white/80 hover:text-white'}`}
+            >
+              Pricing
+            </Link>
           </div>
           
           <div className="hidden md:flex items-center space-x-4">
