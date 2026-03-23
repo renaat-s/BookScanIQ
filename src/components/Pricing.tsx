@@ -2,54 +2,21 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Check, Star } from "lucide-react";
 
-const plans = [
-  {
-    name: "Starter",
-    price: "$49",
-    period: "/month",
-    description: "Perfect for small businesses getting started with invoice automation",
-    features: [
-      "Up to 100 invoices/month",
-      "AI data extraction",
-      "Basic validation rules",
-      "Email support",
-      "Standard integrations"
-    ],
-    popular: false
-  },
-  {
-    name: "Professional",
-    price: "$149",
-    period: "/month",
-    description: "Ideal for growing businesses with higher invoice volumes",
-    features: [
-      "Up to 1,000 invoices/month",
-      "Advanced AI extraction",
-      "Custom validation workflows",
-      "Priority support",
-      "Premium integrations",
-      "Advanced analytics",
-      "Multi-user access"
-    ],
-    popular: true
-  },
-  {
-    name: "Enterprise",
-    price: "Custom",
-    period: "",
-    description: "Tailored solutions for large organizations with complex needs",
-    features: [
-      "Unlimited invoices",
-      "Custom AI training",
-      "Advanced workflow automation",
-      "24/7 dedicated support",
-      "Custom integrations",
-      "White-label options",
-      "SLA guarantees"
-    ],
-    popular: false
-  }
-];
+const plan = {
+  name: "Professional",
+  price: "$149",
+  period: "/month",
+  description: "Ideal for growing businesses with higher invoice volumes",
+  features: [
+    "Up to 1,000 invoices/month",
+    "Advanced AI extraction",
+    "Custom validation workflows",
+    "Priority support",
+    "Premium integrations",
+    "Advanced analytics",
+    "Multi-user access"
+  ],
+};
 
 const Pricing = () => {
   return (
