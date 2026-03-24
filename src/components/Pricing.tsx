@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Check, Star } from "lucide-react";
@@ -5,8 +6,8 @@ import { Check, Star } from "lucide-react";
 const plans = [
   {
     name: "Starter",
-    price: "$25",
-    period: "/month",
+    monthlyPrice: "$25",
+    annualPrice: "$300",
     description: "Perfect for small businesses just getting started",
     features: [
       "Up to 100 invoices/month",
@@ -19,8 +20,8 @@ const plans = [
   },
   {
     name: "Professional",
-    price: "$150",
-    period: "/month",
+    monthlyPrice: "$150",
+    annualPrice: "$1,750",
     description: "Ideal for growing businesses with higher invoice volumes",
     features: [
       "Up to 1,000 invoices/month",
@@ -35,8 +36,8 @@ const plans = [
   },
   {
     name: "Enterprise",
-    price: "$500",
-    period: "/month",
+    monthlyPrice: "$500",
+    annualPrice: "$6,000",
     description: "For large organizations with complex requirements",
     features: [
       "Unlimited invoices",
@@ -53,6 +54,8 @@ const plans = [
 ];
 
 const Pricing = () => {
+  const [isAnnual, setIsAnnual] = useState(false);
+
   return (
     <section id="pricing" className="py-20 bg-background">
       <div className="container mx-auto px-6">
@@ -64,6 +67,34 @@ const Pricing = () => {
             Choose the plan that fits your business. All plans include our core AI features
             with 14-day free trial and no setup fees.
           </p>
+
+          {/* Billing toggle */}
+          <div className="flex items-center justify-center gap-3 pt-4">
+            <span className={`text-sm font-medium ${!isAnnual ? "text-foreground" : "text-muted-foreground"}`}>
+              Monthly
+            </span>
+            <button
+              onClick={() => setIsAnnual(!isAnnual)}
+              className={`relative inline-flex h-7 w-14 items-center rounded-full transition-colors ${
+                isAnnual ? "bg-brand-primary" : "bg-muted"
+              }`}
+              aria-label="Toggle annual billing"
+            >
+              <span
+                className={`inline-block h-5 w-5 transform rounded-full bg-white shadow-md transition-transform ${
+                  isAnnual ? "translate-x-8" : "translate-x-1"
+                }`}
+              />
+            </button>
+            <span className={`text-sm font-medium ${isAnnual ? "text-foreground" : "text-muted-foreground"}`}>
+              Annual
+            </span>
+            {isAnnual && (
+              <span className="text-xs font-semibold text-brand-accent bg-brand-accent/10 px-2 py-0.5 rounded-full">
+                Save up to 17%
+              </span>
+            )}
+          </div>
         </div>
 
         <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
@@ -85,8 +116,12 @@ const Pricing = () => {
                 <CardTitle className="text-2xl">{plan.name}</CardTitle>
                 <div className="space-y-2">
                   <div className="flex items-baseline justify-center">
-                    <span className="text-4xl font-bold">{plan.price}</span>
-                    <span className="text-muted-foreground ml-1">{plan.period}</span>
+                    <span className="text-4xl font-bold">
+                      {isAnnual ? plan.annualPrice : plan.monthlyPrice}
+                    </span>
+                    <span className="text-muted-foreground ml-1">
+                      {isAnnual ? "/year" : "/month"}
+                    </span>
                   </div>
                   <p className="text-sm text-muted-foreground">{plan.description}</p>
                 </div>
