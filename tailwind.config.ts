@@ -62,6 +62,10 @@ export default {
           secondary: "hsl(var(--brand-secondary))",
           accent: "hsl(var(--brand-accent))",
         },
+        success: {
+          DEFAULT: "hsl(var(--success))",
+          foreground: "hsl(var(--success-foreground))",
+        },
         "dark-indigo": "hsl(var(--dark-indigo))",
       },
       borderRadius: {

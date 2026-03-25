@@ -126,7 +126,7 @@ export const ScanProgressCard = ({ jobId, onComplete, onBack }: ScanProgressCard
       case 'running':
         return <Loader2 className="w-8 h-8 text-primary animate-spin" />;
       case 'completed':
-        return <CheckCircle className="w-8 h-8 text-green-600" />;
+        return <CheckCircle className="w-8 h-8 text-success" />;
       case 'failed':
         return <AlertCircle className="w-8 h-8 text-destructive" />;
     }
@@ -171,7 +171,7 @@ export const ScanProgressCard = ({ jobId, onComplete, onBack }: ScanProgressCard
 
   const isInProgress = job.status === 'pending' || job.status === 'running';
   const borderClass = job.status === 'completed' 
-    ? 'border-green-200' 
+    ? 'border-success/30' 
     : job.status === 'failed' 
     ? 'border-destructive/50' 
     : '';
@@ -180,14 +180,14 @@ export const ScanProgressCard = ({ jobId, onComplete, onBack }: ScanProgressCard
     <Card className={`border-2 ${borderClass}`}>
       <CardHeader className="text-center space-y-4">
         <div className={`mx-auto w-16 h-16 rounded-full flex items-center justify-center ${
-          job.status === 'completed' ? 'bg-green-100' : 
+          job.status === 'completed' ? 'bg-success/10' : 
           job.status === 'failed' ? 'bg-destructive/10' : 
           'bg-primary/10'
         }`}>
           {getStatusIcon()}
         </div>
         <CardTitle className={`text-2xl ${
-          job.status === 'completed' ? 'text-green-700' : 
+          job.status === 'completed' ? 'text-success' : 
           job.status === 'failed' ? 'text-destructive' : ''
         }`}>
           {getStatusTitle()}
