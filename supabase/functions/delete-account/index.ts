@@ -38,7 +38,9 @@ Deno.serve(async (req) => {
     // Use service role to delete the user (cascades to profiles via RLS/triggers)
     const adminClient = createClient(supabaseUrl, serviceRoleKey);
 
-    // Delete profile data first
+    // Delete all user data before removing the auth user
+    await adminClient.from('invoices').delete().eq('user_id', user.id);
+    await adminClient.from('user_credentials').delete().eq('user_id', user.id);
     await adminClient.from('profiles').delete().eq('user_id', user.id);
     await adminClient.from('scan_jobs').delete().eq('user_id', user.id);
 
