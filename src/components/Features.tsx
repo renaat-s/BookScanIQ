@@ -1,36 +1,43 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Mail, ScanText, GitMerge, Camera, MessageSquare, Send } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 const features = [
   {
     icon: Mail,
     title: "Automated Email Collection",
-    description: "InvoiceIQ automatically collects receipts from your email inbox, extracts the data, and sends them into the main workflow."
+    description: "InvoiceIQ automatically collects receipts from your email inbox, extracts the data, and sends them into the main workflow.",
+    comingSoon: false
   },
   {
     icon: ScanText,
     title: "Automatic Parsing & Categorization",
-    description: "AI automatically extracts and categorizes all invoice data - vendor details, amounts, dates, and line items."
+    description: "AI automatically extracts and categorizes all invoice data - vendor details, amounts, dates, and line items.",
+    comingSoon: false
   },
   {
     icon: GitMerge,
     title: "Bank Transaction Matching",
-    description: "Seamlessly match invoices with bank transactions to reconcile accounts and track payments effortlessly."
+    description: "Seamlessly match invoices with bank transactions to reconcile accounts and track payments effortlessly.",
+    comingSoon: false
   },
   {
     icon: Camera,
     title: "Photo Upload & Conversion",
-    description: "Upload a photo of a receipt through the InvoiceIQ app, which then converts it to structured invoice data."
+    description: "Upload a photo of a receipt through the InvoiceIQ app, which then converts it to structured invoice data.",
+    comingSoon: true
   },
   {
     icon: MessageSquare,
     title: "Smart Weekly Clarification",
-    description: "At the end of the week, InvoiceIQ asks you to clarify expense categories for receipts where the category couldn't be determined, then automatically resolves them."
+    description: "At the end of the week, InvoiceIQ asks you to clarify expense categories for receipts where the category couldn't be determined, then automatically resolves them.",
+    comingSoon: true
   },
   {
     icon: Send,
     title: "Xero Integration",
-    description: "All verified receipt data is automatically sent to Xero for final verification and seamless accounting integration."
+    description: "All verified receipt data is automatically sent to Xero for final verification and seamless accounting integration.",
+    comingSoon: false
   }
 ];
 
@@ -51,7 +58,10 @@ const Features = () => {
         
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {features.map((feature, index) => (
-            <Card key={index} className="border-0 shadow-card hover:shadow-elegant transition-smooth bg-card/50 backdrop-blur-sm">
+            <Card key={index} className={`border-0 shadow-card hover:shadow-elegant transition-smooth backdrop-blur-sm relative ${feature.comingSoon ? 'opacity-50 grayscale bg-muted/50' : 'bg-card/50'}`}>
+              {feature.comingSoon && (
+                <Badge className="absolute top-4 right-4 bg-muted-foreground/80 text-background">Coming Soon</Badge>
+              )}
               <CardHeader className="space-y-4">
                 <div className="w-12 h-12 bg-gradient-primary rounded-xl flex items-center justify-center">
                   <feature.icon className="w-6 h-6 text-white" />
