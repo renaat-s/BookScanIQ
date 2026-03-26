@@ -26,11 +26,9 @@ const plans = [
     features: [
       "Up to 1,000 invoices/month",
       "Advanced AI extraction",
-      "Custom validation workflows",
       "Priority support",
       "Premium integrations",
       "Advanced analytics",
-      "Multi-user access",
     ],
     popular: true,
   },
@@ -41,9 +39,6 @@ const plans = [
     description: "For large organizations with complex requirements",
     features: [
       "Unlimited invoices",
-      "Custom AI models",
-      "Dedicated account manager",
-      "24/7 phone support",
       "Custom integrations",
       "Enterprise analytics",
       "SSO & advanced security",
