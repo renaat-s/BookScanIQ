@@ -35,8 +35,8 @@ const features = [
   },
   {
     icon: Send,
-    title: "Xero Integration",
-    description: "All verified receipt data is automatically sent to Xero for final verification and seamless accounting integration.",
+    title: "Xero & QuickBooks Integration",
+    description: "All verified receipt data is automatically sent to Xero and QuickBooks for final verification and seamless accounting integration.",
     comingSoon: false
   }
 ];
