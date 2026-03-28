@@ -1,0 +1,1 @@
+ALTER TABLE public.profiles ADD COLUMN directory_installed boolean NOT NULL DEFAULT false;
