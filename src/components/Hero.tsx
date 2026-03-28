@@ -1,11 +1,72 @@
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Zap, Shield, TrendingUp, Camera, Mail, FileText } from "lucide-react";
+import { Zap, Shield, TrendingUp, Camera, Mail, FileText, FolderSync, Loader2, CheckCircle } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 import heroImage from "@/assets/hero-invoice-illustration.png";
 import logoImage from "@/assets/InvoiceIQ_Logo.png";
 
 const Hero = () => {
+  const { user, signInWithGoogle } = useAuth();
+  const [directoryInstalled, setDirectoryInstalled] = useState(false);
+  const [installing, setInstalling] = useState(false);
+  const [checkingStatus, setCheckingStatus] = useState(false);
+
+  // Check if directory is already installed when user is authenticated
+  useEffect(() => {
+    if (!user) {
+      setDirectoryInstalled(false);
+      return;
+    }
+    setCheckingStatus(true);
+    supabase
+      .from("profiles")
+      .select("directory_installed")
+      .eq("user_id", user.id)
+      .single()
+      .then(({ data }) => {
+        setDirectoryInstalled(data?.directory_installed ?? false);
+        setCheckingStatus(false);
+      });
+  }, [user]);
+
+  const handleInstallDirectory = async () => {
+    if (!user) {
+      // Sign in first
+      const { error } = await signInWithGoogle();
+      if (error) {
+        toast.error("Sign in failed. Please try again.");
+      }
+      return;
+    }
+
+    setInstalling(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("install-directory");
+
+      if (error) {
+        throw new Error(error.message);
+      }
+
+      if (data?.success) {
+        setDirectoryInstalled(true);
+        toast.success("File directory installed successfully! You're all set.");
+      } else {
+        throw new Error(data?.error || "Installation failed");
+      }
+    } catch (err: any) {
+      console.error("Install directory error:", err);
+      toast.error(err.message || "Failed to install file directory. Please try again.");
+    } finally {
+      setInstalling(false);
+    }
+  };
+
+  const showFeatureButtons = user && directoryInstalled;
+
   return (
     <section className="relative min-h-screen flex items-center bg-gradient-subtle overflow-hidden">
       <div className="container mx-auto px-6 py-20">
@@ -43,30 +104,89 @@ const Hero = () => {
             </div>
             
             <div className="flex flex-col gap-4">
-              <div className="flex flex-col sm:flex-row gap-4">
-                <div className="relative">
-                  <Button variant="hero" size="lg" className="shadow-elegant opacity-50 cursor-not-allowed" disabled>
-                    <Camera className="w-5 h-5 mr-2" />
-                    Capture Invoice Now
+              {!showFeatureButtons ? (
+                /* Install Directory Button - Gate */
+                <div className="flex flex-col gap-3">
+                  <Button
+                    variant="hero"
+                    size="lg"
+                    className="shadow-elegant sm:self-start"
+                    onClick={handleInstallDirectory}
+                    disabled={installing || checkingStatus}
+                  >
+                    {installing ? (
+                      <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                    ) : (
+                      <FolderSync className="w-5 h-5 mr-2" />
+                    )}
+                    {!user
+                      ? "Sign In to Get Started"
+                      : installing
+                        ? "Installing File Directory..."
+                        : checkingStatus
+                          ? "Checking status..."
+                          : "Install Online File Directory"}
                   </Button>
-                  <Badge variant="secondary" className="absolute -top-2 -right-2 text-xs">
-                    Coming Soon
-                  </Badge>
+                  <p className="text-sm text-muted-foreground max-w-md">
+                    Set up your Google Drive &amp; Sheets file directory to unlock all InvoiceIQ features.
+                  </p>
+
+                  {/* Show locked feature buttons as preview */}
+                  <div className="flex flex-col gap-3 mt-2 opacity-40 pointer-events-none select-none">
+                    <div className="flex flex-col sm:flex-row gap-4">
+                      <div className="relative">
+                        <Button variant="hero" size="lg" className="shadow-elegant" disabled>
+                          <Camera className="w-5 h-5 mr-2" />
+                          Capture Invoice Now
+                        </Button>
+                        <Badge variant="secondary" className="absolute -top-2 -right-2 text-xs">
+                          Coming Soon
+                        </Badge>
+                      </div>
+                      <Button variant="hero-secondary" size="lg" className="shadow-elegant" disabled>
+                        <Mail className="w-5 h-5 mr-2" />
+                        Detect Invoices Now
+                      </Button>
+                    </div>
+                    <Button variant="hero-tertiary" size="lg" className="sm:self-start" disabled>
+                      <FileText className="w-5 h-5 mr-2" />
+                      File Invoices and Log Transactions
+                    </Button>
+                  </div>
                 </div>
-                <Link to="/detect-invoices">
-                  <Button variant="hero-secondary" size="lg" className="shadow-elegant">
-                    <Mail className="w-5 h-5 mr-2" />
-                    Detect Invoices Now
-                  </Button>
-                </Link>
-              </div>
-              
-              <Link to="/file-invoices" className="sm:self-start">
-                <Button variant="hero-tertiary" size="lg" className="px-[111px]">
-                  <FileText className="w-5 h-5 mr-2" />
-                  File Invoices and Log Transactions
-                </Button>
-              </Link>
+              ) : (
+                /* Unlocked Feature Buttons */
+                <>
+                  <div className="flex items-center gap-2 text-sm text-brand-accent font-medium">
+                    <CheckCircle className="w-4 h-4" />
+                    File directory installed — you're all set!
+                  </div>
+                  <div className="flex flex-col sm:flex-row gap-4">
+                    <div className="relative">
+                      <Button variant="hero" size="lg" className="shadow-elegant opacity-50 cursor-not-allowed" disabled>
+                        <Camera className="w-5 h-5 mr-2" />
+                        Capture Invoice Now
+                      </Button>
+                      <Badge variant="secondary" className="absolute -top-2 -right-2 text-xs">
+                        Coming Soon
+                      </Badge>
+                    </div>
+                    <Link to="/detect-invoices">
+                      <Button variant="hero-secondary" size="lg" className="shadow-elegant">
+                        <Mail className="w-5 h-5 mr-2" />
+                        Detect Invoices Now
+                      </Button>
+                    </Link>
+                  </div>
+                  
+                  <Link to="/file-invoices" className="sm:self-start">
+                    <Button variant="hero-tertiary" size="lg" className="px-[111px]">
+                      <FileText className="w-5 h-5 mr-2" />
+                      File Invoices and Log Transactions
+                    </Button>
+                  </Link>
+                </>
+              )}
             </div>
             
             <div className="flex items-center space-x-8 pt-4">
