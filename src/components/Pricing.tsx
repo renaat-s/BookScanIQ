@@ -1,55 +1,67 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Check, Star } from "lucide-react";
-
-const plans = [
-  {
-    name: "Starter",
-    monthlyPrice: "$25",
-    annualPrice: "$300",
-    description: "Perfect for small businesses just getting started",
-    features: [
-      "Up to 100 invoices/month",
-      "Basic AI extraction",
-      "Email support",
-      "Standard integrations",
-      "Basic analytics",
-    ],
-    popular: false,
-  },
-  {
-    name: "Professional",
-    monthlyPrice: "$150",
-    annualPrice: "$1,750",
-    description: "Ideal for growing businesses with higher invoice volumes",
-    features: [
-      "Up to 1,000 invoices/month",
-      "Advanced AI extraction",
-      "Priority support",
-      "Premium integrations",
-      "Advanced analytics",
-    ],
-    popular: true,
-  },
-  {
-    name: "Enterprise",
-    monthlyPrice: "$500",
-    annualPrice: "$6,000",
-    description: "For large organizations with complex requirements",
-    features: [
-      "Unlimited invoices",
-      "Custom integrations",
-      "Enterprise analytics",
-      "SSO & advanced security",
-      "SLA guarantee",
-    ],
-    popular: false,
-  },
-];
+import { Check, Star, Loader2 } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
+import { PLANS } from "@/lib/stripe-plans";
+import { toast } from "sonner";
 
 const Pricing = () => {
   const [isAnnual, setIsAnnual] = useState(false);
+  const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
+  const { user, subscription, signInWithGoogle } = useAuth();
+
+  const handleSubscribe = async (planIndex: number) => {
+    if (!user) {
+      await signInWithGoogle();
+      return;
+    }
+
+    // Developer bypass – already fully subscribed
+    if (subscription.isDeveloper) {
+      toast.info("You have developer access — no subscription needed!");
+      return;
+    }
+
+    const plan = PLANS[planIndex];
+    const priceId = isAnnual ? plan.annualPriceId : plan.monthlyPriceId;
+    const planKey = plan.name.toLowerCase();
+
+    setLoadingPlan(planKey);
+    try {
+      const { data, error } = await supabase.functions.invoke("create-checkout", {
+        body: { priceId },
+      });
+      if (error) throw error;
+      if (data?.url) {
+        window.open(data.url, "_blank");
+      }
+    } catch (err: any) {
+      console.error("Checkout error:", err);
+      toast.error("Failed to start checkout. Please try again.");
+    } finally {
+      setLoadingPlan(null);
+    }
+  };
+
+  const handleManageSubscription = async () => {
+    try {
+      const { data, error } = await supabase.functions.invoke("customer-portal");
+      if (error) throw error;
+      if (data?.url) {
+        window.open(data.url, "_blank");
+      }
+    } catch (err: any) {
+      console.error("Portal error:", err);
+      toast.error("Failed to open subscription management.");
+    }
+  };
+
+  const isCurrentPlan = (planIndex: number) => {
+    if (!subscription.subscribed || !subscription.tier) return false;
+    return PLANS[planIndex].name.toLowerCase() === subscription.tier;
+  };
 
   return (
     <section id="pricing" className="py-20 bg-background">
@@ -93,55 +105,87 @@ const Pricing = () => {
         </div>
 
         <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          {plans.map((plan, index) => (
-            <Card
-              key={index}
-              className={`relative ${plan.popular ? "border-2 border-brand-primary shadow-glow" : "border border-border"} hover:shadow-elegant transition-smooth`}
-            >
-              {plan.popular && (
-                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                  <div className="bg-gradient-primary text-white px-4 py-1 rounded-full text-sm font-medium flex items-center">
-                    <Star className="w-4 h-4 mr-1" />
-                    Most Popular
+          {PLANS.map((plan, index) => {
+            const current = isCurrentPlan(index);
+            return (
+              <Card
+                key={index}
+                className={`relative ${
+                  current
+                    ? "border-2 border-brand-accent shadow-glow ring-2 ring-brand-accent/20"
+                    : plan.popular
+                    ? "border-2 border-brand-primary shadow-glow"
+                    : "border border-border"
+                } hover:shadow-elegant transition-smooth`}
+              >
+                {current && (
+                  <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                    <div className="bg-brand-accent text-white px-4 py-1 rounded-full text-sm font-medium">
+                      Your Plan
+                    </div>
                   </div>
-                </div>
-              )}
-
-              <CardHeader className="text-center space-y-4">
-                <CardTitle className="text-2xl">{plan.name}</CardTitle>
-                <div className="space-y-2">
-                  <div className="flex items-baseline justify-center">
-                    <span className="text-4xl font-bold">
-                      {isAnnual ? plan.annualPrice : plan.monthlyPrice}
-                    </span>
-                    <span className="text-muted-foreground ml-1">
-                      {isAnnual ? "/year" : "/month"}
-                    </span>
+                )}
+                {!current && plan.popular && (
+                  <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                    <div className="bg-gradient-primary text-white px-4 py-1 rounded-full text-sm font-medium flex items-center">
+                      <Star className="w-4 h-4 mr-1" />
+                      Most Popular
+                    </div>
                   </div>
-                  <p className="text-sm text-muted-foreground">{plan.description}</p>
-                </div>
-              </CardHeader>
+                )}
 
-              <CardContent className="space-y-6">
-                <ul className="space-y-3">
-                  {plan.features.map((feature, featureIndex) => (
-                    <li key={featureIndex} className="flex items-center">
-                      <Check className="w-5 h-5 text-brand-accent mr-3 flex-shrink-0" />
-                      <span className="text-sm">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
+                <CardHeader className="text-center space-y-4">
+                  <CardTitle className="text-2xl">{plan.name}</CardTitle>
+                  <div className="space-y-2">
+                    <div className="flex items-baseline justify-center">
+                      <span className="text-4xl font-bold">
+                        {isAnnual ? plan.annualPrice : plan.monthlyPrice}
+                      </span>
+                      <span className="text-muted-foreground ml-1">
+                        {isAnnual ? "/year" : "/month"}
+                      </span>
+                    </div>
+                    <p className="text-sm text-muted-foreground">{plan.description}</p>
+                  </div>
+                </CardHeader>
 
-                <Button
-                  variant={plan.popular ? "hero" : "outline"}
-                  className="w-full"
-                  size="lg"
-                >
-                  Start Free Trial
-                </Button>
-              </CardContent>
-            </Card>
-          ))}
+                <CardContent className="space-y-6">
+                  <ul className="space-y-3">
+                    {plan.features.map((feature, featureIndex) => (
+                      <li key={featureIndex} className="flex items-center">
+                        <Check className="w-5 h-5 text-brand-accent mr-3 flex-shrink-0" />
+                        <span className="text-sm">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  {current ? (
+                    <Button
+                      variant="outline"
+                      className="w-full"
+                      size="lg"
+                      onClick={handleManageSubscription}
+                    >
+                      Manage Subscription
+                    </Button>
+                  ) : (
+                    <Button
+                      variant={plan.popular ? "hero" : "outline"}
+                      className="w-full"
+                      size="lg"
+                      disabled={loadingPlan === plan.name.toLowerCase()}
+                      onClick={() => handleSubscribe(index)}
+                    >
+                      {loadingPlan === plan.name.toLowerCase() ? (
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      ) : null}
+                      {subscription.subscribed ? "Switch Plan" : "Start Free Trial"}
+                    </Button>
+                  )}
+                </CardContent>
+              </Card>
+            );
+          })}
         </div>
 
         <div className="text-center mt-12">
