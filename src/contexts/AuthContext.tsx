@@ -166,6 +166,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const signOut = async () => {
+    // Reset directory_installed for developer accounts during development
+    if (user && isDeveloperEmail(user.email)) {
+      await supabase
+        .from('profiles')
+        .update({ directory_installed: false })
+        .eq('user_id', user.id);
+    }
     await supabase.auth.signOut();
   };
 
