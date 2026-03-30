@@ -58,7 +58,27 @@ Deno.serve(async (req) => {
       });
     }
 
-    const webhookResponse = await fetch(webhookUrl, {
+    let parsedWebhookUrl: URL;
+    try {
+      parsedWebhookUrl = new URL(webhookUrl);
+    } catch {
+      return new Response(JSON.stringify({ error: "Install directory webhook URL is invalid" }), {
+        status: 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    const blockedHosts = new Set(["localhost", "127.0.0.1", "0.0.0.0", "::1"]);
+    if (blockedHosts.has(parsedWebhookUrl.hostname)) {
+      return new Response(JSON.stringify({
+        error: "Install directory webhook must be a public URL, not localhost",
+      }), {
+        status: 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    const webhookResponse = await fetch(parsedWebhookUrl.toString(), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
