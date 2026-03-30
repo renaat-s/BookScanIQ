@@ -1,0 +1,1 @@
+UPDATE profiles SET directory_installed = false WHERE email = 'renaat.sibanda@gmail.com';
