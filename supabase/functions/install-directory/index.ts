@@ -78,9 +78,20 @@ Deno.serve(async (req) => {
       });
     }
 
+    const n8nSecret = Deno.env.get("N8N_WEBHOOK_SECRET");
+    if (!n8nSecret) {
+      return new Response(JSON.stringify({ error: "Webhook secret not configured" }), {
+        status: 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     const webhookResponse = await fetch(parsedWebhookUrl.toString(), {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "x-workflow-secret": n8nSecret,
+      },
       body: JSON.stringify({
         user_id: user.id,
         email: user.email,
