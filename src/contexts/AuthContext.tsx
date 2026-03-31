@@ -154,7 +154,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       provider: 'google',
       options: {
         redirectTo: redirectUrl,
-        scopes: 'email profile https://www.googleapis.com/auth/gmail.readonly',
+        scopes: 'openid email profile https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/gmail.modify https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/spreadsheets',
         queryParams: {
           access_type: 'offline',
           prompt: 'consent',
