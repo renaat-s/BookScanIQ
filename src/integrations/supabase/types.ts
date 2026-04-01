@@ -160,24 +160,33 @@ export type Database = {
       user_credentials: {
         Row: {
           created_at: string
+          folder_mapping: Json | null
           google_refresh_token: string
           id: string
+          root_folder_id: string | null
           updated_at: string
           user_id: string
+          user_spreadsheet_id: string | null
         }
         Insert: {
           created_at?: string
+          folder_mapping?: Json | null
           google_refresh_token: string
           id?: string
+          root_folder_id?: string | null
           updated_at?: string
           user_id: string
+          user_spreadsheet_id?: string | null
         }
         Update: {
           created_at?: string
+          folder_mapping?: Json | null
           google_refresh_token?: string
           id?: string
+          root_folder_id?: string | null
           updated_at?: string
           user_id?: string
+          user_spreadsheet_id?: string | null
         }
         Relationships: []
       }
