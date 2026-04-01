@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Zap, Shield, TrendingUp, Camera, Mail, FileText, FolderSync, Loader2, CheckCircle } from "lucide-react";
+import { Zap, Shield, TrendingUp, Camera, Mail, FileText, FolderSync, Loader2, CheckCircle, ExternalLink } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -14,23 +14,45 @@ const Hero = () => {
   const [directoryInstalled, setDirectoryInstalled] = useState(false);
   const [installing, setInstalling] = useState(false);
   const [checkingStatus, setCheckingStatus] = useState(false);
+  const [spreadsheetId, setSpreadsheetId] = useState<string | null>(null);
+  const [setupComplete, setSetupComplete] = useState(false);
 
-  // Check if directory is already installed when user is authenticated
+  // Check if directory is already installed and n8n setup is complete
   useEffect(() => {
     if (!user) {
       setDirectoryInstalled(false);
+      setSetupComplete(false);
+      setSpreadsheetId(null);
       return;
     }
     setCheckingStatus(true);
-    supabase
-      .from("profiles")
-      .select("directory_installed")
-      .eq("user_id", user.id)
-      .single()
-      .then(({ data }) => {
-        setDirectoryInstalled(data?.directory_installed ?? false);
-        setCheckingStatus(false);
-      });
+
+    // Check both profiles and user_credentials in parallel
+    Promise.all([
+      supabase
+        .from("profiles")
+        .select("directory_installed")
+        .eq("user_id", user.id)
+        .single(),
+      supabase
+        .from("user_credentials")
+        .select("folder_mapping, user_spreadsheet_id, root_folder_id")
+        .eq("user_id", user.id)
+        .single(),
+    ]).then(([profileRes, credRes]) => {
+      setDirectoryInstalled(profileRes.data?.directory_installed ?? false);
+
+      const cred = credRes.data;
+      if (cred?.folder_mapping && cred?.user_spreadsheet_id && cred?.root_folder_id) {
+        setSetupComplete(true);
+        setSpreadsheetId(cred.user_spreadsheet_id);
+      } else {
+        setSetupComplete(false);
+        setSpreadsheetId(null);
+      }
+
+      setCheckingStatus(false);
+    });
   }, [user]);
 
   const handleInstallDirectory = async () => {
@@ -159,8 +181,23 @@ const Hero = () => {
                 <>
                   <div className="flex items-center gap-2 text-sm text-brand-accent font-medium">
                     <CheckCircle className="w-4 h-4" />
-                    File directory installed — you're all set!
+                    {setupComplete
+                      ? "Setup complete — your file directory and bookkeeping sheet are ready!"
+                      : "File directory installed — finalizing setup..."}
                   </div>
+
+                  {spreadsheetId && (
+                    <a
+                      href={`https://docs.google.com/spreadsheets/d/${spreadsheetId}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline"
+                    >
+                      <ExternalLink className="w-4 h-4" />
+                      Open Your Bookkeeping Sheet
+                    </a>
+                  )}
+
                   <div className="flex flex-col sm:flex-row gap-4">
                     <div className="relative">
                       <Button variant="hero" size="lg" className="shadow-elegant opacity-50 cursor-not-allowed" disabled>
