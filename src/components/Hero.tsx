@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Zap, Shield, TrendingUp, Camera, Mail, FileText, FolderSync, Loader2, CheckCircle } from "lucide-react";
+import { Zap, Shield, TrendingUp, Camera, Mail, FileText, FolderSync, Loader2, CheckCircle, ExternalLink } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
