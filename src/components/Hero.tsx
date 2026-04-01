@@ -181,8 +181,23 @@ const Hero = () => {
                 <>
                   <div className="flex items-center gap-2 text-sm text-brand-accent font-medium">
                     <CheckCircle className="w-4 h-4" />
-                    File directory installed — you're all set!
+                    {setupComplete
+                      ? "Setup complete — your file directory and bookkeeping sheet are ready!"
+                      : "File directory installed — finalizing setup..."}
                   </div>
+
+                  {spreadsheetId && (
+                    <a
+                      href={`https://docs.google.com/spreadsheets/d/${spreadsheetId}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline"
+                    >
+                      <ExternalLink className="w-4 h-4" />
+                      Open Your Bookkeeping Sheet
+                    </a>
+                  )}
+
                   <div className="flex flex-col sm:flex-row gap-4">
                     <div className="relative">
                       <Button variant="hero" size="lg" className="shadow-elegant opacity-50 cursor-not-allowed" disabled>
