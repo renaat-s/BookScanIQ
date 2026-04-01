@@ -14,23 +14,45 @@ const Hero = () => {
   const [directoryInstalled, setDirectoryInstalled] = useState(false);
   const [installing, setInstalling] = useState(false);
   const [checkingStatus, setCheckingStatus] = useState(false);
+  const [spreadsheetId, setSpreadsheetId] = useState<string | null>(null);
+  const [setupComplete, setSetupComplete] = useState(false);
 
-  // Check if directory is already installed when user is authenticated
+  // Check if directory is already installed and n8n setup is complete
   useEffect(() => {
     if (!user) {
       setDirectoryInstalled(false);
+      setSetupComplete(false);
+      setSpreadsheetId(null);
       return;
     }
     setCheckingStatus(true);
-    supabase
-      .from("profiles")
-      .select("directory_installed")
-      .eq("user_id", user.id)
-      .single()
-      .then(({ data }) => {
-        setDirectoryInstalled(data?.directory_installed ?? false);
-        setCheckingStatus(false);
-      });
+
+    // Check both profiles and user_credentials in parallel
+    Promise.all([
+      supabase
+        .from("profiles")
+        .select("directory_installed")
+        .eq("user_id", user.id)
+        .single(),
+      supabase
+        .from("user_credentials")
+        .select("folder_mapping, user_spreadsheet_id, root_folder_id")
+        .eq("user_id", user.id)
+        .single(),
+    ]).then(([profileRes, credRes]) => {
+      setDirectoryInstalled(profileRes.data?.directory_installed ?? false);
+
+      const cred = credRes.data;
+      if (cred?.folder_mapping && cred?.user_spreadsheet_id && cred?.root_folder_id) {
+        setSetupComplete(true);
+        setSpreadsheetId(cred.user_spreadsheet_id);
+      } else {
+        setSetupComplete(false);
+        setSpreadsheetId(null);
+      }
+
+      setCheckingStatus(false);
+    });
   }, [user]);
 
   const handleInstallDirectory = async () => {
