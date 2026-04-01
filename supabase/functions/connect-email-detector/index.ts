@@ -81,6 +81,16 @@ Deno.serve(async (req) => {
       );
     }
 
+    // Validate webhook secret
+    const n8nSecret = Deno.env.get('N8N_WEBHOOK_SECRET');
+    if (!n8nSecret) {
+      console.error('N8N_WEBHOOK_SECRET not configured');
+      return new Response(
+        JSON.stringify({ error: 'Webhook secret not configured' }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     // Send the email connection request to n8n
     // Add a short timeout so the UI doesn't hang indefinitely.
     const controller = new AbortController();
@@ -90,6 +100,7 @@ Deno.serve(async (req) => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'x-workflow-secret': n8nSecret,
       },
       body: JSON.stringify({
         requestId,
