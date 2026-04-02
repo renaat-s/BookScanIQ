@@ -163,30 +163,42 @@ export type Database = {
           folder_mapping: Json | null
           google_refresh_token: string
           id: string
+          quickbooks_expense_account: string | null
+          quickbooks_income_account: string | null
           root_folder_id: string | null
           updated_at: string
           user_id: string
           user_spreadsheet_id: string | null
+          xero_expense_account: string | null
+          xero_income_account: string | null
         }
         Insert: {
           created_at?: string
           folder_mapping?: Json | null
           google_refresh_token: string
           id?: string
+          quickbooks_expense_account?: string | null
+          quickbooks_income_account?: string | null
           root_folder_id?: string | null
           updated_at?: string
           user_id: string
           user_spreadsheet_id?: string | null
+          xero_expense_account?: string | null
+          xero_income_account?: string | null
         }
         Update: {
           created_at?: string
           folder_mapping?: Json | null
           google_refresh_token?: string
           id?: string
+          quickbooks_expense_account?: string | null
+          quickbooks_income_account?: string | null
           root_folder_id?: string | null
           updated_at?: string
           user_id?: string
           user_spreadsheet_id?: string | null
+          xero_expense_account?: string | null
+          xero_income_account?: string | null
         }
         Relationships: []
       }
