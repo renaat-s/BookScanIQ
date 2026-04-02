@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Menu, LogOut, Trash2, LogIn, ChevronDown, User } from "lucide-react";
+import { Menu, LogOut, Trash2, LogIn, ChevronDown, User, Settings } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import logoImage from "@/assets/InvoiceIQ_Logo.png";
 import { useAuth } from "@/contexts/AuthContext";
@@ -95,6 +95,11 @@ const Header = () => {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-48 bg-popover">
+                  <DropdownMenuItem onClick={() => navigate('/settings')}>
+                    <Settings className="h-4 w-4 mr-2" />
+                    Settings
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleSignOut}>
                     <LogOut className="h-4 w-4 mr-2" />
                     Sign Out
