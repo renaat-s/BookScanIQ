@@ -52,6 +52,7 @@ const App = () => (
             <Route path="/detect-invoices" element={<DetectInvoices />} />
             <Route path="/file-invoices" element={<FileInvoices />} />
             <Route path="/pricing" element={<Pricing />} />
+            <Route path="/settings" element={<Settings />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
