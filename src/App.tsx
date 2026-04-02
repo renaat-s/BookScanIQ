@@ -21,6 +21,7 @@ const DocumentCapture = lazy(() => import("./pages/DocumentCapture"));
 const DetectInvoices = lazy(() => import("./pages/DetectInvoices"));
 const FileInvoices = lazy(() => import("./pages/FileInvoices"));
 const Pricing = lazy(() => import("./pages/Pricing"));
+const Settings = lazy(() => import("./pages/Settings"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
@@ -51,6 +52,7 @@ const App = () => (
             <Route path="/detect-invoices" element={<DetectInvoices />} />
             <Route path="/file-invoices" element={<FileInvoices />} />
             <Route path="/pricing" element={<Pricing />} />
+            <Route path="/settings" element={<Settings />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
