@@ -21,6 +21,7 @@ const DocumentCapture = lazy(() => import("./pages/DocumentCapture"));
 const DetectInvoices = lazy(() => import("./pages/DetectInvoices"));
 const FileInvoices = lazy(() => import("./pages/FileInvoices"));
 const Pricing = lazy(() => import("./pages/Pricing"));
+const Settings = lazy(() => import("./pages/Settings"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
