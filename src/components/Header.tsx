@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Menu, LogOut, Trash2, LogIn, ChevronDown, User } from "lucide-react";
+import { Menu, LogOut, Trash2, LogIn, ChevronDown, User, Settings } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import logoImage from "@/assets/InvoiceIQ_Logo.png";
 import { useAuth } from "@/contexts/AuthContext";
