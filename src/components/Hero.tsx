@@ -55,6 +55,27 @@ const Hero = () => {
     });
   }, [user]);
 
+  // Poll for setup completion after directory is installed but setup isn't complete
+  useEffect(() => {
+    if (!user || !directoryInstalled || setupComplete) return;
+
+    const poll = setInterval(async () => {
+      const { data } = await supabase
+        .from("user_credentials")
+        .select("folder_mapping, user_spreadsheet_id, root_folder_id")
+        .eq("user_id", user.id)
+        .single();
+
+      if (data?.folder_mapping && data?.user_spreadsheet_id && data?.root_folder_id) {
+        setSetupComplete(true);
+        setSpreadsheetId(data.user_spreadsheet_id);
+        clearInterval(poll);
+      }
+    }, 3000);
+
+    return () => clearInterval(poll);
+  }, [user, directoryInstalled, setupComplete]);
+
   const handleInstallDirectory = async () => {
     if (!user) {
       // Sign in first
