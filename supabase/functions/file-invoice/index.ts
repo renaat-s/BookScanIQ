@@ -86,12 +86,21 @@ Deno.serve(async (req) => {
 
     console.log(`User ${user.id} uploading file invoice`);
 
-    // Get webhook URL
+    // Get webhook URL and secret
     const webhookUrl = Deno.env.get('N8N_FILE_INVOICE_WEBHOOK_URL');
     if (!webhookUrl) {
       console.error('N8N_FILE_INVOICE_WEBHOOK_URL not configured');
       return new Response(
         JSON.stringify({ error: 'Webhook not configured' }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const n8nSecret = Deno.env.get('N8N_WEBHOOK_SECRET');
+    if (!n8nSecret) {
+      console.error('N8N_WEBHOOK_SECRET not configured');
+      return new Response(
+        JSON.stringify({ error: 'Webhook secret not configured' }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
@@ -155,10 +164,13 @@ Deno.serve(async (req) => {
     n8nFormData.append('file_type', file.type);
     n8nFormData.append('file_size', file.size.toString());
 
-    // Forward to n8n webhook
+    // Forward to n8n webhook with auth
     console.log('Forwarding to n8n webhook...');
     const n8nResponse = await fetch(webhookUrl, {
       method: 'POST',
+      headers: {
+        'x-workflow-secret': n8nSecret,
+      },
       body: n8nFormData,
     });
 
