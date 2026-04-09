@@ -194,6 +194,15 @@ const FileInvoices = () => {
         <Header />
 
         <main className="flex-1 py-12 px-4 sm:px-6 lg:px-8">
+          {guard.status !== 'ready' ? (
+            <div className="py-12">
+              <SetupGuardCard
+                status={guard.status}
+                spreadsheetId={guard.spreadsheetId}
+                onTriggerSetup={guard.triggerSetup}
+              />
+            </div>
+          ) : (
           <div className="max-w-2xl mx-auto space-y-8">
             {/* Page Header */}
             <div className="text-center">
