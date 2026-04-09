@@ -9,6 +9,8 @@ import Footer from "@/components/Footer";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useDirectoryGuard } from "@/hooks/useDirectoryGuard";
+import SetupGuardCard from "@/components/SetupGuardCard";
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 const ALLOWED_EXTENSIONS = ['.pdf', '.heic', '.heif', '.jpg', '.jpeg', '.png', '.webp'];
@@ -23,6 +25,7 @@ const ALLOWED_MIME_TYPES = [
 
 const FileInvoices = () => {
   const { user, loading: authLoading, signInWithGoogle } = useAuth();
+  const guard = useDirectoryGuard();
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -191,6 +194,15 @@ const FileInvoices = () => {
         <Header />
 
         <main className="flex-1 py-12 px-4 sm:px-6 lg:px-8">
+          {guard.status !== 'ready' ? (
+            <div className="py-12">
+              <SetupGuardCard
+                status={guard.status}
+                spreadsheetId={guard.spreadsheetId}
+                onTriggerSetup={guard.triggerSetup}
+              />
+            </div>
+          ) : (
           <div className="max-w-2xl mx-auto space-y-8">
             {/* Page Header */}
             <div className="text-center">
@@ -322,6 +334,7 @@ const FileInvoices = () => {
               </CardContent>
             </Card>
           </div>
+          )}
         </main>
 
         <Footer />
