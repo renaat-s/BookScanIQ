@@ -35,14 +35,14 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Check if already installed
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("directory_installed")
+    // Check if credentials are actually populated (not just the flag)
+    const { data: creds } = await supabase
+      .from("user_credentials")
+      .select("folder_mapping, user_spreadsheet_id, root_folder_id")
       .eq("user_id", user.id)
       .single();
 
-    if (profile?.directory_installed) {
+    if (creds?.folder_mapping && creds?.user_spreadsheet_id && creds?.root_folder_id) {
       return new Response(JSON.stringify({ success: true, message: "Already installed" }), {
         status: 200,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -107,19 +107,8 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Mark as installed
-    const { error: updateError } = await supabase
-      .from("profiles")
-      .update({ directory_installed: true })
-      .eq("user_id", user.id);
-
-    if (updateError) {
-      console.error("Failed to update profile:", updateError.message);
-      return new Response(JSON.stringify({ error: "Failed to update profile" }), {
-        status: 500,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
+    // Note: directory_installed will be set to true by the guard
+    // once it confirms credentials are populated by n8n
 
     return new Response(JSON.stringify({ success: true }), {
       status: 200,
