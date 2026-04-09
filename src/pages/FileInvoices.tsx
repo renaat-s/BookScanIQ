@@ -334,6 +334,7 @@ const FileInvoices = () => {
               </CardContent>
             </Card>
           </div>
+          )}
         </main>
 
         <Footer />
