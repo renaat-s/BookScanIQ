@@ -38,6 +38,11 @@ export function useDirectoryGuard({ autoTrigger = false } = {}): DirectoryGuardS
       setSpreadsheetId(data.user_spreadsheet_id);
       setRootFolderId(data.root_folder_id);
       setStatus('ready');
+      // Mark profile as directory_installed now that credentials are confirmed
+      await supabase
+        .from('profiles')
+        .update({ directory_installed: true })
+        .eq('user_id', user.id);
       return true;
     }
     return false;
