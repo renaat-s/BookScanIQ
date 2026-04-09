@@ -39,6 +39,7 @@ const DetectInvoices = () => {
   const { user, loading, signInWithGoogle } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
+  const guard = useDirectoryGuard();
   const [step, setStep] = useState<'auth' | 'confirm' | 'select-scan' | 'select-backlog-duration' | 'connecting' | 'scanning' | 'results' | 'connected' | 'failed'>('auth');
   const [selectedScanType, setSelectedScanType] = useState<ScanType | null>(null);
   const [backlogDuration, setBacklogDuration] = useState<BacklogDuration | null>(null);
@@ -176,7 +177,16 @@ const DetectInvoices = () => {
       
       <main className="container mx-auto px-6 py-20">
         <div className="max-w-lg mx-auto">
-          {step === 'auth' && (
+          {/* Directory setup guard — blocks all feature steps until ready */}
+          {user && guard.status !== 'ready' && guard.status !== 'loading' && (
+            <SetupGuardCard
+              status={guard.status}
+              spreadsheetId={guard.spreadsheetId}
+              onTriggerSetup={guard.triggerSetup}
+            />
+          )}
+
+          {(!user || guard.status === 'ready') && step === 'auth' && (
             <Card className="border-2">
               <CardHeader className="text-center space-y-4">
                 <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
