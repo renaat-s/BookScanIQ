@@ -126,11 +126,20 @@ const DetectInvoices = () => {
       setBacklogDuration(duration || null);
 
       if (scanType === 'backfill') {
-        setStep('scanning');
-        toast({
-          title: 'Backlog Scan Started!',
-          description: 'You can track the progress below.',
-        });
+        // If n8n responded synchronously with results, go straight to results
+        if (data?.scanCompleted) {
+          setStep('results');
+          toast({
+            title: 'Backlog Scan Complete!',
+            description: `Found ${data.invoicesFound} invoices from ${data.emailsProcessed} emails.`,
+          });
+        } else {
+          setStep('scanning');
+          toast({
+            title: 'Backlog Scan Started!',
+            description: 'You can track the progress below.',
+          });
+        }
       } else {
         setStep('connected');
         toast({

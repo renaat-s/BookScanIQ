@@ -94,7 +94,7 @@ Deno.serve(async (req) => {
     // Send the email connection request to n8n
     // Add a short timeout so the UI doesn't hang indefinitely.
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 15_000);
+    const timeout = setTimeout(() => controller.abort(), 120_000);
 
     const n8nResponse = await fetch(webhookUrl, {
       method: 'POST',
