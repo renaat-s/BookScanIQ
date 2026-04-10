@@ -12,7 +12,6 @@ Deno.serve(async (req) => {
   }
 
   try {
-    // Validate auth
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) {
       return new Response(JSON.stringify({ error: "Missing authorization header" }), {
@@ -25,7 +24,6 @@ Deno.serve(async (req) => {
     const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    // Verify user
     const token = authHeader.replace("Bearer ", "");
     const { data: { user }, error: userError } = await supabase.auth.getUser(token);
     if (userError || !user) {
@@ -35,7 +33,7 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Check if credentials are actually populated (not just the flag)
+    // Check if credentials are already fully populated — skip if so
     const { data: creds } = await supabase
       .from("user_credentials")
       .select("folder_mapping, user_spreadsheet_id, root_folder_id")
@@ -43,13 +41,19 @@ Deno.serve(async (req) => {
       .single();
 
     if (creds?.folder_mapping && creds?.user_spreadsheet_id && creds?.root_folder_id) {
+      // Also ensure profile flag is synced
+      await supabase
+        .from("profiles")
+        .update({ directory_installed: true })
+        .eq("user_id", user.id);
+
       return new Response(JSON.stringify({ success: true, message: "Already installed" }), {
         status: 200,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
-    // Call n8n webhook
+    // Call n8n webhook (synchronous — waits for Respond to Webhook node)
     const webhookUrl = Deno.env.get("N8N_INSTALL_DIRECTORY_WEBHOOK_URL");
     if (!webhookUrl) {
       return new Response(JSON.stringify({ error: "Webhook URL not configured" }), {
@@ -86,6 +90,8 @@ Deno.serve(async (req) => {
       });
     }
 
+    console.log(`Calling n8n install-directory for user ${user.id}`);
+
     const webhookResponse = await fetch(parsedWebhookUrl.toString(), {
       method: "POST",
       headers: {
@@ -107,10 +113,63 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Note: directory_installed will be set to true by the guard
-    // once it confirms credentials are populated by n8n
+    // Parse the synchronous response from n8n's Respond to Webhook node
+    let n8nData: any;
+    const responseText = await webhookResponse.text();
+    try {
+      n8nData = JSON.parse(responseText);
+    } catch {
+      console.log("n8n returned non-JSON response, treating as success signal:", responseText);
+      // n8n responded OK but without structured data — fall back to polling
+      return new Response(JSON.stringify({ success: true, mode: "polling" }), {
+        status: 200,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
 
-    return new Response(JSON.stringify({ success: true }), {
+    const { root_folder_id, folder_mapping, user_spreadsheet_id } = n8nData;
+
+    // If n8n returned the IDs, write them directly to user_credentials
+    if (root_folder_id && folder_mapping && user_spreadsheet_id) {
+      console.log("n8n returned credentials, writing to user_credentials");
+
+      const { error: updateError } = await supabase
+        .from("user_credentials")
+        .update({
+          root_folder_id,
+          folder_mapping,
+          user_spreadsheet_id,
+        })
+        .eq("user_id", user.id);
+
+      if (updateError) {
+        console.error("Failed to update user_credentials:", updateError.message);
+        return new Response(JSON.stringify({ error: "Failed to save directory credentials" }), {
+          status: 500,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      // Mark profile as installed
+      await supabase
+        .from("profiles")
+        .update({ directory_installed: true })
+        .eq("user_id", user.id);
+
+      return new Response(JSON.stringify({
+        success: true,
+        mode: "direct",
+        root_folder_id,
+        user_spreadsheet_id,
+      }), {
+        status: 200,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    // n8n responded with JSON but without the required fields — fall back to polling
+    console.log("n8n response missing credential fields, falling back to polling");
+    return new Response(JSON.stringify({ success: true, mode: "polling" }), {
       status: 200,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
