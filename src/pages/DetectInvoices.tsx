@@ -10,7 +10,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { Mail, CheckCircle, Loader2, AlertCircle, Play, History, Calendar } from 'lucide-react';
-import { ScanProgressCard } from '@/components/ScanProgressCard';
+
 import { InvoiceResultsCard } from '@/components/InvoiceResultsCard';
 import { useDirectoryGuard } from '@/hooks/useDirectoryGuard';
 import SetupGuardCard from '@/components/SetupGuardCard';
