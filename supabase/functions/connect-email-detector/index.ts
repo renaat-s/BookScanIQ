@@ -94,7 +94,7 @@ Deno.serve(async (req) => {
     // Send the email connection request to n8n
     // Add a short timeout so the UI doesn't hang indefinitely.
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 15_000);
+    const timeout = setTimeout(() => controller.abort(), 120_000);
 
     const n8nResponse = await fetch(webhookUrl, {
       method: 'POST',
@@ -163,11 +163,69 @@ Deno.serve(async (req) => {
 
     console.log(`Successfully initiated ${scanType} scan for email`);
 
+    // Parse n8n's synchronous response to extract scan metrics
+    let emailsProcessed = 0;
+    let invoicesFound = 0;
+    let scanCompleted = false;
+
+    try {
+      const n8nData = JSON.parse(responseText);
+      // n8n returns an array of email items, each with id/threadId/subject/etc.
+      if (Array.isArray(n8nData)) {
+        emailsProcessed = n8nData.length;
+        invoicesFound = n8nData.length; // Each returned item is a detected invoice email
+        scanCompleted = true;
+        console.log(`n8n returned ${emailsProcessed} items for ${scanType} scan`);
+      } else if (typeof n8nData === 'object' && n8nData !== null) {
+        // Handle wrapped response e.g. { items: [...] } or { count: N }
+        if (Array.isArray(n8nData.items)) {
+          emailsProcessed = n8nData.items.length;
+          invoicesFound = n8nData.items.length;
+          scanCompleted = true;
+        } else if (typeof n8nData.count === 'number') {
+          emailsProcessed = n8nData.count;
+          invoicesFound = n8nData.count;
+          scanCompleted = true;
+        }
+        console.log(`n8n returned object response, parsed ${emailsProcessed} items`);
+      }
+    } catch {
+      console.log('n8n response was not valid JSON, skipping metric extraction');
+    }
+
+    // If we got metrics, write them directly to the scan_jobs table
+    if (scanCompleted && jobId) {
+      const supabaseAdmin = createClient(
+        Deno.env.get("SUPABASE_URL") ?? "",
+        Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
+      );
+
+      const { error: updateError } = await supabaseAdmin
+        .from('scan_jobs')
+        .update({
+          status: 'completed',
+          total_emails: emailsProcessed,
+          processed_emails: emailsProcessed,
+          invoices_found: invoicesFound,
+          completed_at: new Date().toISOString(),
+        })
+        .eq('id', jobId);
+
+      if (updateError) {
+        console.error('Failed to update scan_jobs with n8n results:', updateError.message);
+      } else {
+        console.log(`Updated scan_jobs ${jobId}: ${emailsProcessed} emails, ${invoicesFound} invoices`);
+      }
+    }
+
     return new Response(
       JSON.stringify({
         success: true,
         requestId,
         message: `${scanType} scan initiated successfully`,
+        emailsProcessed,
+        invoicesFound,
+        scanCompleted,
         debug: {
           status: n8nResponse.status,
           contentType,
