@@ -12,13 +12,6 @@ interface DirectoryGuardState {
   triggerSetup: () => Promise<void>;
 }
 
-/**
- * Guard hook that checks whether the user's Google Drive directory
- * (root_folder_id, folder_mapping, user_spreadsheet_id) has been
- * provisioned in user_credentials.  If any value is null the hook
- * can auto-trigger the install-directory edge function and poll
- * until the credentials are populated by the n8n workflow.
- */
 export function useDirectoryGuard({ autoTrigger = false } = {}): DirectoryGuardState {
   const { user, loading: authLoading } = useAuth();
   const [status, setStatus] = useState<SetupStatus>('loading');
@@ -38,11 +31,6 @@ export function useDirectoryGuard({ autoTrigger = false } = {}): DirectoryGuardS
       setSpreadsheetId(data.user_spreadsheet_id);
       setRootFolderId(data.root_folder_id);
       setStatus('ready');
-      // Mark profile as directory_installed now that credentials are confirmed
-      await supabase
-        .from('profiles')
-        .update({ directory_installed: true })
-        .eq('user_id', user.id);
       return true;
     }
     return false;
@@ -57,15 +45,29 @@ export function useDirectoryGuard({ autoTrigger = false } = {}): DirectoryGuardS
       if (error) throw new Error(error.message);
       if (!data?.success) throw new Error(data?.error || 'Setup failed');
 
-      // Edge function returned success — n8n is now provisioning.
-      // Start polling for credential population.
+      // If edge function wrote credentials directly (synchronous n8n response)
+      if (data.mode === 'direct') {
+        setSpreadsheetId(data.user_spreadsheet_id);
+        setRootFolderId(data.root_folder_id);
+        setStatus('ready');
+        toast.success('Your file directory is ready!');
+        return;
+      }
+
+      // Already installed case
+      if (data.message === 'Already installed') {
+        await checkCredentials();
+        return;
+      }
+
+      // Fallback: n8n didn't return IDs synchronously — poll
       setStatus('polling');
     } catch (err: any) {
       console.error('Directory setup error:', err);
       toast.error(err.message || 'Failed to initialize your file directory. Please try again.');
       setStatus('needs_setup');
     }
-  }, [user]);
+  }, [user, checkCredentials]);
 
   // Initial check on mount / user change
   useEffect(() => {
@@ -90,7 +92,7 @@ export function useDirectoryGuard({ autoTrigger = false } = {}): DirectoryGuardS
     })();
   }, [user, authLoading, checkCredentials, autoTrigger, triggerSetup]);
 
-  // Poll every 3s while status is 'polling' or 'initializing'
+  // Poll every 3s while status is 'polling' (fallback only)
   useEffect(() => {
     if (status !== 'polling') return;
 
@@ -102,7 +104,6 @@ export function useDirectoryGuard({ autoTrigger = false } = {}): DirectoryGuardS
       }
     }, 3000);
 
-    // Safety timeout — stop polling after 2 minutes
     const timeout = setTimeout(() => {
       clearInterval(interval);
       if (status === 'polling') {
