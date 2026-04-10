@@ -373,12 +373,15 @@ const DetectInvoices = () => {
             </Card>
           )}
 
-          {step === 'scanning' && currentJobId && (
-            <ScanProgressCard 
-              jobId={currentJobId}
-              onComplete={handleScanComplete}
-              onBack={() => setStep('select-scan')}
-            />
+          {step === 'scanning' && (
+            <Card className="border-2">
+              <CardHeader className="text-center space-y-4">
+                <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
+                  <Loader2 className="w-8 h-8 text-primary animate-spin" />
+                </div>
+                <CardTitle className="text-2xl">Scanning...</CardTitle>
+              </CardHeader>
+            </Card>
           )}
 
           {step === 'results' && currentJobId && (
