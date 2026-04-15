@@ -374,13 +374,78 @@ const DetectInvoices = () => {
           )}
 
           {step === 'scanning' && (
-            <Card className="border-2">
-              <CardHeader className="text-center space-y-4">
+            <Card className="border-2 border-primary/20 shadow-lg">
+              <CardHeader className="text-center space-y-5 pb-2">
                 <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
                   <Loader2 className="w-8 h-8 text-primary animate-spin" />
                 </div>
-                <CardTitle className="text-2xl">Scanning...</CardTitle>
+                <CardTitle className="text-2xl">Processing Your Data</CardTitle>
+                <CardDescription className="text-base leading-relaxed">
+                  Your invoice &amp; receipt email data is being extracted, organized, and sent to your connected platforms. This may take a few minutes — sit back and relax!
+                </CardDescription>
               </CardHeader>
+              <CardContent className="space-y-6 pt-2">
+                {/* Platform pipeline */}
+                <div className="flex items-center justify-center gap-3">
+                  {/* Google Drive */}
+                  <div className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-muted/50 w-[72px]">
+                    <svg viewBox="0 0 87.3 78" className="w-8 h-8">
+                      <path d="M6.6 66.85l3.85 6.65c.8 1.4 1.95 2.5 3.3 3.3l13.75-23.8H0c0 1.55.4 3.1 1.2 4.5l5.4 9.35z" fill="#0066DA"/>
+                      <path d="M43.65 25.15L29.9 1.35c-1.35.8-2.5 1.9-3.3 3.3l-25.4 44a9.06 9.06 0 0 0-1.2 4.5h27.5l16.15-27.99z" fill="#00AC47"/>
+                      <path d="M73.55 76.8c1.35-.8 2.5-1.9 3.3-3.3l1.6-2.75L86.1 57.7c.8-1.4 1.2-2.95 1.2-4.5H59.85L53.5 64.5l-3.6 6.3 13.75 23.8c1.35-.8 2.5-1.9 3.3-3.3l6.6-14.5z" fill="#EA4335"/>
+                      <path d="M43.65 25.15L57.4 1.35C56.05.55 54.5 0 52.85 0H34.45c-1.65 0-3.2.55-4.55 1.35l13.75 23.8z" fill="#00832D"/>
+                      <path d="M59.85 53.2h27.5c0-1.55-.4-3.1-1.2-4.5L73.6 27.45c-.8-1.4-1.95-2.5-3.3-3.3L56.55 48l3.3 5.2z" fill="#2684FC"/>
+                      <path d="M27.5 53.2L13.75 76.8c1.35.8 2.9 1.35 4.55 1.35h50.7c1.65 0 3.2-.55 4.55-1.35L59.85 53.2H27.5z" fill="#FFBA00"/>
+                    </svg>
+                    <span className="text-[10px] font-medium text-muted-foreground">Drive</span>
+                  </div>
+
+                  <svg viewBox="0 0 24 24" className="w-4 h-4 text-muted-foreground/50 shrink-0"><path fill="currentColor" d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
+
+                  {/* Google Sheets */}
+                  <div className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-muted/50 w-[72px]">
+                    <svg viewBox="0 0 48 48" className="w-8 h-8">
+                      <path fill="#43A047" d="M37 45H11c-1.657 0-3-1.343-3-3V6c0-1.657 1.343-3 3-3h19l10 10v29c0 1.657-1.343 3-3 3z"/>
+                      <path fill="#C8E6C9" d="M40 13H30V3z"/>
+                      <path fill="#2E7D32" d="M30 13l10 10V13z"/>
+                      <path fill="#E8F5E9" d="M31 23H17v16h14V23z"/>
+                      <path fill="#43A047" d="M17 23h14v2H17zm0 4h14v2H17zm0 4h14v2H17zm0 4h14v2H17z"/>
+                    </svg>
+                    <span className="text-[10px] font-medium text-muted-foreground">Sheets</span>
+                  </div>
+
+                  <svg viewBox="0 0 24 24" className="w-4 h-4 text-muted-foreground/50 shrink-0"><path fill="currentColor" d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
+
+                  {/* Xero */}
+                  <div className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-muted/50 w-[72px]">
+                    <svg viewBox="0 0 48 48" className="w-8 h-8">
+                      <circle cx="24" cy="24" r="22" fill="#13B5EA"/>
+                      <path d="M14 16l10 8-10 8M26 16l-3.5 8L26 32M30 16v16M34 24h-4" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+                    </svg>
+                    <span className="text-[10px] font-medium text-muted-foreground">Xero</span>
+                  </div>
+
+                  <svg viewBox="0 0 24 24" className="w-4 h-4 text-muted-foreground/50 shrink-0"><path fill="currentColor" d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
+
+                  {/* QuickBooks */}
+                  <div className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-muted/50 w-[72px]">
+                    <svg viewBox="0 0 48 48" className="w-8 h-8">
+                      <circle cx="24" cy="24" r="22" fill="#2CA01C"/>
+                      <path d="M16 14v20M16 24h8c2.2 0 4-1.8 4-4s-1.8-4-4-4h-4M32 34V14M32 24h-8c-2.2 0-4 1.8-4 4s1.8 4 4 4h4" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+                    </svg>
+                    <span className="text-[10px] font-medium text-muted-foreground">QuickBooks</span>
+                  </div>
+                </div>
+
+                {/* Pulsing status bar */}
+                <div className="w-full h-1.5 rounded-full bg-muted overflow-hidden">
+                  <div className="h-full w-2/3 rounded-full bg-primary/60 animate-pulse" />
+                </div>
+
+                <p className="text-xs text-center text-muted-foreground">
+                  Please don't close this page while processing is in progress.
+                </p>
+              </CardContent>
             </Card>
           )}
 
