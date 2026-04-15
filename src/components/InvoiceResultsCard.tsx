@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
-import { ExternalLink, FileText, Loader2, InboxIcon } from 'lucide-react';
+import { CheckCircle, ExternalLink, FileText, Loader2 } from 'lucide-react';
 
 interface Invoice {
   id: string;
@@ -55,23 +55,22 @@ export const InvoiceResultsCard = ({ jobId, onBack, onHome }: InvoiceResultsCard
 
   if (invoices.length === 0) {
     return (
-      <Card className="border-2 border-muted">
+      <Card className="border-2 border-primary/20">
         <CardHeader className="text-center space-y-4">
-          <div className="mx-auto w-16 h-16 bg-muted rounded-full flex items-center justify-center">
-            <InboxIcon className="w-8 h-8 text-muted-foreground" />
+          <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
+            <CheckCircle className="w-8 h-8 text-primary" />
           </div>
-          <CardTitle className="text-2xl">No Invoices Found</CardTitle>
+          <CardTitle className="text-2xl">Processing Complete</CardTitle>
           <CardDescription className="text-base">
-            The scan completed successfully but no invoices were detected in the scanned emails. 
-            Try scanning a longer time range or check that your inbox contains invoice-related emails.
+            Your invoice and receipt data has finished processing.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-3">
-          <Button onClick={onBack} variant="hero" className="w-full" size="lg">
-            Scan Again
-          </Button>
           <Button onClick={onHome} variant="outline" className="w-full" size="lg">
             Return to Home
+          </Button>
+          <Button onClick={onBack} variant="ghost" className="w-full" size="sm">
+            Run Another Scan
           </Button>
         </CardContent>
       </Card>
