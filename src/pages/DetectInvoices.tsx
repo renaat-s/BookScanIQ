@@ -103,44 +103,72 @@ const DetectInvoices = () => {
 
       const jobId = jobData.id;
       setCurrentJobId(jobId);
-
-      const { data, error } = await supabase.functions.invoke('connect-email-detector', {
-        body: { 
-          email: user.email,
-          scanType,
-          jobId,
-          userId: user.id,
-          ...(duration && { backlogWeeks: duration })
-        },
-      });
-
-      if (error) {
-        throw error;
-      }
-
-      await supabase
-        .from('profiles')
-        .update({ n8n_webhook_connected: true })
-        .eq('user_id', user.id);
-
       setBacklogDuration(duration || null);
 
       if (scanType === 'backfill') {
-        // If n8n responded synchronously with results, go straight to results
-        if (data?.scanCompleted) {
-          setStep('results');
+        // Show the comforting pop-up after 30 seconds
+        const timer = setTimeout(() => setStep('scanning'), 30_000);
+
+        // Fire the edge function in the background
+        supabase.functions.invoke('connect-email-detector', {
+          body: {
+            email: user.email,
+            scanType,
+            jobId,
+            userId: user.id,
+            ...(duration && { backlogWeeks: duration }),
+          },
+        }).then(async ({ data, error }) => {
+          clearTimeout(timer);
+
+          if (error) throw error;
+
+          await supabase
+            .from('profiles')
+            .update({ n8n_webhook_connected: true })
+            .eq('user_id', user.id);
+
+          if (data?.scanCompleted) {
+            setStep('results');
+            toast({
+              title: 'Backlog Scan Complete!',
+              description: `Found ${data.invoicesFound} invoices from ${data.emailsProcessed} emails.`,
+            });
+          } else {
+            setStep('scanning');
+            toast({
+              title: 'Backlog Scan Started!',
+              description: 'Your data is being processed.',
+            });
+          }
+        }).catch((err) => {
+          clearTimeout(timer);
+          console.error('Connection error:', err);
+          setStep('failed');
           toast({
-            title: 'Backlog Scan Complete!',
-            description: `Found ${data.invoicesFound} invoices from ${data.emailsProcessed} emails.`,
+            title: 'Connection Failed',
+            description: parseErrorMessage(err),
+            variant: 'destructive',
           });
-        } else {
-          setStep('scanning');
-          toast({
-            title: 'Backlog Scan Started!',
-            description: 'You can track the progress below.',
-          });
-        }
+        });
       } else {
+        // Forward scan — keep original synchronous flow
+        const { data, error } = await supabase.functions.invoke('connect-email-detector', {
+          body: {
+            email: user.email,
+            scanType,
+            jobId,
+            userId: user.id,
+          },
+        });
+
+        if (error) throw error;
+
+        await supabase
+          .from('profiles')
+          .update({ n8n_webhook_connected: true })
+          .eq('user_id', user.id);
+
         setStep('connected');
         toast({
           title: 'Forward Scan Started!',
