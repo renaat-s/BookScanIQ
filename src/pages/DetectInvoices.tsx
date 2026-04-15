@@ -107,7 +107,19 @@ const DetectInvoices = () => {
 
       if (scanType === 'backfill') {
         // Show the comforting pop-up after 30 seconds
-        const timer = setTimeout(() => setStep('scanning'), 30_000);
+        const popupTimer = setTimeout(() => {
+          setStep('scanning');
+          // After 2 minutes on the popup, auto-transition to results (done)
+          const doneTimer = setTimeout(() => {
+            setStep('results');
+            toast({
+              title: 'Processing Complete!',
+              description: 'Your invoices have been processed and sent to your connected platforms.',
+            });
+          }, 120_000);
+          // Store doneTimer so it can be cleared if edge function resolves first
+          (window as any).__invoiceIqDoneTimer = doneTimer;
+        }, 30_000);
 
         // Fire the edge function in the background
         supabase.functions.invoke('connect-email-detector', {
@@ -119,7 +131,10 @@ const DetectInvoices = () => {
             ...(duration && { backlogWeeks: duration }),
           },
         }).then(async ({ data, error }) => {
-          clearTimeout(timer);
+          clearTimeout(popupTimer);
+          if ((window as any).__invoiceIqDoneTimer) {
+            clearTimeout((window as any).__invoiceIqDoneTimer);
+          }
 
           if (error) throw error;
 
@@ -128,21 +143,18 @@ const DetectInvoices = () => {
             .update({ n8n_webhook_connected: true })
             .eq('user_id', user.id);
 
-          if (data?.scanCompleted) {
-            setStep('results');
-            toast({
-              title: 'Backlog Scan Complete!',
-              description: `Found ${data.invoicesFound} invoices from ${data.emailsProcessed} emails.`,
-            });
-          } else {
-            setStep('scanning');
-            toast({
-              title: 'Backlog Scan Started!',
-              description: 'Your data is being processed.',
-            });
-          }
+          setStep('results');
+          toast({
+            title: 'Backlog Scan Complete!',
+            description: data?.scanCompleted
+              ? `Found ${data.invoicesFound} invoices from ${data.emailsProcessed} emails.`
+              : 'Your data is being processed.',
+          });
         }).catch((err) => {
-          clearTimeout(timer);
+          clearTimeout(popupTimer);
+          if ((window as any).__invoiceIqDoneTimer) {
+            clearTimeout((window as any).__invoiceIqDoneTimer);
+          }
           console.error('Connection error:', err);
           setStep('failed');
           toast({
