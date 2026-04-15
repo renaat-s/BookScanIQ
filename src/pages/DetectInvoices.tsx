@@ -145,10 +145,8 @@ const DetectInvoices = () => {
 
           setStep('results');
           toast({
-            title: 'Backlog Scan Complete!',
-            description: data?.scanCompleted
-              ? `Found ${data.invoicesFound} invoices from ${data.emailsProcessed} emails.`
-              : 'Your data is being processed.',
+            title: 'Processing Complete!',
+            description: 'Your invoice and receipt data has finished processing.',
           });
         }).catch((err) => {
           clearTimeout(popupTimer);
@@ -413,15 +411,23 @@ const DetectInvoices = () => {
             </Card>
           )}
 
-          {step === 'scanning' && (
+          {(step === 'scanning' || (step === 'results' && selectedScanType === 'backfill')) && (
             <Card className="border-2 border-primary/20 shadow-lg">
               <CardHeader className="text-center space-y-5 pb-2">
                 <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
-                  <Loader2 className="w-8 h-8 text-primary animate-spin" />
+                  {step === 'results' ? (
+                    <CheckCircle className="w-8 h-8 text-primary" />
+                  ) : (
+                    <Loader2 className="w-8 h-8 text-primary animate-spin" />
+                  )}
                 </div>
-                <CardTitle className="text-2xl">Processing Your Data</CardTitle>
+                <CardTitle className="text-2xl">
+                  {step === 'results' ? 'Processing Complete' : 'Processing Your Data'}
+                </CardTitle>
                 <CardDescription className="text-base leading-relaxed">
-                  Your invoice &amp; receipt email data is being extracted, organized, and sent to your connected platforms. This may take a few minutes — sit back and relax!
+                  {step === 'results'
+                    ? 'Your invoice and receipt email data has been processed and sent through your connected workflow.'
+                    : 'Your invoice & receipt email data is being extracted, organized, and sent to your connected platforms. This may take a few minutes — sit back and relax!'}
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6 pt-2">
@@ -479,17 +485,30 @@ const DetectInvoices = () => {
 
                 {/* Pulsing status bar */}
                 <div className="w-full h-1.5 rounded-full bg-muted overflow-hidden">
-                  <div className="h-full w-2/3 rounded-full bg-primary/60 animate-pulse" />
+                  <div className={`h-full rounded-full bg-primary/60 ${step === 'results' ? 'w-full' : 'w-2/3 animate-pulse'}`} />
                 </div>
 
                 <p className="text-xs text-center text-muted-foreground">
-                  Please don't close this page while processing is in progress.
+                  {step === 'results'
+                    ? 'Everything has finished successfully.'
+                    : "Please don't close this page while processing is in progress."}
                 </p>
+
+                {step === 'results' && (
+                  <Button
+                    onClick={() => navigate('/')}
+                    className="w-full"
+                    size="lg"
+                    variant="outline"
+                  >
+                    Return to Home
+                  </Button>
+                )}
               </CardContent>
             </Card>
           )}
 
-          {step === 'results' && currentJobId && (
+          {step === 'results' && currentJobId && selectedScanType !== 'backfill' && (
             <InvoiceResultsCard
               jobId={currentJobId}
               onBack={() => setStep('select-scan')}
