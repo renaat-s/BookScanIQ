@@ -17,6 +17,7 @@ const FAQ = lazy(() => import("./pages/FAQ"));
 const Compliance = lazy(() => import("./pages/Compliance"));
 const Privacy = lazy(() => import("./pages/Privacy"));
 const Terms = lazy(() => import("./pages/Terms"));
+const EULA = lazy(() => import("./pages/EULA"));
 const DocumentCapture = lazy(() => import("./pages/DocumentCapture"));
 const DetectInvoices = lazy(() => import("./pages/DetectInvoices"));
 const FileInvoices = lazy(() => import("./pages/FileInvoices"));
@@ -55,6 +56,7 @@ const App = () => (
             <Route path="/compliance" element={<Compliance />} />
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/terms" element={<Terms />} />
+            <Route path="/eula" element={<EULA />} />
             <Route path="/capture-invoices" element={<DocumentCapture />} />
             <Route path="/detect-invoices" element={<DetectInvoices />} />
             <Route path="/file-invoices" element={<FileInvoices />} />
