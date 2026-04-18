@@ -37,6 +37,7 @@ const Footer = () => {
               <Link to="/compliance" className="hover:text-white transition-smooth">Security</Link>
               <Link to="/privacy" className="hover:text-white transition-smooth">Privacy Policy</Link>
               <Link to="/terms" className="hover:text-white transition-smooth">Terms of Service</Link>
+              <Link to="/eula" className="hover:text-white transition-smooth">EULA</Link>
               <Link to="/faq" className="hover:text-white transition-smooth">FAQ</Link>
             </div>
             
