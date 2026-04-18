@@ -163,6 +163,7 @@ export type Database = {
           folder_mapping: Json | null
           google_refresh_token: string
           id: string
+          qb_realm_id: string | null
           quickbooks_expense_account: string | null
           quickbooks_income_account: string | null
           root_folder_id: string | null
@@ -171,12 +172,15 @@ export type Database = {
           user_spreadsheet_id: string | null
           xero_expense_account: string | null
           xero_income_account: string | null
+          xero_organization_id: string | null
+          xero_tenant_id: string | null
         }
         Insert: {
           created_at?: string
           folder_mapping?: Json | null
           google_refresh_token: string
           id?: string
+          qb_realm_id?: string | null
           quickbooks_expense_account?: string | null
           quickbooks_income_account?: string | null
           root_folder_id?: string | null
@@ -185,12 +189,15 @@ export type Database = {
           user_spreadsheet_id?: string | null
           xero_expense_account?: string | null
           xero_income_account?: string | null
+          xero_organization_id?: string | null
+          xero_tenant_id?: string | null
         }
         Update: {
           created_at?: string
           folder_mapping?: Json | null
           google_refresh_token?: string
           id?: string
+          qb_realm_id?: string | null
           quickbooks_expense_account?: string | null
           quickbooks_income_account?: string | null
           root_folder_id?: string | null
@@ -199,6 +206,8 @@ export type Database = {
           user_spreadsheet_id?: string | null
           xero_expense_account?: string | null
           xero_income_account?: string | null
+          xero_organization_id?: string | null
+          xero_tenant_id?: string | null
         }
         Relationships: []
       }
