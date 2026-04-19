@@ -166,6 +166,7 @@ export type Database = {
           qb_realm_id: string | null
           quickbooks_expense_account: string | null
           quickbooks_income_account: string | null
+          quickbooks_refresh_token: string | null
           root_folder_id: string | null
           updated_at: string
           user_id: string
@@ -173,6 +174,7 @@ export type Database = {
           xero_expense_account: string | null
           xero_income_account: string | null
           xero_organization_id: string | null
+          xero_refresh_token: string | null
           xero_tenant_id: string | null
         }
         Insert: {
@@ -183,6 +185,7 @@ export type Database = {
           qb_realm_id?: string | null
           quickbooks_expense_account?: string | null
           quickbooks_income_account?: string | null
+          quickbooks_refresh_token?: string | null
           root_folder_id?: string | null
           updated_at?: string
           user_id: string
@@ -190,6 +193,7 @@ export type Database = {
           xero_expense_account?: string | null
           xero_income_account?: string | null
           xero_organization_id?: string | null
+          xero_refresh_token?: string | null
           xero_tenant_id?: string | null
         }
         Update: {
@@ -200,6 +204,7 @@ export type Database = {
           qb_realm_id?: string | null
           quickbooks_expense_account?: string | null
           quickbooks_income_account?: string | null
+          quickbooks_refresh_token?: string | null
           root_folder_id?: string | null
           updated_at?: string
           user_id?: string
@@ -207,6 +212,7 @@ export type Database = {
           xero_expense_account?: string | null
           xero_income_account?: string | null
           xero_organization_id?: string | null
+          xero_refresh_token?: string | null
           xero_tenant_id?: string | null
         }
         Relationships: []
