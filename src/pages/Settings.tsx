@@ -1,21 +1,48 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect, useCallback } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Save, Settings as SettingsIcon } from 'lucide-react';
+import {
+  Loader2,
+  Save,
+  Settings as SettingsIcon,
+  CheckCircle2,
+  Link2,
+  Unlink,
+} from 'lucide-react';
+
+interface Credentials {
+  xero_expense_account: string | null;
+  xero_income_account: string | null;
+  quickbooks_expense_account: string | null;
+  quickbooks_income_account: string | null;
+  xero_tenant_id: string | null;
+  xero_organization_id: string | null;
+  xero_refresh_token: string | null;
+  qb_realm_id: string | null;
+  quickbooks_refresh_token: string | null;
+}
 
 const Settings = () => {
   const { user, loading } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [saving, setSaving] = useState(false);
   const [loadingData, setLoadingData] = useState(true);
 
@@ -24,33 +51,76 @@ const Settings = () => {
   const [qbExpense, setQbExpense] = useState('EXP');
   const [qbIncome, setQbIncome] = useState('INC');
 
+  const [xeroConnected, setXeroConnected] = useState(false);
+  const [qbConnected, setQbConnected] = useState(false);
+  const [xeroTenant, setXeroTenant] = useState<string | null>(null);
+  const [qbRealm, setQbRealm] = useState<string | null>(null);
+
+  const [oauthConfig, setOauthConfig] = useState<{
+    xero_client_id: string | null;
+    quickbooks_client_id: string | null;
+    quickbooks_environment: string;
+  } | null>(null);
+
   useEffect(() => {
     if (!loading && !user) {
       navigate('/');
     }
   }, [user, loading, navigate]);
 
-  useEffect(() => {
+  const fetchCredentials = useCallback(async () => {
     if (!user) return;
+    const { data } = await supabase
+      .from('user_credentials')
+      .select(
+        'xero_expense_account, xero_income_account, quickbooks_expense_account, quickbooks_income_account, xero_tenant_id, xero_organization_id, xero_refresh_token, qb_realm_id, quickbooks_refresh_token',
+      )
+      .eq('user_id', user.id)
+      .maybeSingle();
 
-    const fetchCredentials = async () => {
-      const { data, error } = await supabase
-        .from('user_credentials')
-        .select('xero_expense_account, xero_income_account, quickbooks_expense_account, quickbooks_income_account')
-        .eq('user_id', user.id)
-        .maybeSingle();
-
-      if (data) {
-        setXeroExpense(data.xero_expense_account || '970');
-        setXeroIncome(data.xero_income_account || '400');
-        setQbExpense(data.quickbooks_expense_account || 'EXP');
-        setQbIncome(data.quickbooks_income_account || 'INC');
-      }
-      setLoadingData(false);
-    };
-
-    fetchCredentials();
+    if (data) {
+      const creds = data as Credentials;
+      setXeroExpense(creds.xero_expense_account || '970');
+      setXeroIncome(creds.xero_income_account || '400');
+      setQbExpense(creds.quickbooks_expense_account || 'EXP');
+      setQbIncome(creds.quickbooks_income_account || 'INC');
+      setXeroConnected(!!creds.xero_refresh_token && !!creds.xero_tenant_id);
+      setQbConnected(!!creds.quickbooks_refresh_token && !!creds.qb_realm_id);
+      setXeroTenant(creds.xero_tenant_id);
+      setQbRealm(creds.qb_realm_id);
+    }
+    setLoadingData(false);
   }, [user]);
+
+  useEffect(() => {
+    fetchCredentials();
+  }, [fetchCredentials]);
+
+  // Fetch public OAuth client IDs once
+  useEffect(() => {
+    supabase.functions
+      .invoke('get-oauth-config')
+      .then(({ data }) => {
+        if (data) setOauthConfig(data);
+      })
+      .catch((err) => console.error('Failed to load OAuth config:', err));
+  }, []);
+
+  // Surface a toast if we just came back from a successful OAuth round-trip
+  useEffect(() => {
+    const connected = searchParams.get('connected');
+    if (connected === 'xero') {
+      toast({
+        title: 'Xero Connected',
+        description: 'Your Xero organization is now linked.',
+      });
+    } else if (connected === 'quickbooks') {
+      toast({
+        title: 'QuickBooks Connected',
+        description: 'Your QuickBooks company is now linked.',
+      });
+    }
+  }, [searchParams, toast]);
 
   const handleSave = async () => {
     if (!user) return;
@@ -82,6 +152,90 @@ const Settings = () => {
     }
   };
 
+  const connectXero = () => {
+    if (!oauthConfig?.xero_client_id) {
+      toast({
+        title: 'Configuration Missing',
+        description: 'Xero client ID is not configured.',
+        variant: 'destructive',
+      });
+      return;
+    }
+    const redirectUri = `${window.location.origin}/oauth/xero`;
+    const scopes = [
+      'openid',
+      'profile',
+      'email',
+      'offline_access',
+      'accounting.transactions',
+      'accounting.contacts',
+      'accounting.settings',
+    ].join(' ');
+    const url =
+      `https://login.xero.com/identity/connect/authorize?response_type=code` +
+      `&client_id=${encodeURIComponent(oauthConfig.xero_client_id)}` +
+      `&redirect_uri=${encodeURIComponent(redirectUri)}` +
+      `&scope=${encodeURIComponent(scopes)}` +
+      `&state=${encodeURIComponent(crypto.randomUUID())}`;
+    window.location.href = url;
+  };
+
+  const connectQuickBooks = () => {
+    if (!oauthConfig?.quickbooks_client_id) {
+      toast({
+        title: 'Configuration Missing',
+        description: 'QuickBooks client ID is not configured.',
+        variant: 'destructive',
+      });
+      return;
+    }
+    const redirectUri = `${window.location.origin}/oauth/quickbooks`;
+    const scopes = ['com.intuit.quickbooks.accounting', 'openid', 'email'].join(
+      ' ',
+    );
+    const url =
+      `https://appcenter.intuit.com/connect/oauth2?client_id=${encodeURIComponent(
+        oauthConfig.quickbooks_client_id,
+      )}` +
+      `&response_type=code` +
+      `&scope=${encodeURIComponent(scopes)}` +
+      `&redirect_uri=${encodeURIComponent(redirectUri)}` +
+      `&state=${encodeURIComponent(crypto.randomUUID())}`;
+    window.location.href = url;
+  };
+
+  const disconnect = async (provider: 'xero' | 'quickbooks') => {
+    if (!user) return;
+    const updates =
+      provider === 'xero'
+        ? {
+            xero_tenant_id: null,
+            xero_organization_id: null,
+            xero_refresh_token: null,
+          }
+        : {
+            qb_realm_id: null,
+            quickbooks_refresh_token: null,
+          };
+    const { error } = await supabase
+      .from('user_credentials')
+      .update(updates)
+      .eq('user_id', user.id);
+    if (error) {
+      toast({
+        title: 'Disconnect Failed',
+        description: error.message,
+        variant: 'destructive',
+      });
+      return;
+    }
+    toast({
+      title: `${provider === 'xero' ? 'Xero' : 'QuickBooks'} Disconnected`,
+      description: 'Credentials have been cleared.',
+    });
+    fetchCredentials();
+  };
+
   if (loading || loadingData) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -94,7 +248,10 @@ const Settings = () => {
     <div className="min-h-screen bg-background">
       <Helmet>
         <title>Account Settings - InvoiceIQ</title>
-        <meta name="description" content="Manage your InvoiceIQ accounting integration settings." />
+        <meta
+          name="description"
+          content="Manage your InvoiceIQ accounting integration settings."
+        />
       </Helmet>
       <Header />
 
@@ -105,16 +262,62 @@ const Settings = () => {
               <SettingsIcon className="w-8 h-8 text-primary" />
             </div>
             <h1 className="text-2xl font-bold">Accounting Settings</h1>
-            <p className="text-muted-foreground">Map InvoiceIQ to your Chart of Accounts</p>
+            <p className="text-muted-foreground">
+              Connect your accounting software and map your Chart of Accounts
+            </p>
           </div>
 
           {/* Xero Settings */}
           <Card className="border-2">
             <CardHeader>
-              <CardTitle className="text-lg">Xero Integration</CardTitle>
-              <CardDescription>Configure your Xero account codes for automated bookkeeping.</CardDescription>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    Xero Integration
+                    {xeroConnected && (
+                      <Badge variant="secondary" className="gap-1">
+                        <CheckCircle2 className="w-3 h-3 text-success" />
+                        Connected
+                      </Badge>
+                    )}
+                  </CardTitle>
+                  <CardDescription>
+                    Configure your Xero account codes for automated bookkeeping.
+                  </CardDescription>
+                </div>
+              </div>
             </CardHeader>
             <CardContent className="space-y-4">
+              {xeroConnected ? (
+                <div className="rounded-lg bg-muted/50 p-3 space-y-1 text-sm">
+                  <div className="text-muted-foreground">
+                    Tenant ID:{' '}
+                    <span className="font-mono text-foreground">
+                      {xeroTenant?.slice(0, 8)}…
+                    </span>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => disconnect('xero')}
+                    className="text-destructive hover:text-destructive"
+                  >
+                    <Unlink className="w-4 h-4 mr-2" />
+                    Disconnect Xero
+                  </Button>
+                </div>
+              ) : (
+                <Button
+                  onClick={connectXero}
+                  variant="outline"
+                  className="w-full"
+                  disabled={!oauthConfig?.xero_client_id}
+                >
+                  <Link2 className="w-4 h-4 mr-2" />
+                  Connect Xero
+                </Button>
+              )}
+
               <div className="space-y-2">
                 <Label htmlFor="xero-expense">Expense Account Code</Label>
                 <Input
@@ -141,10 +344,55 @@ const Settings = () => {
           {/* QuickBooks Settings */}
           <Card className="border-2">
             <CardHeader>
-              <CardTitle className="text-lg">QuickBooks Integration</CardTitle>
-              <CardDescription>Configure your QuickBooks account codes for automated bookkeeping.</CardDescription>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    QuickBooks Integration
+                    {qbConnected && (
+                      <Badge variant="secondary" className="gap-1">
+                        <CheckCircle2 className="w-3 h-3 text-success" />
+                        Connected
+                      </Badge>
+                    )}
+                  </CardTitle>
+                  <CardDescription>
+                    Configure your QuickBooks account codes for automated
+                    bookkeeping.
+                  </CardDescription>
+                </div>
+              </div>
             </CardHeader>
             <CardContent className="space-y-4">
+              {qbConnected ? (
+                <div className="rounded-lg bg-muted/50 p-3 space-y-1 text-sm">
+                  <div className="text-muted-foreground">
+                    Realm ID:{' '}
+                    <span className="font-mono text-foreground">
+                      {qbRealm}
+                    </span>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => disconnect('quickbooks')}
+                    className="text-destructive hover:text-destructive"
+                  >
+                    <Unlink className="w-4 h-4 mr-2" />
+                    Disconnect QuickBooks
+                  </Button>
+                </div>
+              ) : (
+                <Button
+                  onClick={connectQuickBooks}
+                  variant="outline"
+                  className="w-full"
+                  disabled={!oauthConfig?.quickbooks_client_id}
+                >
+                  <Link2 className="w-4 h-4 mr-2" />
+                  Connect QuickBooks
+                </Button>
+              )}
+
               <div className="space-y-2">
                 <Label htmlFor="qb-expense">Expense Account Code</Label>
                 <Input
@@ -168,8 +416,18 @@ const Settings = () => {
             </CardContent>
           </Card>
 
-          <Button onClick={handleSave} disabled={saving} className="w-full" size="lg" variant="hero">
-            {saving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
+          <Button
+            onClick={handleSave}
+            disabled={saving}
+            className="w-full"
+            size="lg"
+            variant="hero"
+          >
+            {saving ? (
+              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+            ) : (
+              <Save className="w-4 h-4 mr-2" />
+            )}
             Save Settings
           </Button>
         </div>
