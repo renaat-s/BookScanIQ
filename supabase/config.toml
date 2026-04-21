@@ -14,3 +14,9 @@ verify_jwt = false
 
 [functions.file-invoice]
 verify_jwt = false
+
+[functions.xero-oauth-callback]
+verify_jwt = true
+
+[functions.quickbooks-oauth-callback]
+verify_jwt = true
