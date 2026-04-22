@@ -73,8 +73,8 @@ const OAuthCallback = ({ provider }: Props) => {
 
       setStatus('success');
       setMessage(`${titleMap[provider]} connected successfully.`);
-      // Auto-redirect back to settings
-      setTimeout(() => navigate('/settings'), 1500);
+      // Auto-redirect back to settings with confirmation flag
+      setTimeout(() => navigate(`/settings?connected=${provider}`), 1500);
     };
 
     exchange();

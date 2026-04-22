@@ -87,17 +87,28 @@ Deno.serve(async (req: Request) => {
 
     // 2) Persist to user_credentials (atomic merge)
     const adminClient = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
-    const { error: updateErr } = await adminClient
+    const { data: updated, error: updateErr } = await adminClient
       .from("user_credentials")
       .update({
         qb_realm_id: realmId,
         quickbooks_refresh_token: refreshToken,
       })
-      .eq("user_id", userId);
+      .eq("user_id", userId)
+      .select("user_id");
 
     if (updateErr) {
       console.error("QuickBooks credentials update failed:", updateErr);
       return json({ error: "Failed to save QuickBooks credentials" }, 500);
+    }
+    if (!updated || updated.length === 0) {
+      console.error("No user_credentials row exists for user:", userId);
+      return json(
+        {
+          error:
+            "No credentials profile found. Please connect your Google account first before linking QuickBooks.",
+        },
+        409,
+      );
     }
 
     return json({ success: true, realm_id: realmId });
