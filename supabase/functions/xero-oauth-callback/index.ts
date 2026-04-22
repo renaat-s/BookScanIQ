@@ -93,18 +93,29 @@ Deno.serve(async (req: Request) => {
 
     // 3) Persist to user_credentials (atomic merge — never overwrite google token)
     const adminClient = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
-    const { error: updateErr } = await adminClient
+    const { data: updated, error: updateErr } = await adminClient
       .from("user_credentials")
       .update({
         xero_tenant_id: tenantId,
         xero_organization_id: organizationId,
         xero_refresh_token: refreshToken,
       })
-      .eq("user_id", userId);
+      .eq("user_id", userId)
+      .select("user_id");
 
     if (updateErr) {
       console.error("Xero credentials update failed:", updateErr);
       return json({ error: "Failed to save Xero credentials" }, 500);
+    }
+    if (!updated || updated.length === 0) {
+      console.error("No user_credentials row exists for user:", userId);
+      return json(
+        {
+          error:
+            "No credentials profile found. Please connect your Google account first before linking Xero.",
+        },
+        409,
+      );
     }
 
     return json({
