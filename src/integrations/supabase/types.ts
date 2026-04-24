@@ -160,6 +160,7 @@ export type Database = {
       user_credentials: {
         Row: {
           created_at: string
+          email: string | null
           folder_mapping: Json | null
           google_refresh_token: string
           id: string
@@ -179,6 +180,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          email?: string | null
           folder_mapping?: Json | null
           google_refresh_token: string
           id?: string
@@ -198,6 +200,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          email?: string | null
           folder_mapping?: Json | null
           google_refresh_token?: string
           id?: string
