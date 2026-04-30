@@ -14,6 +14,13 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -24,7 +31,16 @@ import {
   CheckCircle2,
   Link2,
   Unlink,
+  RefreshCw,
 } from 'lucide-react';
+
+interface QbAccount {
+  id: string;
+  name: string;
+  accountType: string;
+  accountSubType: string;
+  classification: string;
+}
 
 interface Credentials {
   xero_expense_account: string | null;
@@ -48,8 +64,12 @@ const Settings = () => {
 
   const [xeroExpense, setXeroExpense] = useState('970');
   const [xeroIncome, setXeroIncome] = useState('400');
-  const [qbExpense, setQbExpense] = useState('EXP');
-  const [qbIncome, setQbIncome] = useState('INC');
+  const [qbExpense, setQbExpense] = useState('');
+  const [qbIncome, setQbIncome] = useState('');
+
+  const [qbAccounts, setQbAccounts] = useState<QbAccount[]>([]);
+  const [qbAccountsLoading, setQbAccountsLoading] = useState(false);
+  const [qbRoutingSaving, setQbRoutingSaving] = useState(false);
 
   const [xeroConnected, setXeroConnected] = useState(false);
   const [qbConnected, setQbConnected] = useState(false);
@@ -82,8 +102,8 @@ const Settings = () => {
       const creds = data as Credentials;
       setXeroExpense(creds.xero_expense_account || '970');
       setXeroIncome(creds.xero_income_account || '400');
-      setQbExpense(creds.quickbooks_expense_account || 'EXP');
-      setQbIncome(creds.quickbooks_income_account || 'INC');
+      setQbExpense(creds.quickbooks_expense_account || '');
+      setQbIncome(creds.quickbooks_income_account || '');
       setXeroConnected(!!creds.xero_refresh_token && !!creds.xero_tenant_id);
       setQbConnected(!!creds.quickbooks_refresh_token && !!creds.qb_realm_id);
       setXeroTenant(creds.xero_tenant_id);
@@ -122,6 +142,84 @@ const Settings = () => {
     }
   }, [searchParams, toast]);
 
+  const loadQbAccounts = useCallback(
+    async (silent = false) => {
+      if (!qbConnected) return;
+      setQbAccountsLoading(true);
+      try {
+        const { data, error } = await supabase.functions.invoke(
+          'quickbooks-list-accounts',
+        );
+        if (error) throw error;
+        if (data?.error) throw new Error(data.error);
+        setQbAccounts(data?.accounts ?? []);
+        if (!silent) {
+          toast({
+            title: 'Accounts Loaded',
+            description: `Loaded ${data?.accounts?.length ?? 0} QuickBooks accounts.`,
+          });
+        }
+      } catch (err) {
+        console.error('Failed to load QB accounts:', err);
+        if (!silent) {
+          toast({
+            title: 'Failed to Load Accounts',
+            description:
+              (err as Error).message ||
+              'Could not fetch your QuickBooks Chart of Accounts.',
+            variant: 'destructive',
+          });
+        }
+      } finally {
+        setQbAccountsLoading(false);
+      }
+    },
+    [qbConnected, toast],
+  );
+
+  // Auto-load QB accounts once we know QB is connected
+  useEffect(() => {
+    if (qbConnected && qbAccounts.length === 0 && !qbAccountsLoading) {
+      loadQbAccounts(true);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [qbConnected]);
+
+  const saveQbRouting = async () => {
+    if (!user) return;
+    if (!qbExpense || !qbIncome) {
+      toast({
+        title: 'Select Both Accounts',
+        description:
+          'Please choose a default Expense and Income account before saving.',
+        variant: 'destructive',
+      });
+      return;
+    }
+    setQbRoutingSaving(true);
+    const { error } = await supabase
+      .from('user_credentials')
+      .update({
+        quickbooks_expense_account: qbExpense,
+        quickbooks_income_account: qbIncome,
+      })
+      .eq('user_id', user.id);
+    setQbRoutingSaving(false);
+    if (error) {
+      toast({
+        title: 'Save Failed',
+        description: 'Could not update QuickBooks routing. Please try again.',
+        variant: 'destructive',
+      });
+    } else {
+      toast({
+        title: 'Routing Saved',
+        description: 'Your QuickBooks transaction routing is now active.',
+      });
+    }
+  };
+
+
   const handleSave = async () => {
     if (!user) return;
     setSaving(true);
@@ -131,8 +229,8 @@ const Settings = () => {
       .update({
         xero_expense_account: xeroExpense.trim() || '970',
         xero_income_account: xeroIncome.trim() || '400',
-        quickbooks_expense_account: qbExpense.trim() || 'EXP',
-        quickbooks_income_account: qbIncome.trim() || 'INC',
+        quickbooks_expense_account: qbExpense.trim() || null,
+        quickbooks_income_account: qbIncome.trim() || null,
       })
       .eq('user_id', user.id);
 
@@ -393,26 +491,138 @@ const Settings = () => {
                 </Button>
               )}
 
-              <div className="space-y-2">
-                <Label htmlFor="qb-expense">Expense Account Code</Label>
-                <Input
-                  id="qb-expense"
-                  value={qbExpense}
-                  onChange={(e) => setQbExpense(e.target.value)}
-                  placeholder="EXP"
-                />
-                <p className="text-xs text-muted-foreground">Default: EXP</p>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="qb-income">Income Account Code</Label>
-                <Input
-                  id="qb-income"
-                  value={qbIncome}
-                  onChange={(e) => setQbIncome(e.target.value)}
-                  placeholder="INC"
-                />
-                <p className="text-xs text-muted-foreground">Default: INC</p>
-              </div>
+              {qbConnected && (
+                <div className="space-y-4 rounded-lg border border-border/60 bg-muted/30 p-4">
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <h4 className="text-sm font-semibold">
+                        Transaction Routing
+                      </h4>
+                      <p className="text-xs text-muted-foreground">
+                        Choose which QuickBooks accounts new invoices should
+                        post to. Saved as the account's internal ID.
+                      </p>
+                    </div>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => loadQbAccounts(false)}
+                      disabled={qbAccountsLoading}
+                    >
+                      {qbAccountsLoading ? (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <RefreshCw className="w-4 h-4" />
+                      )}
+                    </Button>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="qb-expense">Default Expense Account</Label>
+                    <Select
+                      value={qbExpense || undefined}
+                      onValueChange={setQbExpense}
+                      disabled={qbAccountsLoading || qbAccounts.length === 0}
+                    >
+                      <SelectTrigger id="qb-expense">
+                        <SelectValue
+                          placeholder={
+                            qbAccountsLoading
+                              ? 'Loading accounts…'
+                              : qbAccounts.length === 0
+                                ? 'No accounts loaded'
+                                : 'Select an expense account'
+                          }
+                        />
+                      </SelectTrigger>
+                      <SelectContent className="max-h-72">
+                        {qbAccounts.map((acc) => (
+                          <SelectItem key={`exp-${acc.id}`} value={acc.id}>
+                            <span className="font-medium">{acc.name}</span>
+                            {acc.accountType && (
+                              <span className="ml-2 text-xs text-muted-foreground">
+                                {acc.accountType}
+                              </span>
+                            )}
+                            <span className="ml-2 text-xs text-muted-foreground">
+                              · ID {acc.id}
+                            </span>
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    {qbExpense && (
+                      <p className="text-xs text-muted-foreground">
+                        Saved ID:{' '}
+                        <span className="font-mono text-foreground">
+                          {qbExpense}
+                        </span>
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="qb-income">Default Income Account</Label>
+                    <Select
+                      value={qbIncome || undefined}
+                      onValueChange={setQbIncome}
+                      disabled={qbAccountsLoading || qbAccounts.length === 0}
+                    >
+                      <SelectTrigger id="qb-income">
+                        <SelectValue
+                          placeholder={
+                            qbAccountsLoading
+                              ? 'Loading accounts…'
+                              : qbAccounts.length === 0
+                                ? 'No accounts loaded'
+                                : 'Select an income account'
+                          }
+                        />
+                      </SelectTrigger>
+                      <SelectContent className="max-h-72">
+                        {qbAccounts.map((acc) => (
+                          <SelectItem key={`inc-${acc.id}`} value={acc.id}>
+                            <span className="font-medium">{acc.name}</span>
+                            {acc.accountType && (
+                              <span className="ml-2 text-xs text-muted-foreground">
+                                {acc.accountType}
+                              </span>
+                            )}
+                            <span className="ml-2 text-xs text-muted-foreground">
+                              · ID {acc.id}
+                            </span>
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    {qbIncome && (
+                      <p className="text-xs text-muted-foreground">
+                        Saved ID:{' '}
+                        <span className="font-mono text-foreground">
+                          {qbIncome}
+                        </span>
+                      </p>
+                    )}
+                  </div>
+
+                  <Button
+                    type="button"
+                    onClick={saveQbRouting}
+                    disabled={
+                      qbRoutingSaving || !qbExpense || !qbIncome
+                    }
+                    className="w-full"
+                  >
+                    {qbRoutingSaving ? (
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    ) : (
+                      <Save className="w-4 h-4 mr-2" />
+                    )}
+                    Save Routing
+                  </Button>
+                </div>
+              )}
             </CardContent>
           </Card>
 

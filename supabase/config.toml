@@ -21,5 +21,8 @@ verify_jwt = true
 [functions.quickbooks-oauth-callback]
 verify_jwt = true
 
+[functions.quickbooks-list-accounts]
+verify_jwt = true
+
 [functions.get-oauth-config]
 verify_jwt = false
