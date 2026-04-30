@@ -14,6 +14,13 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -24,7 +31,16 @@ import {
   CheckCircle2,
   Link2,
   Unlink,
+  RefreshCw,
 } from 'lucide-react';
+
+interface QbAccount {
+  id: string;
+  name: string;
+  accountType: string;
+  accountSubType: string;
+  classification: string;
+}
 
 interface Credentials {
   xero_expense_account: string | null;
