@@ -102,8 +102,8 @@ const Settings = () => {
       const creds = data as Credentials;
       setXeroExpense(creds.xero_expense_account || '970');
       setXeroIncome(creds.xero_income_account || '400');
-      setQbExpense(creds.quickbooks_expense_account || 'EXP');
-      setQbIncome(creds.quickbooks_income_account || 'INC');
+      setQbExpense(creds.quickbooks_expense_account || '');
+      setQbIncome(creds.quickbooks_income_account || '');
       setXeroConnected(!!creds.xero_refresh_token && !!creds.xero_tenant_id);
       setQbConnected(!!creds.quickbooks_refresh_token && !!creds.qb_realm_id);
       setXeroTenant(creds.xero_tenant_id);
