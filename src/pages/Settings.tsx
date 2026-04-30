@@ -64,8 +64,12 @@ const Settings = () => {
 
   const [xeroExpense, setXeroExpense] = useState('970');
   const [xeroIncome, setXeroIncome] = useState('400');
-  const [qbExpense, setQbExpense] = useState('EXP');
-  const [qbIncome, setQbIncome] = useState('INC');
+  const [qbExpense, setQbExpense] = useState('');
+  const [qbIncome, setQbIncome] = useState('');
+
+  const [qbAccounts, setQbAccounts] = useState<QbAccount[]>([]);
+  const [qbAccountsLoading, setQbAccountsLoading] = useState(false);
+  const [qbRoutingSaving, setQbRoutingSaving] = useState(false);
 
   const [xeroConnected, setXeroConnected] = useState(false);
   const [qbConnected, setQbConnected] = useState(false);
