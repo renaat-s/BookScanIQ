@@ -268,6 +268,7 @@ const Settings = () => {
       'accounting.transactions',
       'accounting.contacts',
       'accounting.settings',
+      'accounting.attachments',
     ].join(' ');
     const url =
       `https://login.xero.com/identity/connect/authorize?response_type=code` +
