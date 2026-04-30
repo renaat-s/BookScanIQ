@@ -151,8 +151,8 @@ const Settings = () => {
       .update({
         xero_expense_account: xeroExpense.trim() || '970',
         xero_income_account: xeroIncome.trim() || '400',
-        quickbooks_expense_account: qbExpense.trim() || 'EXP',
-        quickbooks_income_account: qbIncome.trim() || 'INC',
+        quickbooks_expense_account: qbExpense.trim() || null,
+        quickbooks_income_account: qbIncome.trim() || null,
       })
       .eq('user_id', user.id);
 
