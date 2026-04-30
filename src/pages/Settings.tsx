@@ -142,6 +142,84 @@ const Settings = () => {
     }
   }, [searchParams, toast]);
 
+  const loadQbAccounts = useCallback(
+    async (silent = false) => {
+      if (!qbConnected) return;
+      setQbAccountsLoading(true);
+      try {
+        const { data, error } = await supabase.functions.invoke(
+          'quickbooks-list-accounts',
+        );
+        if (error) throw error;
+        if (data?.error) throw new Error(data.error);
+        setQbAccounts(data?.accounts ?? []);
+        if (!silent) {
+          toast({
+            title: 'Accounts Loaded',
+            description: `Loaded ${data?.accounts?.length ?? 0} QuickBooks accounts.`,
+          });
+        }
+      } catch (err) {
+        console.error('Failed to load QB accounts:', err);
+        if (!silent) {
+          toast({
+            title: 'Failed to Load Accounts',
+            description:
+              (err as Error).message ||
+              'Could not fetch your QuickBooks Chart of Accounts.',
+            variant: 'destructive',
+          });
+        }
+      } finally {
+        setQbAccountsLoading(false);
+      }
+    },
+    [qbConnected, toast],
+  );
+
+  // Auto-load QB accounts once we know QB is connected
+  useEffect(() => {
+    if (qbConnected && qbAccounts.length === 0 && !qbAccountsLoading) {
+      loadQbAccounts(true);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [qbConnected]);
+
+  const saveQbRouting = async () => {
+    if (!user) return;
+    if (!qbExpense || !qbIncome) {
+      toast({
+        title: 'Select Both Accounts',
+        description:
+          'Please choose a default Expense and Income account before saving.',
+        variant: 'destructive',
+      });
+      return;
+    }
+    setQbRoutingSaving(true);
+    const { error } = await supabase
+      .from('user_credentials')
+      .update({
+        quickbooks_expense_account: qbExpense,
+        quickbooks_income_account: qbIncome,
+      })
+      .eq('user_id', user.id);
+    setQbRoutingSaving(false);
+    if (error) {
+      toast({
+        title: 'Save Failed',
+        description: 'Could not update QuickBooks routing. Please try again.',
+        variant: 'destructive',
+      });
+    } else {
+      toast({
+        title: 'Routing Saved',
+        description: 'Your QuickBooks transaction routing is now active.',
+      });
+    }
+  };
+
+
   const handleSave = async () => {
     if (!user) return;
     setSaving(true);
