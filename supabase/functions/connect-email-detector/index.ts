@@ -11,6 +11,7 @@ interface RequestBody {
   backlogWeeks?: 4 | 8 | 12;
   jobId?: string;
   userId?: string;
+  scanFromDate?: string; // DD/MM/YYYY
 }
 
 Deno.serve(async (req) => {
