@@ -90,8 +90,10 @@ const DetectInvoices = () => {
     }
   };
 
-  const handleStartScan = async (scanType: ScanType, duration?: BacklogDuration) => {
+  const handleStartScan = async (scanType: ScanType, duration?: BacklogDuration, scanFromDate?: Date) => {
     if (!user?.email) return;
+    const fromDate = scanFromDate ?? new Date();
+    const scanFromDateStr = formatDDMMYYYY(fromDate);
 
     setStep('connecting');
 
