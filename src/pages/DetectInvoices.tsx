@@ -9,11 +9,18 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { Mail, CheckCircle, Loader2, AlertCircle, Play, History, Calendar } from 'lucide-react';
+import { Mail, CheckCircle, Loader2, AlertCircle, Play, History, Calendar as CalendarIcon } from 'lucide-react';
+import { format } from 'date-fns';
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { cn } from '@/lib/utils';
 
 import { InvoiceResultsCard } from '@/components/InvoiceResultsCard';
 import { useDirectoryGuard } from '@/hooks/useDirectoryGuard';
 import SetupGuardCard from '@/components/SetupGuardCard';
+
+const MIN_SCAN_DATE = new Date(2025, 2, 26); // March 26, 2025
+const formatDDMMYYYY = (d: Date) => format(d, 'dd/MM/yyyy');
 
 type ScanType = 'forward' | 'backfill';
 type BacklogDuration = 4 | 8 | 12;
