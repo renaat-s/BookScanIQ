@@ -180,6 +180,7 @@ const DetectInvoices = () => {
             scanType,
             jobId,
             userId: user.id,
+            scanFromDate: scanFromDateStr,
           },
         });
 
