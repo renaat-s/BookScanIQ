@@ -48,7 +48,7 @@ Deno.serve(async (req) => {
 
     console.log("Authenticated user:", user.id);
 
-    const { email, scanType = 'forward', backlogWeeks, jobId, userId: requestUserId } = await req.json() as RequestBody;
+    const { email, scanType = 'forward', backlogWeeks, jobId, userId: requestUserId, scanFromDate } = await req.json() as RequestBody;
 
     if (!email) {
       console.error('Missing required email field');
