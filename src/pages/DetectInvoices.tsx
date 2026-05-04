@@ -384,7 +384,7 @@ const DetectInvoices = () => {
                 {([4, 8, 12] as BacklogDuration[]).map((weeks) => (
                   <Button 
                     key={weeks}
-                    onClick={() => handleStartScan('backfill', weeks)} 
+                    onClick={() => { setBacklogDuration(weeks); setStep('select-scan-date'); }} 
                     className="w-full h-auto py-4 flex flex-col items-center gap-1" 
                     size="lg"
                     variant="outline"
