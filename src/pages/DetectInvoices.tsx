@@ -47,9 +47,10 @@ const DetectInvoices = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const guard = useDirectoryGuard();
-  const [step, setStep] = useState<'auth' | 'confirm' | 'select-scan' | 'select-backlog-duration' | 'connecting' | 'scanning' | 'results' | 'connected' | 'failed'>('auth');
+  const [step, setStep] = useState<'auth' | 'confirm' | 'select-scan' | 'select-backlog-duration' | 'select-scan-date' | 'connecting' | 'scanning' | 'results' | 'connected' | 'failed'>('auth');
   const [selectedScanType, setSelectedScanType] = useState<ScanType | null>(null);
   const [backlogDuration, setBacklogDuration] = useState<BacklogDuration | null>(null);
+  const [customScanDate, setCustomScanDate] = useState<Date | undefined>(undefined);
   const [hasInitialized, setHasInitialized] = useState(false);
   const [currentJobId, setCurrentJobId] = useState<string | null>(null);
 
