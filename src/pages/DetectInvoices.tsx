@@ -373,7 +373,7 @@ const DetectInvoices = () => {
             <Card className="border-2">
               <CardHeader className="text-center space-y-4">
                 <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
-                  <Calendar className="w-8 h-8 text-primary" />
+                  <CalendarIcon className="w-8 h-8 text-primary" />
                 </div>
                 <CardTitle className="text-2xl">How Far Back?</CardTitle>
                 <CardDescription className="text-base">
