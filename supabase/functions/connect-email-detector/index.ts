@@ -111,6 +111,7 @@ Deno.serve(async (req) => {
         scanType,
         jobId,
         ...(backlogWeeks && { backlogWeeks }),
+        ...(scanFromDate && { scanFromDate }),
         timestamp: new Date().toISOString(),
         progressWebhookUrl: `${Deno.env.get("SUPABASE_URL")}/functions/v1/update-scan-progress`,
       }),
