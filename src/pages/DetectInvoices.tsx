@@ -407,7 +407,85 @@ const DetectInvoices = () => {
             </Card>
           )}
 
-          {step === 'connecting' && (
+          {guard.status === 'ready' && step === 'select-scan-date' && user && backlogDuration && (
+            <Card className="border-2">
+              <CardHeader className="text-center space-y-4">
+                <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
+                  <CalendarIcon className="w-8 h-8 text-primary" />
+                </div>
+                <CardTitle className="text-2xl">Scan From Which Date?</CardTitle>
+                <CardDescription className="text-base">
+                  Your {backlogDuration}-week backlog scan will go back from the date you choose.
+                  Pick any date between March 26, 2025 and today.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <Button
+                  onClick={() => handleStartScan('backfill', backlogDuration, new Date())}
+                  className="w-full h-auto py-4 flex flex-col items-center gap-1"
+                  size="lg"
+                  variant="hero"
+                >
+                  <span className="text-lg font-semibold">From Today</span>
+                  <span className="text-sm opacity-80 font-normal">
+                    Scan the past {backlogDuration} weeks ending today
+                  </span>
+                </Button>
+
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className={cn(
+                        'w-full h-auto py-4 flex flex-col items-center gap-1',
+                        !customScanDate && 'text-muted-foreground'
+                      )}
+                      size="lg"
+                    >
+                      <span className="text-lg font-semibold">
+                        {customScanDate ? `From ${formatDDMMYYYY(customScanDate)}` : 'Choose a Date'}
+                      </span>
+                      <span className="text-sm text-muted-foreground font-normal">
+                        Pick a custom end date for the {backlogDuration}-week window
+                      </span>
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="center">
+                    <Calendar
+                      mode="single"
+                      selected={customScanDate}
+                      onSelect={setCustomScanDate}
+                      disabled={(date) => date > new Date() || date < MIN_SCAN_DATE}
+                      defaultMonth={customScanDate ?? new Date()}
+                      initialFocus
+                      className={cn('p-3 pointer-events-auto')}
+                    />
+                  </PopoverContent>
+                </Popover>
+
+                {customScanDate && (
+                  <Button
+                    onClick={() => handleStartScan('backfill', backlogDuration, customScanDate)}
+                    className="w-full"
+                    size="lg"
+                    variant="hero"
+                  >
+                    Start Scan From {formatDDMMYYYY(customScanDate)}
+                  </Button>
+                )}
+
+                <Button
+                  onClick={() => setStep('select-backlog-duration')}
+                  variant="ghost"
+                  className="w-full"
+                  size="sm"
+                >
+                  Go Back
+                </Button>
+              </CardContent>
+            </Card>
+          )}
+
             <Card className="border-2">
               <CardHeader className="text-center space-y-4">
                 <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
