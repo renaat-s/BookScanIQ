@@ -138,6 +138,7 @@ const DetectInvoices = () => {
             scanType,
             jobId,
             userId: user.id,
+            scanFromDate: scanFromDateStr,
             ...(duration && { backlogWeeks: duration }),
           },
         }).then(async ({ data, error }) => {
