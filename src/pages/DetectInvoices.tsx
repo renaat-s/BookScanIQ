@@ -12,7 +12,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Mail, CheckCircle, Loader2, AlertCircle, Play, History, Calendar as CalendarIcon } from 'lucide-react';
 import { format } from 'date-fns';
 import { Calendar } from '@/components/ui/calendar';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
 
 import { InvoiceResultsCard } from '@/components/InvoiceResultsCard';
