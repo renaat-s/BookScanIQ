@@ -12,7 +12,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Mail, CheckCircle, Loader2, AlertCircle, Play, History, Calendar as CalendarIcon } from 'lucide-react';
 import { format } from 'date-fns';
 import { Calendar } from '@/components/ui/calendar';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
 
 import { InvoiceResultsCard } from '@/components/InvoiceResultsCard';
@@ -51,6 +51,8 @@ const DetectInvoices = () => {
   const [selectedScanType, setSelectedScanType] = useState<ScanType | null>(null);
   const [backlogDuration, setBacklogDuration] = useState<BacklogDuration | null>(null);
   const [customScanDate, setCustomScanDate] = useState<Date | undefined>(undefined);
+  const [dateDialogOpen, setDateDialogOpen] = useState(false);
+  const [pendingScanDate, setPendingScanDate] = useState<Date | undefined>(undefined);
   const [hasInitialized, setHasInitialized] = useState(false);
   const [currentJobId, setCurrentJobId] = useState<string | null>(null);
 
@@ -432,36 +434,64 @@ const DetectInvoices = () => {
                   </span>
                 </Button>
 
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      className={cn(
-                        'w-full h-auto py-4 flex flex-col items-center gap-1',
-                        !customScanDate && 'text-muted-foreground'
-                      )}
-                      size="lg"
-                    >
-                      <span className="text-lg font-semibold">
-                        {customScanDate ? `From ${formatDDMMYYYY(customScanDate)}` : 'Choose a Date'}
-                      </span>
-                      <span className="text-sm text-muted-foreground font-normal">
-                        Pick a custom end date for the {backlogDuration}-week window
-                      </span>
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="center">
-                    <Calendar
-                      mode="single"
-                      selected={customScanDate}
-                      onSelect={setCustomScanDate}
-                      disabled={(date) => date > new Date() || date < MIN_SCAN_DATE}
-                      defaultMonth={customScanDate ?? new Date()}
-                      initialFocus
-                      className={cn('p-3 pointer-events-auto')}
-                    />
-                  </PopoverContent>
-                </Popover>
+                <Button
+                  variant="outline"
+                  className={cn(
+                    'w-full h-auto py-4 flex flex-col items-center gap-1',
+                    !customScanDate && 'text-muted-foreground'
+                  )}
+                  size="lg"
+                  onClick={() => {
+                    setPendingScanDate(customScanDate);
+                    setDateDialogOpen(true);
+                  }}
+                >
+                  <span className="text-lg font-semibold">
+                    {customScanDate ? `From ${formatDDMMYYYY(customScanDate)}` : 'Choose a Date'}
+                  </span>
+                  <span className="text-sm text-muted-foreground font-normal">
+                    Pick a custom end date for the {backlogDuration}-week window
+                  </span>
+                </Button>
+
+                <Dialog open={dateDialogOpen} onOpenChange={setDateDialogOpen}>
+                  <DialogContent className="sm:max-w-md">
+                    <DialogHeader>
+                      <DialogTitle>Select Scan Date</DialogTitle>
+                      <DialogDescription>
+                        Pick any date between March 26, 2025 and today.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <div className="flex justify-center">
+                      <Calendar
+                        mode="single"
+                        selected={pendingScanDate}
+                        onSelect={setPendingScanDate}
+                        disabled={(date) => date > new Date() || date < MIN_SCAN_DATE}
+                        defaultMonth={pendingScanDate ?? customScanDate ?? new Date()}
+                        initialFocus
+                        className={cn('p-3 pointer-events-auto scale-110')}
+                      />
+                    </div>
+                    <DialogFooter className="gap-2 sm:gap-2">
+                      <Button variant="outline" onClick={() => setDateDialogOpen(false)}>
+                        Cancel
+                      </Button>
+                      <Button
+                        variant="hero"
+                        disabled={!pendingScanDate}
+                        onClick={() => {
+                          if (pendingScanDate) {
+                            setCustomScanDate(pendingScanDate);
+                            setDateDialogOpen(false);
+                          }
+                        }}
+                      >
+                        Confirm Date
+                      </Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
 
                 {customScanDate && (
                   <Button
