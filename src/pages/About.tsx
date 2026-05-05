@@ -37,18 +37,31 @@ const About = () => {
                   <img
                     src={nanocloneLogo}
                     alt="NANOCLONE Systems Logo"
-                    className="w-56 md:w-72 h-auto object-contain"
+                    className="w-56 md:w-72 h-auto object-contain [filter:drop-shadow(0_0_18px_hsl(174_72%_56%/0.55))_drop-shadow(0_0_38px_hsl(174_72%_56%/0.35))]"
                   />
                 </div>
                 <div className="w-16 h-px bg-gradient-to-r from-transparent via-border to-transparent mx-auto" />
                 <p className="text-lg md:text-xl text-foreground/90 leading-[1.8] tracking-[-0.005em] font-light">
                   At Nanoclone Systems, we are redefining productivity by bridging the gap between cutting-edge Artificial Intelligence and daily operational efficiency. We provide secure, scalable AI Automation SaaS solutions designed to empower enterprises to streamline complex workflows and individuals to reclaim their time from repetitive tasks. By integrating intelligent agentic AI into existing systems, we deliver immediate, tangible ROI—freeing teams to focus on growth and innovation rather than manual data handling. From intelligent chatbots to autonomous workflow orchestration, we turn AI from a futuristic concept into a daily, reliable utility that drives superior performance and strategic agility in 2026.
                 </p>
-                <img
-                  src={nanocloneImage}
-                  alt="NANOCLONE Systems"
-                  className="w-full h-auto rounded-2xl shadow-elegant"
-                />
+                <a
+                  href="https://nanoclone.systems"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Visit NANOCLONE Systems Website"
+                  className="group relative block overflow-hidden rounded-2xl shadow-elegant"
+                >
+                  <img
+                    src={nanocloneImage}
+                    alt="NANOCLONE Systems"
+                    className="w-full h-auto transition-transform duration-500 group-hover:scale-[1.02]"
+                  />
+                  <div className="absolute inset-0 flex items-center justify-center bg-background/60 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <span className="px-6 py-3 rounded-full bg-card/80 backdrop-blur-md border border-border/50 shadow-elegant text-base md:text-lg font-light tracking-[-0.005em] text-foreground">
+                      Click Here to Visit Our Website
+                    </span>
+                  </div>
+                </a>
               </div>
             </div>
           </div>
