@@ -45,7 +45,7 @@ const About = () => {
               <img
                 src={nanocloneImage}
                 alt="NANOCLONE Systems"
-                className="w-full h-auto rounded-3xl shadow-elegant"
+                className="w-full h-[500px] md:h-[700px] rounded-3xl shadow-elegant object-cover"
               />
             </div>
           </div>
