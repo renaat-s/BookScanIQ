@@ -1,7 +1,7 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Helmet } from "react-helmet-async";
-import aboutHeroBg from "@/assets/about-hero-bg.png";
+
 import nanocloneImage from "@/assets/nanoclone-systems.png";
 import nanocloneLogo from "@/assets/nanoclone-logo.png";
 
