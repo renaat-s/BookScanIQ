@@ -1,7 +1,7 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Helmet } from "react-helmet-async";
-import aboutHeroBg from "@/assets/about-hero-bg.png";
+
 import nanocloneImage from "@/assets/nanoclone-systems.png";
 import nanocloneLogo from "@/assets/nanoclone-logo.png";
 
@@ -16,15 +16,10 @@ const About = () => {
       </Helmet>
       <Header />
       <main>
-        <section className="py-20 md:py-32 relative overflow-hidden">
-          <div
-            className="absolute inset-0 bg-cover bg-center"
-            style={{ backgroundImage: `url(${aboutHeroBg})` }}
-          />
-          <div className="absolute inset-0 bg-indigo-600/40" />
+        <section className="py-20 md:py-32 relative overflow-hidden bg-gradient-light-indigo">
           <div className="container mx-auto px-6 relative z-10">
             <div className="max-w-4xl mx-auto text-center space-y-6">
-              <h1 className="text-4xl md:text-5xl font-bold text-white">About Us</h1>
+              <h1 className="text-4xl md:text-5xl font-bold text-foreground">About Us</h1>
             </div>
           </div>
         </section>
