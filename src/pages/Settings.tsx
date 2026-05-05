@@ -445,7 +445,7 @@ const Settings = () => {
           </Card>
 
           {/* QuickBooks Settings */}
-          <Card className="border-2">
+          <Card className="bg-card/80 backdrop-blur-sm border border-border/50 rounded-3xl shadow-elegant hover:shadow-lg hover:border-violet-500/30 transition-all duration-300">
             <CardHeader>
               <div className="flex items-center justify-between">
                 <div>
