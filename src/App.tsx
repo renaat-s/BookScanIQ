@@ -10,6 +10,7 @@ import { Loader2 } from "lucide-react";
 
 // Eagerly load the landing page
 import Index from "./pages/Index";
+import ScrollToTop from "./components/ScrollToTop";
 
 // Lazy load all other routes
 const About = lazy(() => import("./pages/About"));
