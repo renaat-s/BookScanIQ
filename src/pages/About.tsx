@@ -36,7 +36,7 @@ const About = () => {
                 <img
                   src={nanocloneLogo}
                   alt="NANOCLONE Systems Logo"
-                  className="w-32 h-32 md:w-40 md:h-40 rounded-2xl shadow-elegant object-contain bg-white p-4"
+                  className="w-64 md:w-96 h-auto rounded-2xl shadow-elegant object-contain bg-white p-4"
                 />
               </div>
               <p className="text-base md:text-lg text-foreground leading-relaxed">
@@ -45,7 +45,7 @@ const About = () => {
               <img
                 src={nanocloneImage}
                 alt="NANOCLONE Systems"
-                className="w-full h-[500px] md:h-[700px] rounded-3xl shadow-elegant object-cover"
+                className="w-full h-auto rounded-3xl shadow-elegant"
               />
             </div>
           </div>
