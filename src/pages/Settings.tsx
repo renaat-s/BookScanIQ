@@ -361,7 +361,7 @@ const Settings = () => {
               <div className="mx-auto w-20 h-20 rounded-2xl bg-card/80 backdrop-blur-sm border border-border/50 shadow-elegant flex items-center justify-center">
                 <SettingsIcon className="w-9 h-9 text-violet-500" />
               </div>
-              <h1 className="text-4xl md:text-5xl font-bold tracking-tight bg-gradient-to-r from-violet-600 via-purple-500 to-fuchsia-500 bg-clip-text text-transparent [text-shadow:_0_4px_12px_rgb(139_92_246_/_0.25)]">
+              <h1 className="text-4xl md:text-5xl font-bold tracking-tight bg-gradient-to-r from-violet-600 via-purple-500 to-fuchsia-500 bg-clip-text text-transparent [text-shadow:_0_4px_12px_rgb(139_92_246_/_0.25)] leading-[1.15] pb-2">
                 Accounting Settings
               </h1>
               <div className="w-16 h-px bg-gradient-to-r from-transparent via-border to-transparent mx-auto" />
