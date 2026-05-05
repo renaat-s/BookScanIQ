@@ -645,6 +645,7 @@ const Settings = () => {
             )}
             Save Settings
           </Button>
+          </div>
         </div>
       </main>
 
