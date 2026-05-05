@@ -17,8 +17,9 @@ const About = () => {
       <Header />
       <main className="bg-gradient-subtle">
         <section className="pt-16 pb-16 md:pt-24 md:pb-24 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-primary opacity-10 rounded-full blur-3xl pointer-events-none" />
-          <div className="absolute bottom-0 left-0 w-72 h-72 bg-brand-accent opacity-10 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute -top-20 right-0 w-[36rem] h-[36rem] bg-violet-500 opacity-40 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute -bottom-20 left-0 w-[32rem] h-[32rem] bg-purple-600 opacity-40 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute top-10 left-1/2 -translate-x-1/2 w-[28rem] h-[28rem] bg-fuchsia-500 opacity-25 rounded-full blur-3xl pointer-events-none" />
           <div className="container mx-auto px-6 relative z-10">
             <div className="max-w-3xl mx-auto text-center">
               <h1 className="text-5xl md:text-6xl font-bold tracking-tight bg-gradient-to-r from-violet-600 via-purple-500 to-fuchsia-500 bg-clip-text text-transparent [text-shadow:_0_4px_12px_rgb(139_92_246_/_0.25)]">
