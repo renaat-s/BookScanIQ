@@ -114,13 +114,13 @@ const Pricing = () => {
             return (
               <Card
                 key={index}
-                className={`relative ${
+                className={`relative bg-card/80 backdrop-blur-sm ${
                   current
                     ? "border-2 border-brand-accent shadow-glow ring-2 ring-brand-accent/20"
                     : plan.popular
                     ? "border-2 border-brand-primary shadow-glow"
-                    : "border border-border"
-                } hover:shadow-elegant transition-smooth`}
+                    : "border border-border/50 shadow-elegant"
+                } hover:shadow-glow transition-smooth`}
               >
                 {current && (
                   <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
