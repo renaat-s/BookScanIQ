@@ -83,10 +83,10 @@ const ChatDialog = ({ open, onOpenChange, userName = "there", receiptData, onCat
         // Check if the assistant has determined a category
         const content = response.choices[0].message.content.toLowerCase();
         const categoryPatterns = [
-          /categorized as\s+([a-z\s\/]+)/i,
-          /category:\s*([a-z\s\/]+)/i,
-          /this is a\s+([a-z\s\/]+)/i,
-          /type:\s*([a-z\s\/]+)/i
+          /categorized as\s+([a-z\s/]+)/i,
+          /category:\s*([a-z\s/]+)/i,
+          /this is a\s+([a-z\s/]+)/i,
+          /type:\s*([a-z\s/]+)/i,
         ];
         
         for (const pattern of categoryPatterns) {
