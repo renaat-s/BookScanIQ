@@ -64,8 +64,12 @@ const Pricing = () => {
   };
 
   return (
-    <section id="pricing" className="py-20 bg-background">
-      <div className="container mx-auto px-6">
+    <section id="pricing" className="py-20 bg-background relative overflow-hidden">
+      {/* Ambient gradient blurs */}
+      <div className="absolute -top-20 right-0 w-[36rem] h-[36rem] bg-violet-500 opacity-30 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute -bottom-20 left-0 w-[32rem] h-[32rem] bg-purple-600 opacity-30 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[28rem] h-[28rem] bg-fuchsia-500 opacity-20 rounded-full blur-3xl pointer-events-none" />
+      <div className="container mx-auto px-6 relative z-10">
         <div className="text-center space-y-4 mb-16">
           <h2 className="text-3xl md:text-5xl font-bold">
             Simple, <span className="text-gradient">Transparent Pricing</span>
