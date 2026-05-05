@@ -16,7 +16,7 @@ const About = () => {
       </Helmet>
       <Header />
       <main className="bg-gradient-subtle">
-        <section className="pt-16 pb-8 md:pt-24 md:pb-12 relative overflow-hidden">
+        <section className="pt-16 pb-16 md:pt-24 md:pb-24 relative overflow-hidden">
           <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-primary opacity-10 rounded-full blur-3xl pointer-events-none" />
           <div className="absolute bottom-0 left-0 w-72 h-72 bg-brand-accent opacity-10 rounded-full blur-3xl pointer-events-none" />
           <div className="container mx-auto px-6 relative z-10">
@@ -40,7 +40,7 @@ const About = () => {
                   />
                 </div>
                 <div className="w-16 h-px bg-gradient-to-r from-transparent via-border to-transparent mx-auto" />
-                <p className="text-lg md:text-xl text-foreground/90 leading-[1.8] tracking-[-0.005em] font-light first-letter:text-4xl first-letter:font-semibold first-letter:text-brand-primary first-letter:mr-1 first-letter:float-left first-letter:leading-none first-letter:mt-1">
+                <p className="text-lg md:text-xl text-foreground/90 leading-[1.8] tracking-[-0.005em] font-light">
                   At Nanoclone Systems, we are redefining productivity by bridging the gap between cutting-edge Artificial Intelligence and daily operational efficiency. We provide secure, scalable AI Automation SaaS solutions designed to empower enterprises to streamline complex workflows and individuals to reclaim their time from repetitive tasks. By integrating intelligent agentic AI into existing systems, we deliver immediate, tangible ROI—freeing teams to focus on growth and innovation rather than manual data handling. From intelligent chatbots to autonomous workflow orchestration, we turn AI from a futuristic concept into a daily, reliable utility that drives superior performance and strategic agility in 2026.
                 </p>
                 <img
