@@ -64,8 +64,12 @@ const Pricing = () => {
   };
 
   return (
-    <section id="pricing" className="py-20 bg-background">
-      <div className="container mx-auto px-6">
+    <section id="pricing" className="py-20 bg-background relative overflow-hidden">
+      {/* Ambient gradient blurs */}
+      <div className="absolute -top-20 right-0 w-[36rem] h-[36rem] bg-violet-500 opacity-30 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute -bottom-20 left-0 w-[32rem] h-[32rem] bg-purple-600 opacity-30 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[28rem] h-[28rem] bg-fuchsia-500 opacity-20 rounded-full blur-3xl pointer-events-none" />
+      <div className="container mx-auto px-6 relative z-10">
         <div className="text-center space-y-4 mb-16">
           <h2 className="text-3xl md:text-5xl font-bold">
             Simple, <span className="text-gradient">Transparent Pricing</span>
@@ -110,13 +114,13 @@ const Pricing = () => {
             return (
               <Card
                 key={index}
-                className={`relative ${
+                className={`relative bg-card/80 backdrop-blur-sm ${
                   current
                     ? "border-2 border-brand-accent shadow-glow ring-2 ring-brand-accent/20"
                     : plan.popular
                     ? "border-2 border-brand-primary shadow-glow"
-                    : "border border-border"
-                } hover:shadow-elegant transition-smooth`}
+                    : "border border-border/50 shadow-elegant"
+                } hover:shadow-glow transition-smooth`}
               >
                 {current && (
                   <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
@@ -188,10 +192,12 @@ const Pricing = () => {
           })}
         </div>
 
-        <div className="text-center mt-12">
-          <p className="text-muted-foreground">
-            All plans include 14-day free trial • No setup fees • Cancel anytime
-          </p>
+        <div className="flex justify-center mt-16">
+          <div className="bg-card/80 backdrop-blur-sm border border-border/50 rounded-2xl shadow-elegant px-8 py-4">
+            <p className="text-muted-foreground text-center">
+              All plans include 14-day free trial • No setup fees • Cancel anytime
+            </p>
+          </div>
         </div>
       </div>
     </section>
