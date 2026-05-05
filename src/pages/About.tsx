@@ -3,6 +3,7 @@ import Footer from "@/components/Footer";
 import { Helmet } from "react-helmet-async";
 import aboutHeroBg from "@/assets/about-hero-bg.png";
 import nanocloneImage from "@/assets/nanoclone-systems.png";
+import invoiceiqLogo from "@/assets/invoiceiq-logo-2.png";
 
 const About = () => {
   return (
@@ -30,7 +31,14 @@ const About = () => {
 
         <section className="py-16 md:py-24 bg-gradient-light-indigo">
           <div className="container mx-auto px-6">
-            <div className="max-w-5xl mx-auto">
+            <div className="max-w-5xl mx-auto space-y-8">
+              <div className="flex justify-center">
+                <img
+                  src={invoiceiqLogo}
+                  alt="InvoiceIQ Logo"
+                  className="w-32 h-32 md:w-40 md:h-40 rounded-2xl shadow-elegant object-contain bg-white p-4"
+                />
+              </div>
               <img
                 src={nanocloneImage}
                 alt="NANOCLONE Systems"
