@@ -16,7 +16,7 @@ const About = () => {
       </Helmet>
       <Header />
       <main>
-        <section className="py-20 md:py-32 relative overflow-hidden bg-gradient-light-indigo">
+        <section className="py-20 md:py-32 relative overflow-hidden bg-background">
           <div className="container mx-auto px-6 relative z-10">
             <div className="max-w-4xl mx-auto text-center space-y-6">
               <h1 className="text-4xl md:text-5xl font-bold text-foreground">About Us</h1>
@@ -24,7 +24,7 @@ const About = () => {
           </div>
         </section>
 
-        <section className="py-16 md:py-24 bg-gradient-light-indigo">
+        <section className="py-16 md:py-24 bg-background">
           <div className="container mx-auto px-6">
             <div className="max-w-5xl mx-auto space-y-8">
               <div className="flex justify-center">
