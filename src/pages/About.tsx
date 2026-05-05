@@ -39,11 +39,16 @@ const About = () => {
                   className="w-32 h-32 md:w-40 md:h-40 rounded-2xl shadow-elegant object-contain bg-white p-4"
                 />
               </div>
-              <img
-                src={nanocloneImage}
-                alt="NANOCLONE Systems"
-                className="w-full h-auto rounded-3xl shadow-elegant"
-              />
+              <div className="grid md:grid-cols-2 gap-8 items-center">
+                <img
+                  src={nanocloneImage}
+                  alt="NANOCLONE Systems"
+                  className="w-full h-auto rounded-3xl shadow-elegant"
+                />
+                <p className="text-base md:text-lg text-foreground leading-relaxed">
+                  At Nanoclone Systems, we are redefining productivity by bridging the gap between cutting-edge Artificial Intelligence and daily operational efficiency. We provide secure, scalable AI Automation SaaS solutions designed to empower enterprises to streamline complex workflows and individuals to reclaim their time from repetitive tasks. By integrating intelligent agentic AI into existing systems, we deliver immediate, tangible ROI—freeing teams to focus on growth and innovation rather than manual data handling. From intelligent chatbots to autonomous workflow orchestration, we turn AI from a futuristic concept into a daily, reliable utility that drives superior performance and strategic agility in 2026.
+                </p>
+              </div>
             </div>
           </div>
         </section>
