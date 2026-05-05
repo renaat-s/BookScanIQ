@@ -139,7 +139,7 @@ const Hero = () => {
                 with AI
               </h1>
               
-              <p className="text-xl text-muted-foreground leading-relaxed">
+              <p className="text-lg md:text-xl text-foreground/80 leading-[1.8] tracking-[-0.005em] font-light">
                 Stop wasting hours on manual invoice processing. InvoiceIQ's AI agent 
                 extracts, validates, and processes invoices with 99% accuracy, saving 
                 you time and eliminating costly errors.

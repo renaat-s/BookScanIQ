@@ -50,7 +50,7 @@ const Features = () => {
             Powerful Features for{" "}
             <span className="text-gradient">Modern Businesses</span>
           </h2>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+          <p className="text-lg md:text-xl text-foreground/80 max-w-3xl mx-auto leading-[1.8] tracking-[-0.005em] font-light">
             Everything you need to automate your invoice processing workflow, 
             from extraction to approval, all powered by cutting-edge AI.
           </p>

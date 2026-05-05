@@ -38,7 +38,7 @@ const HowItWorks = () => {
           <h2 className="text-3xl md:text-5xl font-bold">
             How <span className="text-gradient">InvoiceIQ</span> Works
           </h2>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+          <p className="text-lg md:text-xl text-foreground/80 max-w-3xl mx-auto leading-[1.8] tracking-[-0.005em] font-light">
             From collection to export in five seamless steps. Our AI handles the complexity 
             while you focus on growing your business.
           </p>
