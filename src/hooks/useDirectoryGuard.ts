@@ -62,9 +62,9 @@ export function useDirectoryGuard({ autoTrigger = false } = {}): DirectoryGuardS
 
       // Fallback: n8n didn't return IDs synchronously — poll
       setStatus('polling');
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Directory setup error:', err);
-      toast.error(err.message || 'Failed to initialize your file directory. Please try again.');
+      toast.error(err instanceof Error ? err.message : 'Failed to initialize your file directory. Please try again.');
       setStatus('needs_setup');
     }
   }, [user, checkCredentials]);

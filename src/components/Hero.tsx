@@ -100,9 +100,9 @@ const Hero = () => {
       } else {
         throw new Error(data?.error || "Installation failed");
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Install directory error:", err);
-      toast.error(err.message || "Failed to install file directory. Please try again.");
+      toast.error(err instanceof Error ? err.message : "Failed to install file directory. Please try again.");
     } finally {
       setInstalling(false);
     }

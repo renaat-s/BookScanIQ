@@ -37,7 +37,7 @@ const Pricing = () => {
       if (data?.url) {
         window.open(data.url, "_blank");
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Checkout error:", err);
       toast.error("Failed to start checkout. Please try again.");
     } finally {
@@ -52,7 +52,7 @@ const Pricing = () => {
       if (data?.url) {
         window.open(data.url, "_blank");
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Portal error:", err);
       toast.error("Failed to open subscription management.");
     }
