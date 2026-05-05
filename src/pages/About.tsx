@@ -15,35 +15,40 @@ const About = () => {
         <link rel="canonical" href="https://invoiceiq.com/about" />
       </Helmet>
       <Header />
-      <main>
-        <section className="pt-12 pb-6 md:pt-16 md:pb-8 relative overflow-hidden bg-background">
+      <main className="bg-gradient-subtle">
+        <section className="pt-16 pb-8 md:pt-24 md:pb-12 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-primary opacity-10 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute bottom-0 left-0 w-72 h-72 bg-brand-accent opacity-10 rounded-full blur-3xl pointer-events-none" />
           <div className="container mx-auto px-6 relative z-10">
-            <div className="max-w-4xl mx-auto text-center">
-              <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-violet-600 via-purple-500 to-fuchsia-500 bg-clip-text text-transparent">
+            <div className="max-w-3xl mx-auto text-center">
+              <h1 className="text-5xl md:text-6xl font-bold tracking-tight bg-gradient-to-r from-violet-600 via-purple-500 to-fuchsia-500 bg-clip-text text-transparent [text-shadow:_0_4px_12px_rgb(139_92_246_/_0.25)]">
                 About Us
               </h1>
             </div>
           </div>
         </section>
 
-        <section className="pt-4 pb-12 md:pt-6 md:pb-16 bg-background">
-          <div className="container mx-auto px-6">
-            <div className="max-w-4xl mx-auto space-y-6">
-              <div className="flex justify-center">
+        <section className="pb-20 md:pb-28 relative">
+          <div className="container mx-auto px-6 relative z-10">
+            <div className="max-w-4xl mx-auto">
+              <div className="bg-card/80 backdrop-blur-sm border border-border/50 rounded-3xl shadow-elegant p-8 md:p-12 space-y-10">
+                <div className="flex justify-center">
+                  <img
+                    src={nanocloneLogo}
+                    alt="NANOCLONE Systems Logo"
+                    className="w-56 md:w-72 h-auto object-contain"
+                  />
+                </div>
+                <div className="w-16 h-px bg-gradient-to-r from-transparent via-border to-transparent mx-auto" />
+                <p className="text-lg md:text-xl text-foreground/90 leading-[1.8] tracking-[-0.005em] font-light first-letter:text-4xl first-letter:font-semibold first-letter:text-brand-primary first-letter:mr-1 first-letter:float-left first-letter:leading-none first-letter:mt-1">
+                  At Nanoclone Systems, we are redefining productivity by bridging the gap between cutting-edge Artificial Intelligence and daily operational efficiency. We provide secure, scalable AI Automation SaaS solutions designed to empower enterprises to streamline complex workflows and individuals to reclaim their time from repetitive tasks. By integrating intelligent agentic AI into existing systems, we deliver immediate, tangible ROI—freeing teams to focus on growth and innovation rather than manual data handling. From intelligent chatbots to autonomous workflow orchestration, we turn AI from a futuristic concept into a daily, reliable utility that drives superior performance and strategic agility in 2026.
+                </p>
                 <img
-                  src={nanocloneLogo}
-                  alt="NANOCLONE Systems Logo"
-                  className="w-64 md:w-80 h-auto rounded-2xl shadow-elegant object-contain bg-white p-4"
+                  src={nanocloneImage}
+                  alt="NANOCLONE Systems"
+                  className="w-full h-auto rounded-2xl shadow-elegant"
                 />
               </div>
-              <p className="text-base md:text-lg text-foreground leading-relaxed">
-                At Nanoclone Systems, we are redefining productivity by bridging the gap between cutting-edge Artificial Intelligence and daily operational efficiency. We provide secure, scalable AI Automation SaaS solutions designed to empower enterprises to streamline complex workflows and individuals to reclaim their time from repetitive tasks. By integrating intelligent agentic AI into existing systems, we deliver immediate, tangible ROI—freeing teams to focus on growth and innovation rather than manual data handling. From intelligent chatbots to autonomous workflow orchestration, we turn AI from a futuristic concept into a daily, reliable utility that drives superior performance and strategic agility in 2026.
-              </p>
-              <img
-                src={nanocloneImage}
-                alt="NANOCLONE Systems"
-                className="w-full h-auto rounded-3xl shadow-elegant"
-              />
             </div>
           </div>
         </section>
