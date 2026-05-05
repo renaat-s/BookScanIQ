@@ -354,20 +354,24 @@ const Settings = () => {
       </Helmet>
       <Header />
 
-      <main className="container mx-auto px-6 py-20">
-        <div className="max-w-lg mx-auto space-y-6">
-          <div className="text-center space-y-2">
-            <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
-              <SettingsIcon className="w-8 h-8 text-primary" />
+      <main className="bg-gradient-subtle">
+        <div className="container mx-auto px-6 py-20">
+          <div className="max-w-2xl mx-auto space-y-10">
+            <div className="text-center space-y-5">
+              <div className="mx-auto w-20 h-20 rounded-2xl bg-card/80 backdrop-blur-sm border border-border/50 shadow-elegant flex items-center justify-center">
+                <SettingsIcon className="w-9 h-9 text-violet-500" />
+              </div>
+              <h1 className="text-4xl md:text-5xl font-bold tracking-tight bg-gradient-to-r from-violet-600 via-purple-500 to-fuchsia-500 bg-clip-text text-transparent [text-shadow:_0_4px_12px_rgb(139_92_246_/_0.25)]">
+                Accounting Settings
+              </h1>
+              <div className="w-16 h-px bg-gradient-to-r from-transparent via-border to-transparent mx-auto" />
+              <p className="text-lg text-muted-foreground font-light tracking-[-0.005em] max-w-md mx-auto leading-relaxed">
+                Connect your accounting software and map your Chart of Accounts
+              </p>
             </div>
-            <h1 className="text-2xl font-bold">Accounting Settings</h1>
-            <p className="text-muted-foreground">
-              Connect your accounting software and map your Chart of Accounts
-            </p>
-          </div>
 
-          {/* Xero Settings */}
-          <Card className="border-2">
+            {/* Xero Settings */}
+            <Card className="bg-card/80 backdrop-blur-sm border border-border/50 rounded-3xl shadow-elegant hover:shadow-lg hover:border-violet-500/30 transition-all duration-300">
             <CardHeader>
               <div className="flex items-center justify-between">
                 <div>
@@ -441,7 +445,7 @@ const Settings = () => {
           </Card>
 
           {/* QuickBooks Settings */}
-          <Card className="border-2">
+          <Card className="bg-card/80 backdrop-blur-sm border border-border/50 rounded-3xl shadow-elegant hover:shadow-lg hover:border-violet-500/30 transition-all duration-300">
             <CardHeader>
               <div className="flex items-center justify-between">
                 <div>
@@ -641,6 +645,7 @@ const Settings = () => {
             )}
             Save Settings
           </Button>
+          </div>
         </div>
       </main>
 
