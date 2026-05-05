@@ -16,22 +16,24 @@ const About = () => {
       </Helmet>
       <Header />
       <main>
-        <section className="py-20 md:py-32 relative overflow-hidden bg-background">
+        <section className="pt-12 pb-6 md:pt-16 md:pb-8 relative overflow-hidden bg-background">
           <div className="container mx-auto px-6 relative z-10">
-            <div className="max-w-4xl mx-auto text-center space-y-6">
-              <h1 className="text-4xl md:text-5xl font-bold text-foreground">About Us</h1>
+            <div className="max-w-4xl mx-auto text-center">
+              <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-violet-600 via-purple-500 to-fuchsia-500 bg-clip-text text-transparent">
+                About Us
+              </h1>
             </div>
           </div>
         </section>
 
-        <section className="py-16 md:py-24 bg-background">
+        <section className="pt-4 pb-12 md:pt-6 md:pb-16 bg-background">
           <div className="container mx-auto px-6">
-            <div className="max-w-5xl mx-auto space-y-8">
+            <div className="max-w-4xl mx-auto space-y-6">
               <div className="flex justify-center">
                 <img
                   src={nanocloneLogo}
                   alt="NANOCLONE Systems Logo"
-                  className="w-64 md:w-96 h-auto rounded-2xl shadow-elegant object-contain bg-white p-4"
+                  className="w-64 md:w-80 h-auto rounded-2xl shadow-elegant object-contain bg-white p-4"
                 />
               </div>
               <p className="text-base md:text-lg text-foreground leading-relaxed">
