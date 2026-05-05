@@ -51,6 +51,8 @@ const DetectInvoices = () => {
   const [selectedScanType, setSelectedScanType] = useState<ScanType | null>(null);
   const [backlogDuration, setBacklogDuration] = useState<BacklogDuration | null>(null);
   const [customScanDate, setCustomScanDate] = useState<Date | undefined>(undefined);
+  const [dateDialogOpen, setDateDialogOpen] = useState(false);
+  const [pendingScanDate, setPendingScanDate] = useState<Date | undefined>(undefined);
   const [hasInitialized, setHasInitialized] = useState(false);
   const [currentJobId, setCurrentJobId] = useState<string | null>(null);
 
