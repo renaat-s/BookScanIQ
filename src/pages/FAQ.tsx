@@ -7,7 +7,6 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Helmet } from "react-helmet-async";
-import faqHeroBg from "@/assets/faq-hero-bg.jpg";
 
 // Move FAQ data outside component to prevent recreation on each render
 const faqs = [
@@ -51,47 +50,53 @@ const FAQ = () => {
         <link rel="canonical" href="https://invoiceiq.com/faq" />
       </Helmet>
       <Header />
-      <main>
-        <section 
-          className="py-20 md:py-32 relative bg-cover bg-center"
-          style={{ backgroundImage: `url(${faqHeroBg})` }}
-        >
-          <div className="absolute inset-0 bg-primary/40"></div>
+      <main className="bg-background">
+        <section className="pt-16 pb-8 md:pt-24 md:pb-12 relative overflow-hidden">
+          <div className="absolute -top-20 right-0 w-[36rem] h-[36rem] bg-violet-500 opacity-40 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute -bottom-20 left-0 w-[32rem] h-[32rem] bg-purple-600 opacity-40 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute top-10 left-1/2 -translate-x-1/2 w-[28rem] h-[28rem] bg-fuchsia-500 opacity-25 rounded-full blur-3xl pointer-events-none" />
           <div className="container mx-auto px-6 relative z-10">
             <div className="max-w-4xl mx-auto text-center">
-              <h1 className="text-4xl md:text-5xl font-bold text-white">Frequently Asked Questions</h1>
+              <h1 className="text-4xl md:text-6xl font-bold tracking-tight bg-gradient-to-r from-violet-600 via-purple-500 to-fuchsia-500 bg-clip-text text-transparent [text-shadow:_0_4px_12px_rgb(139_92_246_/_0.25)]">
+                Frequently Asked Questions
+              </h1>
+              <p className="mt-6 text-lg text-muted-foreground font-light tracking-[-0.005em]">
+                Everything you need to know about InvoiceIQ — answered with clarity.
+              </p>
             </div>
           </div>
         </section>
 
-        <section className="py-16 md:py-24 bg-gradient-light-indigo">
-          <div className="container mx-auto px-6">
+        <section className="pt-8 pb-20 md:pt-12 md:pb-28 relative">
+          <div className="container mx-auto px-6 relative z-10">
             <div className="max-w-4xl mx-auto">
-              <Accordion type="single" collapsible className="space-y-4">
-                {faqs.map((faq, index) => (
-                  <AccordionItem 
-                    key={index} 
-                    value={`item-${index}`}
-                    className="border rounded-lg px-6 bg-card shadow-sm hover:shadow-md transition-smooth"
-                  >
-                    <AccordionTrigger className="text-left hover:no-underline py-6">
-                      <span className="font-semibold text-lg">{faq.question}</span>
-                    </AccordionTrigger>
-                    <AccordionContent className="text-muted-foreground pb-6">
-                      {faq.answer}
-                    </AccordionContent>
-                  </AccordionItem>
-                ))}
-              </Accordion>
+              <div className="bg-card/80 backdrop-blur-sm border border-border/50 rounded-3xl shadow-elegant p-6 md:p-10">
+                <Accordion type="single" collapsible className="space-y-3">
+                  {faqs.map((faq, index) => (
+                    <AccordionItem
+                      key={index}
+                      value={`item-${index}`}
+                      className="border border-border/60 rounded-xl px-6 bg-card/60 backdrop-blur-sm shadow-sm hover:shadow-md hover:border-violet-500/30 transition-all duration-300"
+                    >
+                      <AccordionTrigger className="text-left hover:no-underline py-6 [&[data-state=open]]:text-violet-600">
+                        <span className="font-semibold text-base md:text-lg tracking-[-0.01em]">{faq.question}</span>
+                      </AccordionTrigger>
+                      <AccordionContent className="text-muted-foreground pb-6 text-base leading-[1.8] font-light tracking-[-0.005em]">
+                        {faq.answer}
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))}
+                </Accordion>
+              </div>
 
-              <div className="mt-16 text-center space-y-6 p-8 bg-gradient-to-br from-white to-primary/20 rounded-lg">
-                <h2 className="text-2xl font-bold">Still have questions?</h2>
-                <p className="text-muted-foreground">
+              <div className="mt-12 text-center space-y-5 p-10 rounded-3xl border border-border/50 bg-gradient-to-br from-violet-500/10 via-purple-500/5 to-fuchsia-500/10 backdrop-blur-sm shadow-elegant">
+                <h2 className="text-2xl md:text-3xl font-bold tracking-tight">Still have questions?</h2>
+                <p className="text-muted-foreground font-light">
                   Can't find the answer you're looking for? Reach out to our support team.
                 </p>
-                <a 
-                  href="mailto:support@invoiceiq.com" 
-                  className="inline-block text-primary font-semibold hover:underline"
+                <a
+                  href="mailto:support@invoiceiq.com"
+                  className="inline-block font-semibold bg-gradient-to-r from-violet-600 to-fuchsia-500 bg-clip-text text-transparent hover:opacity-80 transition-opacity"
                 >
                   Contact Support →
                 </a>
