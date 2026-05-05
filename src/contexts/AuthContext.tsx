@@ -30,9 +30,9 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 const storeRefreshToken = async (userId: string, refreshToken: string) => {
   try {
     const { error } = await supabase
-      .from('user_credentials' as any)
+      .from('user_credentials')
       .upsert(
-        { user_id: userId, google_refresh_token: refreshToken } as any,
+        { user_id: userId, google_refresh_token: refreshToken },
         { onConflict: 'user_id' }
       );
     if (error) {

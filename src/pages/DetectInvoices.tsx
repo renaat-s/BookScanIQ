@@ -130,7 +130,7 @@ const DetectInvoices = () => {
             });
           }, 120_000);
           // Store doneTimer so it can be cleared if edge function resolves first
-          (window as any).__invoiceIqDoneTimer = doneTimer;
+          (window as Window & { __invoiceIqDoneTimer?: ReturnType<typeof setTimeout> }).__invoiceIqDoneTimer = doneTimer;
         }, 30_000);
 
         // Fire the edge function in the background
@@ -145,8 +145,9 @@ const DetectInvoices = () => {
           },
         }).then(async ({ data, error }) => {
           clearTimeout(popupTimer);
-          if ((window as any).__invoiceIqDoneTimer) {
-            clearTimeout((window as any).__invoiceIqDoneTimer);
+          const w = window as Window & { __invoiceIqDoneTimer?: ReturnType<typeof setTimeout> };
+          if (w.__invoiceIqDoneTimer) {
+            clearTimeout(w.__invoiceIqDoneTimer);
           }
 
           if (error) throw error;
@@ -163,8 +164,9 @@ const DetectInvoices = () => {
           });
         }).catch((err) => {
           clearTimeout(popupTimer);
-          if ((window as any).__invoiceIqDoneTimer) {
-            clearTimeout((window as any).__invoiceIqDoneTimer);
+          const w = window as Window & { __invoiceIqDoneTimer?: ReturnType<typeof setTimeout> };
+          if (w.__invoiceIqDoneTimer) {
+            clearTimeout(w.__invoiceIqDoneTimer);
           }
           console.error('Connection error:', err);
           setStep('failed');
