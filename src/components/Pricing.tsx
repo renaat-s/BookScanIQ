@@ -74,7 +74,7 @@ const Pricing = () => {
           <h2 className="text-3xl md:text-5xl font-bold">
             Simple, <span className="text-gradient">Transparent Pricing</span>
           </h2>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+          <p className="text-lg md:text-xl text-foreground/80 max-w-3xl mx-auto leading-[1.8] tracking-[-0.005em] font-light">
             Choose the plan that fits your business. All plans include our core AI features
             with 14-day free trial and no setup fees.
           </p>
