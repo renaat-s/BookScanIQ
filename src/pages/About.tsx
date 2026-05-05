@@ -29,7 +29,7 @@ const About = () => {
           </div>
         </section>
 
-        <section className="pb-20 md:pb-28 relative">
+        <section className="pt-12 pb-20 md:pt-20 md:pb-28 relative">
           <div className="container mx-auto px-6 relative z-10">
             <div className="max-w-4xl mx-auto">
               <div className="bg-card/80 backdrop-blur-sm border border-border/50 rounded-3xl shadow-elegant p-8 md:p-12 space-y-10">
