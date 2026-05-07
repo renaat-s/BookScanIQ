@@ -691,8 +691,117 @@ const Settings = () => {
             </CardContent>
           </Card>
 
-          <Button
-            onClick={handleSave}
+          {/* Privacy & Account Controls */}
+          <Card className="bg-card/80 backdrop-blur-sm border border-border/50 rounded-3xl shadow-elegant">
+            <CardHeader>
+              <CardTitle className="text-lg flex items-center gap-2">
+                <ShieldOff className="w-5 h-5 text-violet-500" />
+                Privacy & Account Controls
+              </CardTitle>
+              <CardDescription>
+                Revoke Google access or permanently delete your InvoiceIQ
+                account and data. Read more in our{' '}
+                <a href="/privacy" className="text-violet-500 hover:underline">
+                  Privacy Policy
+                </a>
+                .
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="rounded-lg border border-border/50 p-4 space-y-3">
+                <div>
+                  <h3 className="font-medium text-foreground">Disconnect Google</h3>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Revokes InvoiceIQ's access to your Gmail, Drive, and Sheets. We will clear the stored Google refresh token and sign you out. You can also revoke access from your{' '}
+                    <a
+                      href="https://myaccount.google.com/permissions"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-violet-500 hover:underline"
+                    >
+                      Google Account permissions page
+                    </a>
+                    .
+                  </p>
+                </div>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button variant="outline" disabled={disconnectingGoogle}>
+                      {disconnectingGoogle ? (
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      ) : (
+                        <Unlink className="w-4 h-4 mr-2" />
+                      )}
+                      Disconnect Google
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Disconnect Google?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        InvoiceIQ will no longer be able to scan your inbox or write to your Drive and Sheets. Files already saved in your own Google Drive will not be deleted. You will be signed out and can reconnect anytime.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction onClick={disconnectGoogle}>Disconnect</AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </div>
+
+              <div className="rounded-lg border border-destructive/30 p-4 space-y-3">
+                <div>
+                  <h3 className="font-medium text-destructive">Delete My Account & Data</h3>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Permanently deletes your InvoiceIQ profile, stored Google/Xero/QuickBooks tokens, scan history, and invoice metadata from our servers. This action is irreversible.
+                  </p>
+                  <p className="text-sm text-muted-foreground mt-2">
+                    <strong>Note:</strong> Files already saved into your own Google Drive and entries written into your own Google Sheets will <strong>not</strong> be deleted — they belong to you and remain in your Google account.
+                  </p>
+                </div>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button variant="destructive" disabled={deletingAccount}>
+                      {deletingAccount ? (
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      ) : (
+                        <Trash2 className="w-4 h-4 mr-2" />
+                      )}
+                      Delete My Account & Data
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Delete your account permanently?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        This will permanently remove your account and all associated data from InvoiceIQ's servers (profile, stored OAuth tokens, scan jobs, invoice metadata). It cannot be undone. Files in your own Google Drive will not be touched.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={handleDeleteAccount}
+                        className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                      >
+                        Yes, delete everything
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </div>
+
+              <p className="text-xs text-muted-foreground">
+                For privacy inquiries, contact{' '}
+                <a href="mailto:privacy@invoice-iq.com" className="text-violet-500 hover:underline">
+                  privacy@invoice-iq.com
+                </a>
+                .
+              </p>
+            </CardContent>
+          </Card>
+
+
             disabled={saving}
             className="w-full"
             size="lg"
