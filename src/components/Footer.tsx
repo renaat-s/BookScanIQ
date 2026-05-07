@@ -32,7 +32,7 @@ const Footer = () => {
               <span className="text-xl font-bold">InvoiceIQ</span>
             </div>
             
-            <div className="flex space-x-8 text-sm text-white/80">
+            <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-white/80">
               <Link to="/about" className="hover:text-white transition-smooth">About</Link>
               <Link to="/support" className="hover:text-white transition-smooth">Support</Link>
               <Link to="/compliance" className="hover:text-white transition-smooth">Security</Link>
@@ -40,6 +40,7 @@ const Footer = () => {
               <Link to="/terms" className="hover:text-white transition-smooth">Terms of Service</Link>
               <Link to="/eula" className="hover:text-white transition-smooth">EULA</Link>
               <Link to="/faq" className="hover:text-white transition-smooth">FAQ</Link>
+              <a href="mailto:support@invoice-iq.com" className="hover:text-white transition-smooth">support@invoice-iq.com</a>
             </div>
             
             <p className="text-sm text-white/60">
