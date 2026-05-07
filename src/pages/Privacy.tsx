@@ -135,7 +135,13 @@ const Privacy = () => {
                   <li><strong>Google Workspace:</strong> For invoice uploads and document management</li>
                   <li><strong>Email Providers:</strong> For sending payment reminders and notifications</li>
                   <li><strong>Payment Processors:</strong> For handling subscription payments (we do not store credit card details)</li>
+                  <li><strong>Accounting Platforms (Xero, QuickBooks):</strong> For syncing invoice data to your accounting software, only after you have explicitly authenticated with these platforms</li>
                 </ul>
+
+                <h3>10.1 Sharing with Accounting Platforms</h3>
+                <p>
+                  InvoiceIQ may transmit invoice data (including vendor name, amount, date, and attached documents) to third-party accounting platforms such as Xero and QuickBooks, solely at the user's explicit request and only after the user has independently authenticated with those platforms. InvoiceIQ does not share data with any third party without the user's informed consent.
+                </p>
 
                 <h2>11. Children's Privacy</h2>
                 <p>
