@@ -76,7 +76,20 @@ const Privacy = () => {
                   <li>Generate anonymized usage statistics</li>
                 </ul>
 
-                <h2>4. Data Processing and AI</h2>
+                <h2>4. Google API Services & OAuth Scopes</h2>
+                <p>
+                  When you sign in with Google, InvoiceIQ requests the following Google OAuth scopes. Each scope is used solely for the purpose described below, and InvoiceIQ's use and transfer of information received from Google APIs adheres to the <a href="https://developers.google.com/terms/api-services-user-data-policy" target="_blank" rel="noopener noreferrer">Google API Services User Data Policy</a>, including the Limited Use requirements.
+                </p>
+                <ul>
+                  <li><strong>gmail.readonly</strong> (<code>https://www.googleapis.com/auth/gmail.readonly</code>) — Used to scan your inbox for invoice and receipt emails during Backlog Scans. We only read messages to identify and extract invoice data; we never modify, delete, or send email on your behalf using this scope.</li>
+                  <li><strong>drive.file</strong> (<code>https://www.googleapis.com/auth/drive.file</code>) — Used to create an organized folder structure and store uploaded invoices in your Google Drive. We can only access files and folders that InvoiceIQ creates; we cannot read or modify any other files in your Drive.</li>
+                  <li><strong>spreadsheets</strong> (<code>https://www.googleapis.com/auth/spreadsheets</code>) — Used to log processed invoices into your personal Google Sheets transaction ledger that InvoiceIQ creates for you.</li>
+                </ul>
+                <p>
+                  We do not use Google user data for advertising, do not sell it, and do not allow humans to read it except (a) with your explicit consent, (b) for security investigations, or (c) to comply with applicable law. You may revoke InvoiceIQ's access at any time from your <a href="https://myaccount.google.com/permissions" target="_blank" rel="noopener noreferrer">Google Account permissions page</a> or by using the "Disconnect Google" option on your <a href="/settings">Settings page</a>.
+                </p>
+
+                <h2>5. Data Processing and AI</h2>
                 <p>
                   Your invoice data is processed by our AI Agent to extract information such as vendor names, amounts, dates, and line items. This processing happens automatically and securely. We use machine learning to improve matching accuracy, but your specific invoice data is never used to train models for other customers.
                 </p>
