@@ -94,7 +94,7 @@ const Privacy = () => {
                   Your invoice data is processed by our AI Agent to extract information such as vendor names, amounts, dates, and line items. This processing happens automatically and securely. We use machine learning to improve matching accuracy, but your specific invoice data is never used to train models for other customers.
                 </p>
 
-                <h2>5. How We Share Your Information</h2>
+                <h2>6. How We Share Your Information</h2>
                 <p>We do NOT sell, rent, or trade your personal information. We only share data in these limited circumstances:</p>
                 <ul>
                   <li><strong>Service Providers:</strong> Trusted third parties who help us operate our service (e.g., cloud hosting, email delivery)</li>
