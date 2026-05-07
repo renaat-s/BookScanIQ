@@ -350,6 +350,51 @@ const Settings = () => {
     fetchCredentials();
   };
 
+  const disconnectGoogle = async () => {
+    if (!user) return;
+    setDisconnectingGoogle(true);
+    try {
+      const { error } = await supabase
+        .from('user_credentials')
+        .update({ google_refresh_token: null })
+        .eq('user_id', user.id);
+      if (error) throw error;
+      toast({
+        title: 'Google Disconnected',
+        description:
+          'InvoiceIQ no longer has access to your Gmail, Drive, or Sheets. You may also revoke access from your Google Account permissions page.',
+      });
+      await signOut();
+    } catch (err) {
+      toast({
+        title: 'Disconnect Failed',
+        description: (err as Error).message,
+        variant: 'destructive',
+      });
+    } finally {
+      setDisconnectingGoogle(false);
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    setDeletingAccount(true);
+    const { error } = await deleteAccount();
+    if (error) {
+      toast({
+        title: 'Deletion Failed',
+        description: error.message,
+        variant: 'destructive',
+      });
+      setDeletingAccount(false);
+      return;
+    }
+    toast({
+      title: 'Account Deleted',
+      description: 'Your account and stored data have been permanently removed.',
+    });
+    navigate('/');
+  };
+
   if (loading || loadingData) {
     return (
       <div className="min-h-screen flex items-center justify-center">
