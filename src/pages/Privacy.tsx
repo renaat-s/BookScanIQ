@@ -125,14 +125,24 @@ const Privacy = () => {
 
                 <h2>9. Data Retention & Deletion</h2>
                 <p>
-                  We retain your data as long as your account is active. If you cancel your subscription:
+                  We retain your data only as long as your account is active or as needed to provide the service. You are in full control and can request deletion at any time.
                 </p>
+                <h3>9.1 Retention Periods</h3>
                 <ul>
-                  <li>Data is retained for 30 days (grace period)</li>
-                  <li>After 30 days, all data is permanently deleted</li>
-                  <li>You can request immediate deletion at any time</li>
-                  <li>Backups are retained for 30 days then automatically deleted</li>
+                  <li>Active accounts: data is retained while your account is in use</li>
+                  <li>After cancellation: a 30-day grace period, then permanent deletion</li>
+                  <li>Backups: retained for up to 30 days, then automatically deleted</li>
                 </ul>
+                <h3>9.2 How to Request Deletion</h3>
+                <p>You can delete your data at any time using any of the following methods:</p>
+                <ul>
+                  <li><strong>In-app:</strong> Go to <a href="/settings">Settings</a> and click <strong>"Delete My Account &amp; Data"</strong>. This permanently removes your profile, stored Google/Xero/QuickBooks tokens, scan history, and invoice metadata from our systems.</li>
+                  <li><strong>Disconnect Google only:</strong> Use the <strong>"Disconnect Google"</strong> button on the <a href="/settings">Settings</a> page to revoke our access to your Gmail, Drive, and Sheets without deleting your account. You can also revoke access from your <a href="https://myaccount.google.com/permissions" target="_blank" rel="noopener noreferrer">Google Account permissions page</a>.</li>
+                  <li><strong>By email:</strong> Send a deletion request to <a href="mailto:privacy@invoice-iq.com">privacy@invoice-iq.com</a> from your account email and we will action it within 30 days.</li>
+                </ul>
+                <p>
+                  <strong>Important:</strong> Files that InvoiceIQ has saved into <em>your own</em> Google Drive and entries written into <em>your own</em> Google Sheets remain in your Google account and are not deleted by us, because they belong to you. You may delete them yourself at any time directly from Google Drive / Sheets.
+                </p>
 
                 <h2>10. Cookies and Tracking</h2>
                 <p>We use the following types of cookies:</p>
