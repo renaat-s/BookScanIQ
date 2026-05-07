@@ -76,12 +76,25 @@ const Privacy = () => {
                   <li>Generate anonymized usage statistics</li>
                 </ul>
 
-                <h2>4. Data Processing and AI</h2>
+                <h2>4. Google API Services & OAuth Scopes</h2>
+                <p>
+                  When you sign in with Google, InvoiceIQ requests the following Google OAuth scopes. Each scope is used solely for the purpose described below, and InvoiceIQ's use and transfer of information received from Google APIs adheres to the <a href="https://developers.google.com/terms/api-services-user-data-policy" target="_blank" rel="noopener noreferrer">Google API Services User Data Policy</a>, including the Limited Use requirements.
+                </p>
+                <ul>
+                  <li><strong>gmail.readonly</strong> (<code>https://www.googleapis.com/auth/gmail.readonly</code>) — Used to scan your inbox for invoice and receipt emails during Backlog Scans. We only read messages to identify and extract invoice data; we never modify, delete, or send email on your behalf using this scope.</li>
+                  <li><strong>drive.file</strong> (<code>https://www.googleapis.com/auth/drive.file</code>) — Used to create an organized folder structure and store uploaded invoices in your Google Drive. We can only access files and folders that InvoiceIQ creates; we cannot read or modify any other files in your Drive.</li>
+                  <li><strong>spreadsheets</strong> (<code>https://www.googleapis.com/auth/spreadsheets</code>) — Used to log processed invoices into your personal Google Sheets transaction ledger that InvoiceIQ creates for you.</li>
+                </ul>
+                <p>
+                  We do not use Google user data for advertising, do not sell it, and do not allow humans to read it except (a) with your explicit consent, (b) for security investigations, or (c) to comply with applicable law. You may revoke InvoiceIQ's access at any time from your <a href="https://myaccount.google.com/permissions" target="_blank" rel="noopener noreferrer">Google Account permissions page</a> or by using the "Disconnect Google" option on your <a href="/settings">Settings page</a>.
+                </p>
+
+                <h2>5. Data Processing and AI</h2>
                 <p>
                   Your invoice data is processed by our AI Agent to extract information such as vendor names, amounts, dates, and line items. This processing happens automatically and securely. We use machine learning to improve matching accuracy, but your specific invoice data is never used to train models for other customers.
                 </p>
 
-                <h2>5. How We Share Your Information</h2>
+                <h2>6. How We Share Your Information</h2>
                 <p>We do NOT sell, rent, or trade your personal information. We only share data in these limited circumstances:</p>
                 <ul>
                   <li><strong>Service Providers:</strong> Trusted third parties who help us operate our service (e.g., cloud hosting, email delivery)</li>
@@ -89,7 +102,7 @@ const Privacy = () => {
                   <li><strong>Business Transfers:</strong> In the event of a merger, acquisition, or sale of assets</li>
                 </ul>
 
-                <h2>6. Data Security</h2>
+                <h2>7. Data Security</h2>
                 <p>We implement industry-standard security measures:</p>
                 <ul>
                   <li>AES-256 encryption for data at rest</li>
@@ -99,7 +112,7 @@ const Privacy = () => {
                   <li>Access controls and authentication requirements</li>
                 </ul>
 
-                <h2>7. Your Rights (GDPR)</h2>
+                <h2>8. Your Rights (GDPR)</h2>
                 <p>If you're located in the EU/UK, you have the following rights:</p>
                 <ul>
                   <li><strong>Right to Access:</strong> Request a copy of your personal data</li>
@@ -110,18 +123,28 @@ const Privacy = () => {
                   <li><strong>Right to Withdraw Consent:</strong> Withdraw consent at any time</li>
                 </ul>
 
-                <h2>8. Data Retention</h2>
+                <h2>9. Data Retention & Deletion</h2>
                 <p>
-                  We retain your data as long as your account is active. If you cancel your subscription:
+                  We retain your data only as long as your account is active or as needed to provide the service. You are in full control and can request deletion at any time.
                 </p>
+                <h3>9.1 Retention Periods</h3>
                 <ul>
-                  <li>Data is retained for 30 days (grace period)</li>
-                  <li>After 30 days, all data is permanently deleted</li>
-                  <li>You can request immediate deletion at any time</li>
-                  <li>Backups are retained for 30 days then automatically deleted</li>
+                  <li>Active accounts: data is retained while your account is in use</li>
+                  <li>After cancellation: a 30-day grace period, then permanent deletion</li>
+                  <li>Backups: retained for up to 30 days, then automatically deleted</li>
                 </ul>
+                <h3>9.2 How to Request Deletion</h3>
+                <p>You can delete your data at any time using any of the following methods:</p>
+                <ul>
+                  <li><strong>In-app:</strong> Go to <a href="/settings">Settings</a> and click <strong>"Delete My Account &amp; Data"</strong>. This permanently removes your profile, stored Google/Xero/QuickBooks tokens, scan history, and invoice metadata from our systems.</li>
+                  <li><strong>Disconnect Google only:</strong> Use the <strong>"Disconnect Google"</strong> button on the <a href="/settings">Settings</a> page to revoke our access to your Gmail, Drive, and Sheets without deleting your account. You can also revoke access from your <a href="https://myaccount.google.com/permissions" target="_blank" rel="noopener noreferrer">Google Account permissions page</a>.</li>
+                  <li><strong>By email:</strong> Send a deletion request to <a href="mailto:privacy@invoice-iq.com">privacy@invoice-iq.com</a> from your account email and we will action it within 30 days.</li>
+                </ul>
+                <p>
+                  <strong>Important:</strong> Files that InvoiceIQ has saved into <em>your own</em> Google Drive and entries written into <em>your own</em> Google Sheets remain in your Google account and are not deleted by us, because they belong to you. You may delete them yourself at any time directly from Google Drive / Sheets.
+                </p>
 
-                <h2>9. Cookies and Tracking</h2>
+                <h2>10. Cookies and Tracking</h2>
                 <p>We use the following types of cookies:</p>
                 <ul>
                   <li><strong>Essential Cookies:</strong> Required for authentication and core functionality</li>
@@ -129,7 +152,7 @@ const Privacy = () => {
                 </ul>
                 <p>We do NOT use advertising or tracking cookies.</p>
 
-                <h2>10. Third-Party Services</h2>
+                <h2>11. Third-Party Services</h2>
                 <p>We integrate with:</p>
                 <ul>
                   <li><strong>Google Workspace:</strong> For invoice uploads and document management</li>
@@ -138,27 +161,27 @@ const Privacy = () => {
                   <li><strong>Accounting Platforms (Xero, QuickBooks):</strong> For syncing invoice data to your accounting software, only after you have explicitly authenticated with these platforms</li>
                 </ul>
 
-                <h3>10.1 Sharing with Accounting Platforms</h3>
+                <h3>11.1 Sharing with Accounting Platforms</h3>
                 <p>
                   InvoiceIQ may transmit invoice data (including vendor name, amount, date, and attached documents) to third-party accounting platforms such as Xero and QuickBooks, solely at the user's explicit request and only after the user has independently authenticated with those platforms. InvoiceIQ does not share data with any third party without the user's informed consent.
                 </p>
 
-                <h2>11. Children's Privacy</h2>
+                <h2>12. Children's Privacy</h2>
                 <p>
                   Our service is not intended for users under 18 years of age. We do not knowingly collect personal information from children.
                 </p>
 
-                <h2>12. International Data Transfers</h2>
+                <h2>13. International Data Transfers</h2>
                 <p>
                   Your data is stored on servers located in the EU and UK. If you're accessing our service from outside these regions, your data will be transferred to and processed in the EU/UK under GDPR protection.
                 </p>
 
-                <h2>13. Changes to This Policy</h2>
+                <h2>14. Changes to This Policy</h2>
                 <p>
                   We may update this Privacy Policy from time to time. We'll notify you of significant changes via email or through the platform. Continued use of the service after changes constitutes acceptance of the updated policy.
                 </p>
 
-                <h2>14. Contact Us</h2>
+                <h2>15. Contact Us</h2>
                 <p>
                   If you have questions about this Privacy Policy or want to exercise your data rights:
                 </p>
@@ -167,7 +190,7 @@ const Privacy = () => {
                   <li><strong>Data Protection Officer:</strong> dpo@invoice-iq.com</li>
                 </ul>
 
-                <h2>15. Legal Basis for Processing (GDPR)</h2>
+                <h2>16. Legal Basis for Processing (GDPR)</h2>
                 <p>We process your data based on:</p>
                 <ul>
                   <li><strong>Contract Performance:</strong> To provide the service you've subscribed to</li>
