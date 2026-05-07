@@ -102,7 +102,7 @@ const Privacy = () => {
                   <li><strong>Business Transfers:</strong> In the event of a merger, acquisition, or sale of assets</li>
                 </ul>
 
-                <h2>6. Data Security</h2>
+                <h2>7. Data Security</h2>
                 <p>We implement industry-standard security measures:</p>
                 <ul>
                   <li>AES-256 encryption for data at rest</li>
@@ -112,7 +112,7 @@ const Privacy = () => {
                   <li>Access controls and authentication requirements</li>
                 </ul>
 
-                <h2>7. Your Rights (GDPR)</h2>
+                <h2>8. Your Rights (GDPR)</h2>
                 <p>If you're located in the EU/UK, you have the following rights:</p>
                 <ul>
                   <li><strong>Right to Access:</strong> Request a copy of your personal data</li>
@@ -123,7 +123,7 @@ const Privacy = () => {
                   <li><strong>Right to Withdraw Consent:</strong> Withdraw consent at any time</li>
                 </ul>
 
-                <h2>8. Data Retention</h2>
+                <h2>9. Data Retention & Deletion</h2>
                 <p>
                   We retain your data as long as your account is active. If you cancel your subscription:
                 </p>
@@ -134,7 +134,7 @@ const Privacy = () => {
                   <li>Backups are retained for 30 days then automatically deleted</li>
                 </ul>
 
-                <h2>9. Cookies and Tracking</h2>
+                <h2>10. Cookies and Tracking</h2>
                 <p>We use the following types of cookies:</p>
                 <ul>
                   <li><strong>Essential Cookies:</strong> Required for authentication and core functionality</li>
@@ -142,7 +142,7 @@ const Privacy = () => {
                 </ul>
                 <p>We do NOT use advertising or tracking cookies.</p>
 
-                <h2>10. Third-Party Services</h2>
+                <h2>11. Third-Party Services</h2>
                 <p>We integrate with:</p>
                 <ul>
                   <li><strong>Google Workspace:</strong> For invoice uploads and document management</li>
@@ -151,27 +151,27 @@ const Privacy = () => {
                   <li><strong>Accounting Platforms (Xero, QuickBooks):</strong> For syncing invoice data to your accounting software, only after you have explicitly authenticated with these platforms</li>
                 </ul>
 
-                <h3>10.1 Sharing with Accounting Platforms</h3>
+                <h3>11.1 Sharing with Accounting Platforms</h3>
                 <p>
                   InvoiceIQ may transmit invoice data (including vendor name, amount, date, and attached documents) to third-party accounting platforms such as Xero and QuickBooks, solely at the user's explicit request and only after the user has independently authenticated with those platforms. InvoiceIQ does not share data with any third party without the user's informed consent.
                 </p>
 
-                <h2>11. Children's Privacy</h2>
+                <h2>12. Children's Privacy</h2>
                 <p>
                   Our service is not intended for users under 18 years of age. We do not knowingly collect personal information from children.
                 </p>
 
-                <h2>12. International Data Transfers</h2>
+                <h2>13. International Data Transfers</h2>
                 <p>
                   Your data is stored on servers located in the EU and UK. If you're accessing our service from outside these regions, your data will be transferred to and processed in the EU/UK under GDPR protection.
                 </p>
 
-                <h2>13. Changes to This Policy</h2>
+                <h2>14. Changes to This Policy</h2>
                 <p>
                   We may update this Privacy Policy from time to time. We'll notify you of significant changes via email or through the platform. Continued use of the service after changes constitutes acceptance of the updated policy.
                 </p>
 
-                <h2>14. Contact Us</h2>
+                <h2>15. Contact Us</h2>
                 <p>
                   If you have questions about this Privacy Policy or want to exercise your data rights:
                 </p>
@@ -180,7 +180,7 @@ const Privacy = () => {
                   <li><strong>Data Protection Officer:</strong> dpo@invoice-iq.com</li>
                 </ul>
 
-                <h2>15. Legal Basis for Processing (GDPR)</h2>
+                <h2>16. Legal Basis for Processing (GDPR)</h2>
                 <p>We process your data based on:</p>
                 <ul>
                   <li><strong>Contract Performance:</strong> To provide the service you've subscribed to</li>
