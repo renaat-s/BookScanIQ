@@ -800,8 +800,8 @@ const Settings = () => {
               </p>
             </CardContent>
           </Card>
-
-
+          <Button
+            onClick={handleSave}
             disabled={saving}
             className="w-full"
             size="lg"
