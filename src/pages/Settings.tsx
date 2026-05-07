@@ -68,7 +68,9 @@ interface Credentials {
 }
 
 const Settings = () => {
-  const { user, loading } = useAuth();
+  const { user, loading, signOut, deleteAccount } = useAuth();
+  const [disconnectingGoogle, setDisconnectingGoogle] = useState(false);
+  const [deletingAccount, setDeletingAccount] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
