@@ -134,9 +134,9 @@ const Hero = () => {
               </div>
               
               <h1 className="text-4xl md:text-6xl font-bold leading-tight">
-                Transform Your{" "}
-                <span className="text-gradient">Invoice Processing</span>{" "}
-                with AI
+                InvoiceIQ — AI-Powered{" "}
+                <span className="text-gradient">Automated Bookkeeping</span>{" "}
+                &amp; Invoice Processing
               </h1>
               
               <p className="text-lg md:text-xl text-foreground/80 leading-[1.8] tracking-[-0.005em] font-light">
