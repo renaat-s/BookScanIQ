@@ -112,6 +112,15 @@ const WaitlistSection = () => {
       toast.success("You're in! 🎉");
       setSubmitted(true);
       setCount((c) => c + 1);
+      // Fire-and-forget welcome email — don't block UI on email delivery
+      supabase.functions
+        .invoke("send-waitlist-welcome", {
+          body: {
+            email: parsed.data.email.toLowerCase(),
+            name: parsed.data.name ?? null,
+          },
+        })
+        .catch((err) => console.error("Welcome email failed:", err));
     }
     setSubmitting(false);
   };
