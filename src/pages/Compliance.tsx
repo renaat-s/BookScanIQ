@@ -125,7 +125,7 @@ const Compliance = () => {
                   We're happy to provide additional security documentation or answer specific questions about our compliance measures.
                 </p>
                 <a
-                  href="mailto:security@invoice-iq.com"
+                  href="mailto:info@invoice-iq.com"
                   className="inline-block text-violet-500 hover:text-violet-400 transition-colors font-light"
                 >
                   Contact Security Team →

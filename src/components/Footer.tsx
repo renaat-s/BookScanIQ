@@ -40,7 +40,7 @@ const Footer = () => {
               <Link to="/terms" className="hover:text-white transition-smooth">Terms of Service</Link>
               <Link to="/eula" className="hover:text-white transition-smooth">EULA</Link>
               <Link to="/faq" className="hover:text-white transition-smooth">FAQ</Link>
-              <a href="mailto:support@invoice-iq.com" className="hover:text-white transition-smooth">support@invoice-iq.com</a>
+              <a href="mailto:info@invoice-iq.com" className="hover:text-white transition-smooth">info@invoice-iq.com</a>
             </div>
             
             <p className="text-sm text-white/60">
