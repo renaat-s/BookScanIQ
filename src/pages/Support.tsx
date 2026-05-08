@@ -94,10 +94,10 @@ const Support = () => {
                       For general inquiries and support
                     </p>
                     <a
-                      href="mailto:support@invoice-iq.com"
+                      href="mailto:info@invoice-iq.com"
                       className="text-violet-500 hover:text-violet-400 transition-colors font-light text-sm"
                     >
-                      support@invoice-iq.com
+                      info@invoice-iq.com
                     </a>
                   </div>
 

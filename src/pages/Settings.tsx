@@ -793,8 +793,8 @@ const Settings = () => {
 
               <p className="text-xs text-muted-foreground">
                 For privacy inquiries, contact{' '}
-                <a href="mailto:privacy@invoice-iq.com" className="text-violet-500 hover:underline">
-                  privacy@invoice-iq.com
+                <a href="mailto:info@invoice-iq.com" className="text-violet-500 hover:underline">
+                  info@invoice-iq.com
                 </a>
                 .
               </p>

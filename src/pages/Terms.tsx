@@ -242,8 +242,8 @@ const Terms = () => {
                 <h2>17. Contact Information</h2>
                 <p>For questions about these Terms:</p>
                 <ul>
-                  <li><strong>Email:</strong> legal@invoice-iq.com</li>
-                  <li><strong>Support:</strong> support@invoice-iq.com</li>
+                  <li><strong>Email:</strong> info@invoice-iq.com</li>
+                  <li><strong>Support:</strong> info@invoice-iq.com</li>
                 </ul>
               </article>
 
