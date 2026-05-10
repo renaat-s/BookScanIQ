@@ -6,7 +6,6 @@ const DEVELOPER_EMAILS: string[] = [
   "renaat.sibanda@gmail.com",
   "renaat.sibanda23@gmail.com",
   "ruvimbo.gamanya@gmail.com",
-  "tormundsand.744196@gmail.com", // Google OAuth verification reviewer
 ];
 
 /** Returns true if the given email has developer-level free access. */
