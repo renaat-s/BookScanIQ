@@ -93,36 +93,50 @@ const WaitlistSection = () => {
     }
 
     setSubmitting(true);
-    const { error } = await supabase.from("waitlist").insert({
-      email: parsed.data.email.toLowerCase(),
-      name: parsed.data.name ?? null,
-      referral_source: parsed.data.referral_source ?? null,
-    });
+    try {
+      const { data, error } = await supabase.functions.invoke("waitlist-signup", {
+        body: {
+          email: parsed.data.email.toLowerCase(),
+          name: parsed.data.name ?? null,
+          referral_source: parsed.data.referral_source ?? null,
+        },
+      });
 
-    if (error) {
-      // 23505 = unique_violation. Treat as friendly success.
-      if (error.code === "23505") {
-        toast.success("You're already on the list! We'll be in touch soon.");
+      // Rate-limited responses come back as a non-2xx (FunctionsHttpError).
+      // The error.context contains the Response object with our JSON body.
+      if (error) {
+        let body: { error?: string; message?: string } | null = null;
+        try {
+          // @ts-expect-error context exists on FunctionsHttpError
+          body = await error.context?.json?.();
+        } catch {
+          /* ignore */
+        }
+        if (body?.error === "rate_limited") {
+          toast.warning(body.message ?? "Slow down! Please try again in a few minutes.", {
+            icon: <AlertTriangle className="w-4 h-4" />,
+          });
+        } else {
+          console.error("Waitlist signup error:", error, body);
+          toast.error(body?.message ?? "Something went wrong. Please try again.");
+        }
+      } else if (data?.success) {
+        if (data.duplicate) {
+          toast.success(data.message ?? "You're already on the list! We'll be in touch soon.");
+        } else {
+          toast.success("You're in! 🎉");
+        }
         setSubmitted(true);
+        setCount((c) => c + 1);
       } else {
-        console.error("Waitlist insert error:", error);
         toast.error("Something went wrong. Please try again.");
       }
-    } else {
-      toast.success("You're in! 🎉");
-      setSubmitted(true);
-      setCount((c) => c + 1);
-      // Fire-and-forget welcome email — don't block UI on email delivery
-      supabase.functions
-        .invoke("send-waitlist-welcome", {
-          body: {
-            email: parsed.data.email.toLowerCase(),
-            name: parsed.data.name ?? null,
-          },
-        })
-        .catch((err) => console.error("Welcome email failed:", err));
+    } catch (err) {
+      console.error("Waitlist signup threw:", err);
+      toast.error("Something went wrong. Please try again.");
+    } finally {
+      setSubmitting(false);
     }
-    setSubmitting(false);
   };
 
   const handleCopyShare = async () => {
