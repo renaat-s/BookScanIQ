@@ -107,8 +107,7 @@ const WaitlistSection = () => {
       if (error) {
         let body: { error?: string; message?: string } | null = null;
         try {
-          // @ts-expect-error context exists on FunctionsHttpError
-          body = await error.context?.json?.();
+          body = await (error as { context?: Response }).context?.json?.();
         } catch {
           /* ignore */
         }
