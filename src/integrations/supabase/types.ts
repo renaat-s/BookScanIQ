@@ -162,7 +162,7 @@ export type Database = {
           created_at: string
           email: string | null
           folder_mapping: Json | null
-          google_refresh_token: string
+          google_refresh_token: string | null
           id: string
           qb_realm_id: string | null
           quickbooks_expense_account: string | null
@@ -182,7 +182,7 @@ export type Database = {
           created_at?: string
           email?: string | null
           folder_mapping?: Json | null
-          google_refresh_token: string
+          google_refresh_token?: string | null
           id?: string
           qb_realm_id?: string | null
           quickbooks_expense_account?: string | null
@@ -202,7 +202,7 @@ export type Database = {
           created_at?: string
           email?: string | null
           folder_mapping?: Json | null
-          google_refresh_token?: string
+          google_refresh_token?: string | null
           id?: string
           qb_realm_id?: string | null
           quickbooks_expense_account?: string | null
