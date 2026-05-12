@@ -1,0 +1,1 @@
+ALTER TABLE public.user_credentials ALTER COLUMN google_refresh_token DROP NOT NULL;
