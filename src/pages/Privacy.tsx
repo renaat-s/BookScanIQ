@@ -82,8 +82,7 @@ const Privacy = () => {
                 </p>
                 <ul>
                   <li><strong>gmail.readonly</strong> (<code>https://www.googleapis.com/auth/gmail.readonly</code>) — Used to scan your inbox for invoice and receipt emails during Backlog Scans. We only read messages to identify and extract invoice data; we never modify, delete, or send email on your behalf using this scope.</li>
-                  <li><strong>drive.file</strong> (<code>https://www.googleapis.com/auth/drive.file</code>) — Used to create an organized folder structure and store uploaded invoices in your Google Drive. We can only access files and folders that InvoiceIQ creates; we cannot read or modify any other files in your Drive.</li>
-                  <li><strong>spreadsheets</strong> (<code>https://www.googleapis.com/auth/spreadsheets</code>) — Used to log processed invoices into your personal Google Sheets transaction ledger that InvoiceIQ creates for you.</li>
+                  <li><strong>drive.file</strong> (<code>https://www.googleapis.com/auth/drive.file</code>) — Used to create and manage invoice files and folders that InvoiceIQ creates in your Google Drive. InvoiceIQ cannot access any other files in your Drive. InvoiceIQ uses the same scope to create and write to your personal transaction ledger spreadsheet.</li>
                 </ul>
                 <p>
                   We do not use Google user data for advertising, do not sell it, and do not allow humans to read it except (a) with your explicit consent, (b) for security investigations, or (c) to comply with applicable law. You may revoke InvoiceIQ's access at any time from your <a href="https://myaccount.google.com/permissions" target="_blank" rel="noopener noreferrer">Google Account permissions page</a> or by using the "Disconnect Google" option on your <a href="/settings">Settings page</a>.
