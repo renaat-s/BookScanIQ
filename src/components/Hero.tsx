@@ -203,8 +203,8 @@ const Hero = () => {
                   <div className="flex items-center gap-2 text-sm text-brand-accent font-medium">
                     <CheckCircle className="w-4 h-4" />
                     {setupComplete
-                      ? "Setup complete — your file directory and bookkeeping sheet are ready!"
-                      : "File directory installed — finalizing setup..."}
+                      ? "Workspace synced — your bookkeeping is connected and ready!"
+                      : "Workspace synced — finalizing connection…"}
                   </div>
 
                   {spreadsheetId && (
