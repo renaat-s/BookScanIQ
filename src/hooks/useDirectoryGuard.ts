@@ -50,7 +50,7 @@ export function useDirectoryGuard({ autoTrigger = false } = {}): DirectoryGuardS
         setSpreadsheetId(data.user_spreadsheet_id);
         setRootFolderId(data.root_folder_id);
         setStatus('ready');
-        toast.success('Your file directory is ready!');
+        toast.success('Your workspace is synced and ready!');
         return;
       }
 
