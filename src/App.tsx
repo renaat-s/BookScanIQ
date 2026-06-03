@@ -67,6 +67,7 @@ const App = () => (
             <Route path="/file-invoices" element={<FileInvoices />} />
             <Route path="/pricing" element={<Pricing />} />
             <Route path="/settings" element={<Settings />} />
+            <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/oauth/xero" element={<OAuthCallback provider="xero" />} />
             <Route path="/oauth/quickbooks" element={<OAuthCallback provider="quickbooks" />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
