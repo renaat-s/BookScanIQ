@@ -131,9 +131,41 @@ const Header = () => {
             )}
           </div>
           
-          <Button variant="ghost" size="icon" className="md:hidden text-white hover:bg-white/20" aria-label="Open menu">
-            <Menu className="h-6 w-6" />
-          </Button>
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="icon" className="md:hidden text-white hover:bg-white/20" aria-label="Open menu">
+                <Menu className="h-6 w-6" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right" className="w-72">
+              <div className="flex flex-col gap-1 mt-8">
+                <Link to="/about" className="px-3 py-3 rounded-md hover:bg-muted transition-smooth">About</Link>
+                <Link to="/faq" className="px-3 py-3 rounded-md hover:bg-muted transition-smooth">FAQ</Link>
+                <Link to="/pricing" className="px-3 py-3 rounded-md hover:bg-muted transition-smooth">Pricing</Link>
+                <div className="h-px bg-border my-2" />
+                {user ? (
+                  <>
+                    <button onClick={() => navigate('/dashboard')} className="px-3 py-3 rounded-md hover:bg-muted text-left transition-smooth flex items-center gap-2">
+                      <LayoutDashboard className="h-4 w-4" /> Dashboard
+                    </button>
+                    <button onClick={() => navigate('/settings')} className="px-3 py-3 rounded-md hover:bg-muted text-left transition-smooth flex items-center gap-2">
+                      <Settings className="h-4 w-4" /> Settings
+                    </button>
+                    <button onClick={handleSignOut} className="px-3 py-3 rounded-md hover:bg-muted text-left transition-smooth flex items-center gap-2">
+                      <LogOut className="h-4 w-4" /> Sign Out
+                    </button>
+                    <button onClick={() => setDeleteDialogOpen(true)} className="px-3 py-3 rounded-md hover:bg-destructive/10 text-destructive text-left transition-smooth flex items-center gap-2">
+                      <Trash2 className="h-4 w-4" /> Delete Account
+                    </button>
+                  </>
+                ) : (
+                  <button onClick={handleSignIn} className="px-3 py-3 rounded-md hover:bg-muted text-left transition-smooth flex items-center gap-2">
+                    <LogIn className="h-4 w-4" /> Sign In
+                  </button>
+                )}
+              </div>
+            </SheetContent>
+          </Sheet>
         </div>
       </nav>
 
