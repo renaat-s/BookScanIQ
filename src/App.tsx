@@ -25,6 +25,7 @@ const DetectInvoices = lazy(() => import("./pages/DetectInvoices"));
 const FileInvoices = lazy(() => import("./pages/FileInvoices"));
 const Pricing = lazy(() => import("./pages/Pricing"));
 const Settings = lazy(() => import("./pages/Settings"));
+const Dashboard = lazy(() => import("./pages/Dashboard"));
 const OAuthCallback = lazy(() => import("./pages/OAuthCallback"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
