@@ -144,6 +144,10 @@ const Header = () => {
                 <Link to="/about" className="px-3 py-3 rounded-md hover:bg-muted transition-smooth">About</Link>
                 <Link to="/faq" className="px-3 py-3 rounded-md hover:bg-muted transition-smooth">FAQ</Link>
                 <Link to="/pricing" className="px-3 py-3 rounded-md hover:bg-muted transition-smooth">Pricing</Link>
+                <div className="flex items-center justify-between px-3 py-2">
+                  <span className="text-sm text-muted-foreground">Theme</span>
+                  <ThemeToggle variant="outline" />
+                </div>
                 <div className="h-px bg-border my-2" />
                 {user ? (
                   <>
