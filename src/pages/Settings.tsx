@@ -46,6 +46,28 @@ import {
   Trash2,
   ShieldOff,
 } from 'lucide-react';
+import { useTheme } from 'next-themes';
+import { Switch } from '@/components/ui/switch';
+import { Moon, Sun } from 'lucide-react';
+
+const AppearanceToggleRow = () => {
+  const { theme, setTheme } = useTheme();
+  const isDark = theme === 'dark';
+  return (
+    <div className="flex items-center justify-between">
+      <div className="flex items-center gap-3">
+        {isDark ? <Moon className="h-5 w-5 text-primary" /> : <Sun className="h-5 w-5 text-primary" />}
+        <div>
+          <p className="font-medium">{isDark ? 'Night Mode' : 'Light Mode'}</p>
+          <p className="text-sm text-muted-foreground">
+            {isDark ? 'Dark theme is active' : 'Enable night mode for a darker interface'}
+          </p>
+        </div>
+      </div>
+      <Switch checked={isDark} onCheckedChange={(c) => setTheme(c ? 'dark' : 'light')} aria-label="Toggle night mode" />
+    </div>
+  );
+};
 
 interface QbAccount {
   id: string;
