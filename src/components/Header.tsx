@@ -95,6 +95,10 @@ const Header = () => {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-48 bg-popover">
+                  <DropdownMenuItem onClick={() => navigate('/dashboard')}>
+                    <LayoutDashboard className="h-4 w-4 mr-2" />
+                    Dashboard
+                  </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => navigate('/settings')}>
                     <Settings className="h-4 w-4 mr-2" />
                     Settings
