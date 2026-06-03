@@ -37,12 +37,12 @@ const SetupGuardCard = ({ status, spreadsheetId, onTriggerSetup }: SetupGuardCar
             <Loader2 className="w-8 h-8 text-primary animate-spin" />
           </div>
           <CardTitle className="text-2xl">
-            {status === 'initializing' ? 'Setting Up Your File Directory...' : 'Finalizing Setup...'}
+            {status === 'initializing' ? 'Syncing your workspace…' : 'Finalizing sync…'}
           </CardTitle>
           <CardDescription className="text-base">
             {status === 'initializing'
-              ? 'Creating your Google Drive folders and bookkeeping sheet. This may take a moment.'
-              : 'Almost there! Waiting for your Drive folders and spreadsheet to be provisioned.'}
+              ? 'Connecting to your Google Drive and preparing your bookkeeping workspace. This usually takes a few seconds.'
+              : 'Almost there — finishing up the connection to your Google workspace.'}
           </CardDescription>
         </CardHeader>
       </Card>
@@ -56,9 +56,9 @@ const SetupGuardCard = ({ status, spreadsheetId, onTriggerSetup }: SetupGuardCar
         <div className="mx-auto w-16 h-16 bg-destructive/10 rounded-full flex items-center justify-center">
           <AlertCircle className="w-8 h-8 text-destructive" />
         </div>
-        <CardTitle className="text-2xl">File Directory Required</CardTitle>
+        <CardTitle className="text-2xl">Connect Your Workspace</CardTitle>
         <CardDescription className="text-base">
-          Before using this feature, we need to set up your Google Drive directory and bookkeeping spreadsheet.
+          Before using this feature, we need to sync InvoiceIQ with your Google workspace so we can save your invoices and bookkeeping data securely.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -69,10 +69,10 @@ const SetupGuardCard = ({ status, spreadsheetId, onTriggerSetup }: SetupGuardCar
           onClick={onTriggerSetup}
         >
           <FolderSync className="w-5 h-5 mr-2" />
-          Install File Directory Now
+          Sync My Workspace
         </Button>
         <p className="text-sm text-muted-foreground text-center">
-          This creates a root folder, month sub-folders, and a master bookkeeping sheet in your Google Drive.
+          We'll create a private bookkeeping workspace in your own Google account. You stay in control — InvoiceIQ only accesses what it creates.
         </p>
       </CardContent>
     </Card>
