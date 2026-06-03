@@ -96,13 +96,13 @@ const Hero = () => {
 
       if (data?.success) {
         setDirectoryInstalled(true);
-        toast.success("File directory installed successfully! You're all set.");
+        toast.success("Workspace synced — you're all set!");
       } else {
-        throw new Error(data?.error || "Installation failed");
+        throw new Error(data?.error || "Sync failed");
       }
     } catch (err: unknown) {
-      console.error("Install directory error:", err);
-      toast.error(err instanceof Error ? err.message : "Failed to install file directory. Please try again.");
+      console.error("Workspace sync error:", err);
+      toast.error(err instanceof Error ? err.message : "We couldn't sync your workspace. Please try again.");
     } finally {
       setInstalling(false);
     }
@@ -165,13 +165,13 @@ const Hero = () => {
                     {!user
                       ? "Sign In to Get Started"
                       : installing
-                        ? "Installing File Directory..."
+                        ? "Syncing your workspace…"
                         : checkingStatus
-                          ? "Checking status..."
-                          : "Install Online File Directory"}
+                          ? "Checking status…"
+                          : "Sync My Workspace"}
                   </Button>
                   <p className="text-sm text-muted-foreground max-w-md">
-                    Set up your Google Drive &amp; Sheets file directory to unlock all InvoiceIQ features.
+                    Securely sync InvoiceIQ with your Google workspace to unlock all features. We only access what we create — your other files stay private.
                   </p>
 
                   {/* Show locked feature buttons as preview */}
@@ -203,8 +203,8 @@ const Hero = () => {
                   <div className="flex items-center gap-2 text-sm text-brand-accent font-medium">
                     <CheckCircle className="w-4 h-4" />
                     {setupComplete
-                      ? "Setup complete — your file directory and bookkeeping sheet are ready!"
-                      : "File directory installed — finalizing setup..."}
+                      ? "Workspace synced — your bookkeeping is connected and ready!"
+                      : "Workspace synced — finalizing connection…"}
                   </div>
 
                   {spreadsheetId && (

@@ -50,7 +50,7 @@ export function useDirectoryGuard({ autoTrigger = false } = {}): DirectoryGuardS
         setSpreadsheetId(data.user_spreadsheet_id);
         setRootFolderId(data.root_folder_id);
         setStatus('ready');
-        toast.success('Your file directory is ready!');
+        toast.success('Your workspace is synced and ready!');
         return;
       }
 
@@ -63,8 +63,8 @@ export function useDirectoryGuard({ autoTrigger = false } = {}): DirectoryGuardS
       // Fallback: n8n didn't return IDs synchronously — poll
       setStatus('polling');
     } catch (err: unknown) {
-      console.error('Directory setup error:', err);
-      toast.error(err instanceof Error ? err.message : 'Failed to initialize your file directory. Please try again.');
+      console.error('Workspace sync error:', err);
+      toast.error(err instanceof Error ? err.message : "We couldn't sync your workspace. Please try again.");
       setStatus('needs_setup');
     }
   }, [user, checkCredentials]);
@@ -100,7 +100,7 @@ export function useDirectoryGuard({ autoTrigger = false } = {}): DirectoryGuardS
       const isReady = await checkCredentials();
       if (isReady) {
         clearInterval(interval);
-        toast.success('Your file directory is ready!');
+        toast.success('Your workspace is synced and ready!');
       }
     }, 3000);
 
@@ -108,7 +108,7 @@ export function useDirectoryGuard({ autoTrigger = false } = {}): DirectoryGuardS
       clearInterval(interval);
       if (status === 'polling') {
         setStatus('needs_setup');
-        toast.error('Setup is taking longer than expected. Please try again.');
+        toast.error('Syncing is taking longer than expected. Please try again.');
       }
     }, 120_000);
 
