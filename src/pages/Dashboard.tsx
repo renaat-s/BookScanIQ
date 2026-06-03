@@ -18,16 +18,20 @@ import {
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Progress } from "@/components/ui/progress";
 import {
   ChartContainer, ChartTooltip, ChartTooltipContent,
 } from "@/components/ui/chart";
 import {
-  BarChart, Bar, XAxis, YAxis, CartesianGrid,
-  PieChart, Pie, Cell, ResponsiveContainer,
+  AreaChart, Area, XAxis, YAxis, CartesianGrid,
+  PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RTooltip,
 } from "recharts";
 import {
   ArrowUpDown, ExternalLink, FileText, Loader2, Search,
-  TrendingUp, TrendingDown, Receipt, Wallet,
+  TrendingUp, TrendingDown, Receipt, Wallet, Sparkles,
+  Download, ScanLine, Upload, RefreshCw, Activity,
+  ArrowUpRight, ArrowDownRight, Clock, Building2, Filter,
 } from "lucide-react";
 
 interface Invoice {
@@ -55,6 +59,9 @@ const parseAmount = (v: string | null) => {
 };
 
 const formatMoney = (n: number) =>
+  n.toLocaleString(undefined, { style: "currency", currency: "USD", maximumFractionDigits: 0 });
+
+const formatMoneyFull = (n: number) =>
   n.toLocaleString(undefined, { style: "currency", currency: "USD" });
 
 const driveEmbed = (inv: Invoice) => {
@@ -66,36 +73,64 @@ const driveEmbed = (inv: Invoice) => {
   return null;
 };
 
+const relativeTime = (iso: string | null) => {
+  if (!iso) return "—";
+  const d = new Date(iso).getTime();
+  const diff = Date.now() - d;
+  const m = Math.floor(diff / 60000);
+  if (m < 1) return "just now";
+  if (m < 60) return `${m}m ago`;
+  const h = Math.floor(m / 60);
+  if (h < 24) return `${h}h ago`;
+  const days = Math.floor(h / 24);
+  if (days < 30) return `${days}d ago`;
+  const months = Math.floor(days / 30);
+  return `${months}mo ago`;
+};
+
 const Dashboard = () => {
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [search, setSearch] = useState("");
   const [typeFilter, setTypeFilter] = useState<string>("all");
   const [categoryFilter, setCategoryFilter] = useState<string>("all");
   const [sortKey, setSortKey] = useState<SortKey>("created_at");
   const [sortDir, setSortDir] = useState<SortDir>("desc");
   const [selected, setSelected] = useState<Invoice | null>(null);
+  const [density, setDensity] = useState<"comfortable" | "compact">("comfortable");
 
   useEffect(() => {
     if (!authLoading && !user) navigate("/");
   }, [authLoading, user, navigate]);
 
+  const loadInvoices = async () => {
+    if (!user) return;
+    const { data } = await supabase
+      .from("invoices")
+      .select("*")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false });
+    setInvoices((data as Invoice[]) || []);
+  };
+
   useEffect(() => {
     if (!user) return;
-    const load = async () => {
+    (async () => {
       setLoading(true);
-      const { data } = await supabase
-        .from("invoices")
-        .select("*")
-        .eq("user_id", user.id)
-        .order("created_at", { ascending: false });
-      setInvoices((data as Invoice[]) || []);
+      await loadInvoices();
       setLoading(false);
-    };
-    load();
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    await loadInvoices();
+    setTimeout(() => setRefreshing(false), 400);
+  };
 
   const categories = useMemo(
     () => Array.from(new Set(invoices.map((i) => i.invoice_category).filter(Boolean))) as string[],
@@ -130,20 +165,49 @@ const Dashboard = () => {
     return sorted;
   }, [invoices, typeFilter, categoryFilter, search, sortKey, sortDir]);
 
+  // Month bucketing using created_at for delta calc
+  const nowDate = new Date();
+  const thisMonthKey = `${nowDate.getFullYear()}-${nowDate.getMonth()}`;
+  const lastDate = new Date(nowDate.getFullYear(), nowDate.getMonth() - 1, 1);
+  const lastMonthKey = `${lastDate.getFullYear()}-${lastDate.getMonth()}`;
+
   const stats = useMemo(() => {
-    const income = invoices
-      .filter((i) => (i.invoice_type || "").toLowerCase() === "income")
-      .reduce((s, i) => s + parseAmount(i.invoice_total), 0);
-    const expense = invoices
-      .filter((i) => (i.invoice_type || "").toLowerCase() !== "income")
-      .reduce((s, i) => s + parseAmount(i.invoice_total), 0);
+    let income = 0, expense = 0;
+    let incomeThis = 0, expenseThis = 0, incomeLast = 0, expenseLast = 0;
+    let countThis = 0, countLast = 0;
+
+    invoices.forEach((i) => {
+      const amt = parseAmount(i.invoice_total);
+      const isIncome = (i.invoice_type || "").toLowerCase() === "income";
+      if (isIncome) income += amt; else expense += amt;
+
+      const created = new Date(i.created_at);
+      const key = `${created.getFullYear()}-${created.getMonth()}`;
+      if (key === thisMonthKey) {
+        countThis++;
+        if (isIncome) incomeThis += amt; else expenseThis += amt;
+      } else if (key === lastMonthKey) {
+        countLast++;
+        if (isIncome) incomeLast += amt; else expenseLast += amt;
+      }
+    });
+
+    const pct = (now: number, prev: number) => {
+      if (prev === 0) return now > 0 ? 100 : 0;
+      return ((now - prev) / prev) * 100;
+    };
+
     return {
       total: invoices.length,
       income,
       expense,
       net: income - expense,
+      docsDelta: pct(countThis, countLast),
+      incomeDelta: pct(incomeThis, incomeLast),
+      expenseDelta: pct(expenseThis, expenseLast),
+      netDelta: pct(incomeThis - expenseThis, incomeLast - expenseLast),
     };
-  }, [invoices]);
+  }, [invoices, thisMonthKey, lastMonthKey]);
 
   const byCategory = useMemo(() => {
     const map = new Map<string, number>();
@@ -157,35 +221,96 @@ const Dashboard = () => {
       .slice(0, 8);
   }, [invoices]);
 
-  const byMonth = useMemo(() => {
-    const map = new Map<string, { month: string; income: number; expense: number }>();
+  const categoryTotal = useMemo(() => byCategory.reduce((s, c) => s + c.value, 0), [byCategory]);
+
+  const cashflow = useMemo(() => {
+    const map = new Map<string, { key: string; label: string; income: number; expense: number; ts: number }>();
     invoices.forEach((i) => {
-      const key = `${i.year || "—"} ${i.month_folder || "—"}`;
-      const cur = map.get(key) || { month: key, income: 0, expense: 0 };
+      const d = new Date(i.created_at);
+      const key = `${d.getFullYear()}-${d.getMonth()}`;
+      const label = d.toLocaleDateString(undefined, { month: "short", year: "2-digit" });
+      const cur = map.get(key) || {
+        key, label, income: 0, expense: 0,
+        ts: new Date(d.getFullYear(), d.getMonth(), 1).getTime(),
+      };
       const amt = parseAmount(i.invoice_total);
       if ((i.invoice_type || "").toLowerCase() === "income") cur.income += amt;
       else cur.expense += amt;
       map.set(key, cur);
     });
-    return Array.from(map.values()).slice(-6);
+    return Array.from(map.values())
+      .sort((a, b) => a.ts - b.ts)
+      .slice(-6)
+      .map((m) => ({ ...m, net: m.income - m.expense }));
   }, [invoices]);
 
-  const pieColors = ["hsl(var(--primary))", "hsl(var(--accent))", "hsl(var(--secondary))", "hsl(var(--muted-foreground))", "hsl(var(--destructive))", "hsl(var(--primary) / 0.6)", "hsl(var(--accent) / 0.6)", "hsl(var(--secondary) / 0.6)"];
+  const topVendors = useMemo(() => {
+    const map = new Map<string, { name: string; total: number; count: number }>();
+    invoices.forEach((i) => {
+      const name = i.invoice_vendor || "Unknown";
+      const cur = map.get(name) || { name, total: 0, count: 0 };
+      cur.total += parseAmount(i.invoice_total);
+      cur.count += 1;
+      map.set(name, cur);
+    });
+    return Array.from(map.values()).sort((a, b) => b.total - a.total).slice(0, 6);
+  }, [invoices]);
+
+  const recent = useMemo(() => invoices.slice(0, 5), [invoices]);
+  const lastSyncAt = invoices[0]?.created_at || null;
+
+  const pieColors = [
+    "hsl(var(--primary))",
+    "hsl(var(--accent))",
+    "hsl(var(--brand-accent))",
+    "hsl(var(--dark-indigo))",
+    "hsl(var(--success))",
+    "hsl(var(--destructive))",
+    "hsl(var(--primary) / 0.55)",
+    "hsl(var(--accent) / 0.55)",
+  ];
 
   const toggleSort = (k: SortKey) => {
     if (sortKey === k) setSortDir(sortDir === "asc" ? "desc" : "asc");
     else { setSortKey(k); setSortDir("desc"); }
   };
 
+  const exportCsv = () => {
+    const headers = ["Vendor", "Date", "Number", "Type", "Category", "Total", "Link"];
+    const rows = filtered.map((i) => [
+      i.invoice_vendor || "",
+      i.invoice_date || "",
+      i.invoice_number || "",
+      i.invoice_type || "",
+      i.invoice_category || "",
+      i.invoice_total || "",
+      i.web_view_link || "",
+    ]);
+    const csv = [headers, ...rows]
+      .map((r) => r.map((c) => `"${String(c).replace(/"/g, '""')}"`).join(","))
+      .join("\n");
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `invoiceiq-export-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   if (authLoading || loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="text-center space-y-3">
+          <Loader2 className="w-8 h-8 animate-spin text-primary mx-auto" />
+          <p className="text-sm text-muted-foreground">Loading your workspace…</p>
+        </div>
       </div>
     );
   }
 
   const embedUrl = selected ? driveEmbed(selected) : null;
+  const firstName = (user?.user_metadata?.full_name || user?.email || "").split(/[\s@]/)[0] || "there";
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -195,163 +320,412 @@ const Dashboard = () => {
       </Helmet>
       <Header />
 
-      <main className="flex-1 container mx-auto px-4 sm:px-6 py-8 space-y-8">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">Your Invoices</h1>
-          <p className="text-muted-foreground mt-1">
-            Everything we've synced from your inbox — no need to open Google Sheets.
-          </p>
-        </div>
-
-        {/* Stat cards */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <StatCard icon={<Receipt className="w-5 h-5" />} label="Total Documents" value={String(stats.total)} />
-          <StatCard icon={<TrendingUp className="w-5 h-5 text-success" />} label="Income" value={formatMoney(stats.income)} />
-          <StatCard icon={<TrendingDown className="w-5 h-5 text-destructive" />} label="Expenses" value={formatMoney(stats.expense)} />
-          <StatCard icon={<Wallet className="w-5 h-5 text-primary" />} label="Net" value={formatMoney(stats.net)} />
-        </div>
-
-        {/* Charts */}
-        {invoices.length > 0 && (
-          <div className="grid lg:grid-cols-2 gap-4">
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Spend by Category</CardTitle>
-                <CardDescription>Top 8 categories</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ChartContainer config={{}} className="h-[260px] w-full">
-                  <ResponsiveContainer>
-                    <PieChart>
-                      <Pie data={byCategory} dataKey="value" nameKey="name" outerRadius={90} label>
-                        {byCategory.map((_, idx) => (
-                          <Cell key={idx} fill={pieColors[idx % pieColors.length]} />
-                        ))}
-                      </Pie>
-                      <ChartTooltip content={<ChartTooltipContent />} />
-                    </PieChart>
-                  </ResponsiveContainer>
-                </ChartContainer>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Activity by Month</CardTitle>
-                <CardDescription>Last 6 months</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ChartContainer config={{}} className="h-[260px] w-full">
-                  <ResponsiveContainer>
-                    <BarChart data={byMonth}>
-                      <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
-                      <XAxis dataKey="month" className="text-xs" />
-                      <YAxis className="text-xs" />
-                      <ChartTooltip content={<ChartTooltipContent />} />
-                      <Bar dataKey="income" fill="hsl(var(--success, var(--primary)))" radius={[4, 4, 0, 0]} />
-                      <Bar dataKey="expense" fill="hsl(var(--destructive))" radius={[4, 4, 0, 0]} />
-                    </BarChart>
-                  </ResponsiveContainer>
-                </ChartContainer>
-              </CardContent>
-            </Card>
-          </div>
-        )}
-
-        {/* Filters + table */}
-        <Card>
-          <CardHeader>
-            <div className="flex flex-col md:flex-row md:items-center gap-3 md:justify-between">
-              <CardTitle className="text-lg">All Documents</CardTitle>
-              <div className="flex flex-col sm:flex-row gap-2">
-                <div className="relative">
-                  <Search className="absolute left-2 top-2.5 w-4 h-4 text-muted-foreground" />
-                  <Input
-                    placeholder="Search vendor, number, category…"
-                    className="pl-8 w-full sm:w-64"
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                  />
+      <main className="flex-1">
+        {/* HERO STRIP */}
+        <section className="relative overflow-hidden border-b border-border bg-gradient-header">
+          <div className="absolute inset-0 opacity-20 pointer-events-none"
+               style={{ backgroundImage: "radial-gradient(circle at 20% 10%, hsl(var(--accent) / 0.5), transparent 40%), radial-gradient(circle at 80% 80%, hsl(var(--brand-accent) / 0.4), transparent 45%)" }} />
+          <div className="container mx-auto px-4 sm:px-6 py-8 relative">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 animate-fade-in">
+              <div className="space-y-2">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/20 backdrop-blur-sm text-white/90 text-xs">
+                  <Sparkles className="w-3.5 h-3.5" />
+                  Live workspace
+                  <span className="w-1 h-1 rounded-full bg-white/40 mx-1" />
+                  <Clock className="w-3 h-3" />
+                  Last sync {relativeTime(lastSyncAt)}
                 </div>
-                <Select value={typeFilter} onValueChange={setTypeFilter}>
-                  <SelectTrigger className="w-full sm:w-36"><SelectValue placeholder="Type" /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All types</SelectItem>
-                    <SelectItem value="Income">Income</SelectItem>
-                    <SelectItem value="Expense">Expense</SelectItem>
-                  </SelectContent>
-                </Select>
-                <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-                  <SelectTrigger className="w-full sm:w-44"><SelectValue placeholder="Category" /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All categories</SelectItem>
-                    {categories.map((c) => (
-                      <SelectItem key={c} value={c}>{c}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <h1 className="text-3xl md:text-4xl font-bold text-white tracking-tight">
+                  Welcome back, {firstName}.
+                </h1>
+                <p className="text-white/80 max-w-xl text-sm md:text-base">
+                  Your bookkeeping, distilled. {invoices.length} document{invoices.length === 1 ? "" : "s"} synced — no spreadsheets required.
+                </p>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <Button onClick={handleRefresh} variant="outline" className="bg-white/10 text-white border-white/30 hover:bg-white/20 hover:text-white">
+                  <RefreshCw className={`w-4 h-4 ${refreshing ? "animate-spin" : ""}`} />
+                  Refresh
+                </Button>
+                <Button onClick={() => navigate("/capture-invoices")} variant="outline" className="bg-white/10 text-white border-white/30 hover:bg-white/20 hover:text-white">
+                  <Upload className="w-4 h-4" /> Capture
+                </Button>
+                <Button onClick={() => navigate("/detect-invoices")} variant="outline" className="bg-white/10 text-white border-white/30 hover:bg-white/20 hover:text-white">
+                  <ScanLine className="w-4 h-4" /> Detect
+                </Button>
+                <Button onClick={() => navigate("/file-invoices")} className="bg-white text-primary hover:bg-white/90">
+                  <FileText className="w-4 h-4" /> File
+                </Button>
               </div>
             </div>
-          </CardHeader>
-          <CardContent>
-            {filtered.length === 0 ? (
-              <div className="text-center py-12 text-muted-foreground">
-                <FileText className="w-10 h-10 mx-auto mb-3 opacity-50" />
-                <p>No documents match your filters.</p>
+          </div>
+        </section>
+
+        <div className="container mx-auto px-4 sm:px-6 py-8 space-y-8">
+          {/* PREMIUM STAT CARDS */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <PremiumStat
+              icon={<Receipt className="w-5 h-5" />}
+              label="Total Documents"
+              value={String(stats.total)}
+              delta={stats.docsDelta}
+              accent="primary"
+            />
+            <PremiumStat
+              icon={<TrendingUp className="w-5 h-5" />}
+              label="Income"
+              value={formatMoney(stats.income)}
+              delta={stats.incomeDelta}
+              accent="success"
+            />
+            <PremiumStat
+              icon={<TrendingDown className="w-5 h-5" />}
+              label="Expenses"
+              value={formatMoney(stats.expense)}
+              delta={stats.expenseDelta}
+              accent="destructive"
+              invertDelta
+            />
+            <PremiumStat
+              icon={<Wallet className="w-5 h-5" />}
+              label="Net Position"
+              value={formatMoney(stats.net)}
+              delta={stats.netDelta}
+              accent="indigo"
+            />
+          </div>
+
+          <Tabs defaultValue="overview" className="space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+              <TabsList className="bg-muted/60 backdrop-blur">
+                <TabsTrigger value="overview" className="gap-1.5"><Activity className="w-4 h-4" />Overview</TabsTrigger>
+                <TabsTrigger value="documents" className="gap-1.5"><FileText className="w-4 h-4" />Documents</TabsTrigger>
+                <TabsTrigger value="vendors" className="gap-1.5"><Building2 className="w-4 h-4" />Vendors</TabsTrigger>
+              </TabsList>
+              <div className="flex gap-2">
+                <Button variant="outline" size="sm" onClick={exportCsv} className="gap-1.5">
+                  <Download className="w-4 h-4" /> Export CSV
+                </Button>
               </div>
-            ) : (
-              <div className="overflow-x-auto">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <SortableHead label="Vendor" k="invoice_vendor" sortKey={sortKey} sortDir={sortDir} onClick={toggleSort} />
-                      <SortableHead label="Date" k="invoice_date" sortKey={sortKey} sortDir={sortDir} onClick={toggleSort} />
-                      <TableHead>Number</TableHead>
-                      <TableHead>Type</TableHead>
-                      <TableHead>Category</TableHead>
-                      <SortableHead label="Total" k="invoice_total" sortKey={sortKey} sortDir={sortDir} onClick={toggleSort} className="text-right" />
-                      <TableHead className="text-right">Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {filtered.map((inv) => (
-                      <TableRow
-                        key={inv.id}
-                        className="cursor-pointer hover:bg-muted/40"
-                        onClick={() => setSelected(inv)}
-                      >
-                        <TableCell className="font-medium">{inv.invoice_vendor || "—"}</TableCell>
-                        <TableCell className="text-muted-foreground">{inv.invoice_date || "—"}</TableCell>
-                        <TableCell className="text-muted-foreground">{inv.invoice_number || "—"}</TableCell>
-                        <TableCell>
-                          {inv.invoice_type ? (
-                            <Badge variant={inv.invoice_type.toLowerCase() === "income" ? "default" : "secondary"}>
-                              {inv.invoice_type}
-                            </Badge>
-                          ) : "—"}
-                        </TableCell>
-                        <TableCell>
-                          {inv.invoice_category ? <Badge variant="outline">{inv.invoice_category}</Badge> : "—"}
-                        </TableCell>
-                        <TableCell className="text-right font-medium">
-                          {inv.invoice_total ? formatMoney(parseAmount(inv.invoice_total)) : "—"}
-                        </TableCell>
-                        <TableCell className="text-right" onClick={(e) => e.stopPropagation()}>
-                          {inv.web_view_link && (
-                            <a href={inv.web_view_link} target="_blank" rel="noopener noreferrer">
-                              <Button variant="ghost" size="sm" className="gap-1.5">
-                                <ExternalLink className="w-4 h-4" />
-                              </Button>
-                            </a>
+            </div>
+
+            {/* OVERVIEW TAB */}
+            <TabsContent value="overview" className="space-y-6 m-0">
+              {invoices.length === 0 ? (
+                <EmptyState onAction={() => navigate("/detect-invoices")} />
+              ) : (
+                <>
+                  <div className="grid lg:grid-cols-3 gap-4">
+                    {/* Cashflow */}
+                    <Card className="lg:col-span-2 overflow-hidden border-border/60 shadow-card">
+                      <CardHeader className="pb-2">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <CardTitle className="text-base font-semibold">Cashflow</CardTitle>
+                            <CardDescription className="text-xs">Income vs expenses · last 6 months</CardDescription>
+                          </div>
+                          <div className="flex gap-3 text-xs">
+                            <LegendDot color="hsl(var(--success))" label="Income" />
+                            <LegendDot color="hsl(var(--destructive))" label="Expense" />
+                          </div>
+                        </div>
+                      </CardHeader>
+                      <CardContent className="pt-2">
+                        <ChartContainer config={{}} className="h-[280px] w-full">
+                          <ResponsiveContainer>
+                            <AreaChart data={cashflow} margin={{ top: 10, right: 8, bottom: 0, left: -10 }}>
+                              <defs>
+                                <linearGradient id="gradIncome" x1="0" y1="0" x2="0" y2="1">
+                                  <stop offset="0%" stopColor="hsl(var(--success))" stopOpacity={0.55} />
+                                  <stop offset="100%" stopColor="hsl(var(--success))" stopOpacity={0} />
+                                </linearGradient>
+                                <linearGradient id="gradExpense" x1="0" y1="0" x2="0" y2="1">
+                                  <stop offset="0%" stopColor="hsl(var(--destructive))" stopOpacity={0.5} />
+                                  <stop offset="100%" stopColor="hsl(var(--destructive))" stopOpacity={0} />
+                                </linearGradient>
+                              </defs>
+                              <CartesianGrid strokeDasharray="3 3" className="stroke-border/60" vertical={false} />
+                              <XAxis dataKey="label" tickLine={false} axisLine={false} className="text-xs" />
+                              <YAxis tickLine={false} axisLine={false} className="text-xs" tickFormatter={(v) => `$${Math.round(v / 1000)}k`} />
+                              <RTooltip
+                                contentStyle={{
+                                  background: "hsl(var(--popover))",
+                                  border: "1px solid hsl(var(--border))",
+                                  borderRadius: 8,
+                                  fontSize: 12,
+                                }}
+                                formatter={(v: any) => formatMoneyFull(v as number)}
+                              />
+                              <Area type="monotone" dataKey="income" stroke="hsl(var(--success))" strokeWidth={2} fill="url(#gradIncome)" />
+                              <Area type="monotone" dataKey="expense" stroke="hsl(var(--destructive))" strokeWidth={2} fill="url(#gradExpense)" />
+                            </AreaChart>
+                          </ResponsiveContainer>
+                        </ChartContainer>
+                      </CardContent>
+                    </Card>
+
+                    {/* Category breakdown */}
+                    <Card className="overflow-hidden border-border/60 shadow-card">
+                      <CardHeader className="pb-2">
+                        <CardTitle className="text-base font-semibold">Spend by Category</CardTitle>
+                        <CardDescription className="text-xs">Top {byCategory.length} categories</CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="relative">
+                          <ChartContainer config={{}} className="h-[200px] w-full">
+                            <ResponsiveContainer>
+                              <PieChart>
+                                <Pie data={byCategory} dataKey="value" nameKey="name" innerRadius={55} outerRadius={85} paddingAngle={2} stroke="hsl(var(--background))" strokeWidth={2}>
+                                  {byCategory.map((_, idx) => (
+                                    <Cell key={idx} fill={pieColors[idx % pieColors.length]} />
+                                  ))}
+                                </Pie>
+                                <ChartTooltip content={<ChartTooltipContent />} />
+                              </PieChart>
+                            </ResponsiveContainer>
+                          </ChartContainer>
+                          <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                            <div className="text-xs text-muted-foreground">Total</div>
+                            <div className="text-lg font-bold">{formatMoney(categoryTotal)}</div>
+                          </div>
+                        </div>
+                        <div className="space-y-1.5 mt-3">
+                          {byCategory.slice(0, 5).map((c, i) => {
+                            const pct = categoryTotal ? (c.value / categoryTotal) * 100 : 0;
+                            return (
+                              <div key={c.name} className="flex items-center gap-2 text-xs">
+                                <span className="w-2 h-2 rounded-full shrink-0" style={{ background: pieColors[i % pieColors.length] }} />
+                                <span className="truncate flex-1">{c.name}</span>
+                                <span className="text-muted-foreground tabular-nums">{pct.toFixed(0)}%</span>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+
+                  <div className="grid lg:grid-cols-2 gap-4">
+                    {/* Top vendors */}
+                    <Card className="border-border/60 shadow-card">
+                      <CardHeader>
+                        <CardTitle className="text-base font-semibold flex items-center gap-2">
+                          <Building2 className="w-4 h-4 text-primary" /> Top Vendors
+                        </CardTitle>
+                        <CardDescription className="text-xs">Ranked by total volume</CardDescription>
+                      </CardHeader>
+                      <CardContent className="space-y-3">
+                        {topVendors.length === 0 ? (
+                          <p className="text-sm text-muted-foreground">No vendor data yet.</p>
+                        ) : topVendors.map((v, i) => {
+                          const max = topVendors[0].total || 1;
+                          const pct = (v.total / max) * 100;
+                          return (
+                            <div key={v.name} className="space-y-1.5">
+                              <div className="flex items-center justify-between text-sm">
+                                <div className="flex items-center gap-2 min-w-0">
+                                  <span className="w-6 h-6 rounded-md bg-gradient-primary text-white text-xs flex items-center justify-center font-semibold shrink-0">
+                                    {i + 1}
+                                  </span>
+                                  <span className="font-medium truncate">{v.name}</span>
+                                  <Badge variant="outline" className="text-[10px] h-5 px-1.5">{v.count}</Badge>
+                                </div>
+                                <span className="font-semibold tabular-nums">{formatMoney(v.total)}</span>
+                              </div>
+                              <Progress value={pct} className="h-1.5" />
+                            </div>
+                          );
+                        })}
+                      </CardContent>
+                    </Card>
+
+                    {/* Recent activity */}
+                    <Card className="border-border/60 shadow-card">
+                      <CardHeader>
+                        <CardTitle className="text-base font-semibold flex items-center gap-2">
+                          <Activity className="w-4 h-4 text-primary" /> Recent Activity
+                        </CardTitle>
+                        <CardDescription className="text-xs">Latest synced documents</CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <ol className="relative border-l border-border/60 ml-2 space-y-4">
+                          {recent.length === 0 && (
+                            <p className="text-sm text-muted-foreground ml-3">Nothing yet.</p>
                           )}
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </div>
-            )}
-          </CardContent>
-        </Card>
+                          {recent.map((inv) => {
+                            const isIncome = (inv.invoice_type || "").toLowerCase() === "income";
+                            return (
+                              <li key={inv.id} className="ml-4 group cursor-pointer" onClick={() => setSelected(inv)}>
+                                <span className={`absolute -left-1.5 w-3 h-3 rounded-full ring-2 ring-background ${isIncome ? "bg-success" : "bg-destructive"}`} />
+                                <div className="flex items-start justify-between gap-3 group-hover:bg-muted/40 -mx-2 px-2 py-1 rounded-md transition-colors">
+                                  <div className="min-w-0">
+                                    <p className="text-sm font-medium truncate">{inv.invoice_vendor || "Unknown vendor"}</p>
+                                    <p className="text-xs text-muted-foreground">
+                                      {inv.invoice_category || "Uncategorized"} · {relativeTime(inv.created_at)}
+                                    </p>
+                                  </div>
+                                  <div className="text-right shrink-0">
+                                    <p className={`text-sm font-semibold ${isIncome ? "text-success" : "text-foreground"}`}>
+                                      {isIncome ? "+" : "−"}{formatMoney(parseAmount(inv.invoice_total))}
+                                    </p>
+                                  </div>
+                                </div>
+                              </li>
+                            );
+                          })}
+                        </ol>
+                      </CardContent>
+                    </Card>
+                  </div>
+                </>
+              )}
+            </TabsContent>
+
+            {/* DOCUMENTS TAB */}
+            <TabsContent value="documents" className="space-y-4 m-0">
+              <Card className="border-border/60 shadow-card">
+                <CardHeader>
+                  <div className="flex flex-col md:flex-row md:items-center gap-3 md:justify-between">
+                    <div>
+                      <CardTitle className="text-base font-semibold flex items-center gap-2">
+                        <FileText className="w-4 h-4 text-primary" />
+                        All Documents
+                        <Badge variant="secondary" className="ml-1">{filtered.length}</Badge>
+                      </CardTitle>
+                      <CardDescription className="text-xs">Search, filter and inspect every synced invoice.</CardDescription>
+                    </div>
+                    <div className="flex flex-col sm:flex-row gap-2">
+                      <div className="relative">
+                        <Search className="absolute left-2 top-2.5 w-4 h-4 text-muted-foreground" />
+                        <Input
+                          placeholder="Search vendor, number, category…"
+                          className="pl-8 w-full sm:w-64"
+                          value={search}
+                          onChange={(e) => setSearch(e.target.value)}
+                        />
+                      </div>
+                      <Select value={typeFilter} onValueChange={setTypeFilter}>
+                        <SelectTrigger className="w-full sm:w-32"><Filter className="w-3.5 h-3.5 mr-1" /><SelectValue placeholder="Type" /></SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">All types</SelectItem>
+                          <SelectItem value="Income">Income</SelectItem>
+                          <SelectItem value="Expense">Expense</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+                        <SelectTrigger className="w-full sm:w-40"><SelectValue placeholder="Category" /></SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">All categories</SelectItem>
+                          {categories.map((c) => (
+                            <SelectItem key={c} value={c}>{c}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <Button variant="outline" size="icon" onClick={() => setDensity(density === "comfortable" ? "compact" : "comfortable")} title="Toggle density">
+                        <ArrowUpDown className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  {filtered.length === 0 ? (
+                    <div className="text-center py-12 text-muted-foreground">
+                      <FileText className="w-10 h-10 mx-auto mb-3 opacity-50" />
+                      <p>No documents match your filters.</p>
+                    </div>
+                  ) : (
+                    <div className="overflow-x-auto rounded-lg border border-border/60">
+                      <Table>
+                        <TableHeader className="bg-muted/40">
+                          <TableRow>
+                            <SortableHead label="Vendor" k="invoice_vendor" sortKey={sortKey} sortDir={sortDir} onClick={toggleSort} />
+                            <SortableHead label="Date" k="invoice_date" sortKey={sortKey} sortDir={sortDir} onClick={toggleSort} />
+                            <TableHead>Number</TableHead>
+                            <TableHead>Type</TableHead>
+                            <TableHead>Category</TableHead>
+                            <SortableHead label="Total" k="invoice_total" sortKey={sortKey} sortDir={sortDir} onClick={toggleSort} className="text-right" />
+                            <TableHead className="text-right">Open</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {filtered.map((inv) => (
+                            <TableRow
+                              key={inv.id}
+                              className={`cursor-pointer hover:bg-muted/40 transition-colors ${density === "compact" ? "[&>td]:py-1.5" : ""}`}
+                              onClick={() => setSelected(inv)}
+                            >
+                              <TableCell className="font-medium">{inv.invoice_vendor || "—"}</TableCell>
+                              <TableCell className="text-muted-foreground tabular-nums">{inv.invoice_date || "—"}</TableCell>
+                              <TableCell className="text-muted-foreground">{inv.invoice_number || "—"}</TableCell>
+                              <TableCell>
+                                {inv.invoice_type ? (
+                                  <Badge variant={inv.invoice_type.toLowerCase() === "income" ? "default" : "secondary"}>
+                                    {inv.invoice_type}
+                                  </Badge>
+                                ) : "—"}
+                              </TableCell>
+                              <TableCell>
+                                {inv.invoice_category ? <Badge variant="outline">{inv.invoice_category}</Badge> : "—"}
+                              </TableCell>
+                              <TableCell className="text-right font-semibold tabular-nums">
+                                {inv.invoice_total ? formatMoneyFull(parseAmount(inv.invoice_total)) : "—"}
+                              </TableCell>
+                              <TableCell className="text-right" onClick={(e) => e.stopPropagation()}>
+                                {inv.web_view_link && (
+                                  <a href={inv.web_view_link} target="_blank" rel="noopener noreferrer">
+                                    <Button variant="ghost" size="sm" className="gap-1.5">
+                                      <ExternalLink className="w-4 h-4" />
+                                    </Button>
+                                  </a>
+                                )}
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            {/* VENDORS TAB */}
+            <TabsContent value="vendors" className="m-0">
+              <Card className="border-border/60 shadow-card">
+                <CardHeader>
+                  <CardTitle className="text-base font-semibold flex items-center gap-2">
+                    <Building2 className="w-4 h-4 text-primary" /> Vendor Leaderboard
+                  </CardTitle>
+                  <CardDescription className="text-xs">All vendors ranked by spend / income volume.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {topVendors.length === 0 ? (
+                    <p className="text-sm text-muted-foreground text-center py-8">No vendors yet.</p>
+                  ) : (
+                    <div className="grid sm:grid-cols-2 gap-3">
+                      {topVendors.map((v, i) => (
+                        <div key={v.name} className="p-4 rounded-xl border border-border/60 bg-gradient-subtle hover:shadow-elegant transition-all hover-scale">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-lg bg-gradient-primary text-white flex items-center justify-center font-bold">
+                              {i + 1}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <p className="font-semibold truncate">{v.name}</p>
+                              <p className="text-xs text-muted-foreground">{v.count} document{v.count === 1 ? "" : "s"}</p>
+                            </div>
+                            <div className="text-right">
+                              <p className="text-lg font-bold tabular-nums">{formatMoney(v.total)}</p>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </TabsContent>
+          </Tabs>
+        </div>
       </main>
 
       <Footer />
@@ -362,23 +736,29 @@ const Dashboard = () => {
           {selected && (
             <>
               <SheetHeader>
-                <SheetTitle>{selected.invoice_vendor || "Unknown vendor"}</SheetTitle>
+                <SheetTitle className="text-xl">{selected.invoice_vendor || "Unknown vendor"}</SheetTitle>
                 <SheetDescription>
                   {selected.invoice_number ? `Invoice #${selected.invoice_number}` : "Document details"}
                 </SheetDescription>
               </SheetHeader>
               <div className="mt-6 space-y-6">
+                <div className="p-4 rounded-xl bg-gradient-subtle border border-border/60">
+                  <div className="text-xs uppercase tracking-wide text-muted-foreground">Total</div>
+                  <div className="text-3xl font-bold text-foreground mt-1">
+                    {selected.invoice_total ? formatMoneyFull(parseAmount(selected.invoice_total)) : "—"}
+                  </div>
+                </div>
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <Field label="Date" value={selected.invoice_date} />
-                  <Field label="Total" value={selected.invoice_total ? formatMoney(parseAmount(selected.invoice_total)) : null} />
                   <Field label="Type" value={selected.invoice_type} />
                   <Field label="Category" value={selected.invoice_category} />
+                  <Field label="Number" value={selected.invoice_number} />
                   <Field label="Year" value={selected.year} />
                   <Field label="Month" value={selected.month_folder} />
                 </div>
 
                 {embedUrl ? (
-                  <div className="border rounded-lg overflow-hidden bg-muted aspect-[3/4]">
+                  <div className="border border-border/60 rounded-xl overflow-hidden bg-muted aspect-[3/4] shadow-card">
                     <iframe
                       src={embedUrl}
                       className="w-full h-full"
@@ -387,7 +767,7 @@ const Dashboard = () => {
                     />
                   </div>
                 ) : (
-                  <div className="text-sm text-muted-foreground text-center py-6 border rounded-lg">
+                  <div className="text-sm text-muted-foreground text-center py-6 border border-border/60 rounded-xl">
                     No preview available
                   </div>
                 )}
@@ -396,7 +776,7 @@ const Dashboard = () => {
                   <a href={selected.web_view_link} target="_blank" rel="noopener noreferrer">
                     <Button variant="outline" className="w-full gap-2">
                       <ExternalLink className="w-4 h-4" />
-                      Open original file
+                      Open original file in Google Drive
                     </Button>
                   </a>
                 )}
@@ -409,14 +789,72 @@ const Dashboard = () => {
   );
 };
 
-const StatCard = ({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) => (
-  <Card>
-    <CardContent className="pt-6">
-      <div className="flex items-center gap-2 text-muted-foreground text-sm mb-2">
-        {icon}
-        <span>{label}</span>
+const PremiumStat = ({
+  icon, label, value, delta, accent, invertDelta = false,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: string;
+  delta: number;
+  accent: "primary" | "success" | "destructive" | "indigo";
+  invertDelta?: boolean;
+}) => {
+  const accentMap: Record<string, string> = {
+    primary: "from-primary/15 to-primary/0 text-primary",
+    success: "from-success/15 to-success/0 text-success",
+    destructive: "from-destructive/15 to-destructive/0 text-destructive",
+    indigo: "from-[hsl(var(--dark-indigo))]/15 to-transparent text-[hsl(var(--dark-indigo))]",
+  };
+  const up = delta >= 0;
+  const goodDirection = invertDelta ? !up : up;
+  return (
+    <Card className="relative overflow-hidden border-border/60 shadow-card hover:shadow-elegant transition-all hover-scale">
+      <div className={`absolute inset-0 bg-gradient-to-br ${accentMap[accent]} opacity-60 pointer-events-none`} />
+      <CardContent className="pt-6 relative">
+        <div className="flex items-center justify-between mb-3">
+          <div className={`w-9 h-9 rounded-lg bg-background/80 backdrop-blur flex items-center justify-center ${accentMap[accent].split(" ").pop()}`}>
+            {icon}
+          </div>
+          {isFinite(delta) && (
+            <div className={`flex items-center gap-1 text-xs font-medium px-2 py-1 rounded-full ${
+              goodDirection ? "text-success bg-success/10" : "text-destructive bg-destructive/10"
+            }`}>
+              {up ? <ArrowUpRight className="w-3 h-3" /> : <ArrowDownRight className="w-3 h-3" />}
+              {Math.abs(delta).toFixed(0)}%
+            </div>
+          )}
+        </div>
+        <div className="text-xs uppercase tracking-wide text-muted-foreground mb-1">{label}</div>
+        <div className="text-2xl font-bold text-foreground tabular-nums">{value}</div>
+        <div className="text-[10px] text-muted-foreground mt-1">vs. previous month</div>
+      </CardContent>
+    </Card>
+  );
+};
+
+const LegendDot = ({ color, label }: { color: string; label: string }) => (
+  <div className="flex items-center gap-1.5 text-muted-foreground">
+    <span className="w-2 h-2 rounded-full" style={{ background: color }} />
+    {label}
+  </div>
+);
+
+const EmptyState = ({ onAction }: { onAction: () => void }) => (
+  <Card className="border-dashed border-2 border-border/60">
+    <CardContent className="py-16 text-center space-y-4">
+      <div className="w-16 h-16 rounded-2xl bg-gradient-primary mx-auto flex items-center justify-center shadow-elegant">
+        <Sparkles className="w-8 h-8 text-white" />
       </div>
-      <div className="text-2xl font-bold text-foreground">{value}</div>
+      <div>
+        <h3 className="text-xl font-semibold">Your workspace is ready</h3>
+        <p className="text-sm text-muted-foreground mt-1 max-w-md mx-auto">
+          Sync your inbox and we'll start pulling invoices into your dashboard automatically.
+        </p>
+      </div>
+      <Button onClick={onAction} className="gap-2">
+        <ScanLine className="w-4 h-4" />
+        Detect invoices in my inbox
+      </Button>
     </CardContent>
   </Card>
 );
