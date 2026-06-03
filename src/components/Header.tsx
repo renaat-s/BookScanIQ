@@ -83,6 +83,7 @@ const Header = () => {
           </div>
           
           <div className="hidden md:flex items-center space-x-4">
+            <ThemeToggle className="text-white hover:bg-white/20 hover:text-white" />
             {loading ? (
               <Button variant="ghost" className="text-white hover:bg-white/20 hover:text-white" disabled>
                 Loading...
