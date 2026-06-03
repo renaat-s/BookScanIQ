@@ -82,41 +82,63 @@ All colors MUST be HSL.
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    /* Deep indigo-tinted dark surfaces (on-brand night mode) */
+    --background: 240 30% 7%;
+    --foreground: 220 25% 96%;
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    --card: 240 28% 10%;
+    --card-foreground: 220 25% 96%;
 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 240 30% 9%;
+    --popover-foreground: 220 25% 96%;
 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    /* Keep brand indigo identical across modes — DO NOT change */
+    --primary: 221 83% 63%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 240 22% 16%;
+    --secondary-foreground: 220 25% 96%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted: 240 22% 14%;
+    --muted-foreground: 220 15% 70%;
 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    /* Brand violet accent preserved */
+    --accent: 267 57% 78%;
+    --accent-foreground: 240 30% 10%;
 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 70% 55%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
+    --border: 240 22% 18%;
+    --input: 240 22% 18%;
+    --ring: 221 83% 63%;
+
+    /* Brand tokens preserved — purple/indigo/violet stay constant */
+    --brand-primary: 221 83% 63%;
+    --brand-secondary: 267 57% 78%;
+    --brand-accent: 200 98% 55%;
+    --light-indigo: 239 84% 92%;
+    --dark-indigo: 239 84% 75%;
+    --success: 142 71% 50%;
+    --success-foreground: 0 0% 100%;
+
+    /* Page-background gradient swaps to deep indigo in night mode */
+    --gradient-subtle: linear-gradient(180deg, hsl(240 30% 7%) 0%, hsl(240 28% 10%) 100%);
+    /* Other brand gradients intentionally unchanged (preserved purple/indigo/violet) */
+
+    --shadow-elegant: 0 10px 30px -10px hsl(221 83% 53% / 0.55);
+    --shadow-glow: 0 0 40px hsl(267 57% 78% / 0.35);
+    --shadow-indigo-glow: 0 0 40px hsl(239 84% 67% / 0.5);
+    --shadow-card: 0 4px 20px -4px hsl(0 0% 0% / 0.5);
+
+    --sidebar-background: 240 30% 8%;
+    --sidebar-foreground: 220 25% 96%;
+    --sidebar-primary: 221 83% 63%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-accent: 240 22% 14%;
+    --sidebar-accent-foreground: 220 25% 96%;
+    --sidebar-border: 240 22% 18%;
+    --sidebar-ring: 221 83% 63%;
   }
 }
 
