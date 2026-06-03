@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { ThemeProvider } from "next-themes";
 import { Loader2 } from "lucide-react";
 
 // Eagerly load the landing page
@@ -47,36 +48,38 @@ const PageLoader = () => (
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <HelmetProvider>
-      <AuthProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-          <Suspense fallback={<PageLoader />}>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/faq" element={<FAQ />} />
-            <Route path="/compliance" element={<Compliance />} />
-            <Route path="/privacy" element={<Privacy />} />
-            <Route path="/terms" element={<Terms />} />
-            <Route path="/eula" element={<EULA />} />
-            <Route path="/support" element={<Support />} />
-            <Route path="/capture-invoices" element={<DocumentCapture />} />
-            <Route path="/detect-invoices" element={<DetectInvoices />} />
-            <Route path="/file-invoices" element={<FileInvoices />} />
-            <Route path="/pricing" element={<Pricing />} />
-            <Route path="/settings" element={<Settings />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/oauth/xero" element={<OAuthCallback provider="xero" />} />
-            <Route path="/oauth/quickbooks" element={<OAuthCallback provider="quickbooks" />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-          </Suspense>
-          </BrowserRouter>
-        </TooltipProvider>
-      </AuthProvider>
+      <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} storageKey="invoiceiq-theme">
+        <AuthProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+            <Suspense fallback={<PageLoader />}>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/faq" element={<FAQ />} />
+              <Route path="/compliance" element={<Compliance />} />
+              <Route path="/privacy" element={<Privacy />} />
+              <Route path="/terms" element={<Terms />} />
+              <Route path="/eula" element={<EULA />} />
+              <Route path="/support" element={<Support />} />
+              <Route path="/capture-invoices" element={<DocumentCapture />} />
+              <Route path="/detect-invoices" element={<DetectInvoices />} />
+              <Route path="/file-invoices" element={<FileInvoices />} />
+              <Route path="/pricing" element={<Pricing />} />
+              <Route path="/settings" element={<Settings />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/oauth/xero" element={<OAuthCallback provider="xero" />} />
+              <Route path="/oauth/quickbooks" element={<OAuthCallback provider="quickbooks" />} />
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+            </Suspense>
+            </BrowserRouter>
+          </TooltipProvider>
+        </AuthProvider>
+      </ThemeProvider>
     </HelmetProvider>
   </QueryClientProvider>
 );
