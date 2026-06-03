@@ -430,6 +430,18 @@ const Settings = () => {
               </p>
             </div>
 
+            {/* Appearance */}
+            <Card className="bg-card/80 backdrop-blur-sm border border-border/50 rounded-3xl shadow-elegant">
+              <CardHeader>
+                <CardTitle className="text-lg">Appearance</CardTitle>
+                <CardDescription>Switch between light and night mode.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <AppearanceToggleRow />
+              </CardContent>
+            </Card>
+
+
             {/* Xero Settings */}
             <Card className="bg-card/80 backdrop-blur-sm border border-border/50 rounded-3xl shadow-elegant hover:shadow-lg hover:border-violet-500/30 transition-all duration-300">
             <CardHeader>
