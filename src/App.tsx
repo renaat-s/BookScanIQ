@@ -25,6 +25,7 @@ const DetectInvoices = lazy(() => import("./pages/DetectInvoices"));
 const FileInvoices = lazy(() => import("./pages/FileInvoices"));
 const Pricing = lazy(() => import("./pages/Pricing"));
 const Settings = lazy(() => import("./pages/Settings"));
+const Dashboard = lazy(() => import("./pages/Dashboard"));
 const OAuthCallback = lazy(() => import("./pages/OAuthCallback"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
@@ -66,6 +67,7 @@ const App = () => (
             <Route path="/file-invoices" element={<FileInvoices />} />
             <Route path="/pricing" element={<Pricing />} />
             <Route path="/settings" element={<Settings />} />
+            <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/oauth/xero" element={<OAuthCallback provider="xero" />} />
             <Route path="/oauth/quickbooks" element={<OAuthCallback provider="quickbooks" />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

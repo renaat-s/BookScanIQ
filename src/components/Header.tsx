@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Menu, LogOut, Trash2, LogIn, ChevronDown, User, Settings } from "lucide-react";
+import { Menu, LogOut, Trash2, LogIn, ChevronDown, User, Settings, LayoutDashboard } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import logoImage from "@/assets/InvoiceIQ_Logo.png";
 import { useAuth } from "@/contexts/AuthContext";
@@ -95,6 +95,10 @@ const Header = () => {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-48 bg-popover">
+                  <DropdownMenuItem onClick={() => navigate('/dashboard')}>
+                    <LayoutDashboard className="h-4 w-4 mr-2" />
+                    Dashboard
+                  </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => navigate('/settings')}>
                     <Settings className="h-4 w-4 mr-2" />
                     Settings
