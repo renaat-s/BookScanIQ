@@ -96,13 +96,13 @@ const Hero = () => {
 
       if (data?.success) {
         setDirectoryInstalled(true);
-        toast.success("File directory installed successfully! You're all set.");
+        toast.success("Workspace synced — you're all set!");
       } else {
-        throw new Error(data?.error || "Installation failed");
+        throw new Error(data?.error || "Sync failed");
       }
     } catch (err: unknown) {
-      console.error("Install directory error:", err);
-      toast.error(err instanceof Error ? err.message : "Failed to install file directory. Please try again.");
+      console.error("Workspace sync error:", err);
+      toast.error(err instanceof Error ? err.message : "We couldn't sync your workspace. Please try again.");
     } finally {
       setInstalling(false);
     }
