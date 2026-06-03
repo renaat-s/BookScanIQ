@@ -100,7 +100,7 @@ export function useDirectoryGuard({ autoTrigger = false } = {}): DirectoryGuardS
       const isReady = await checkCredentials();
       if (isReady) {
         clearInterval(interval);
-        toast.success('Your file directory is ready!');
+        toast.success('Your workspace is synced and ready!');
       }
     }, 3000);
 
