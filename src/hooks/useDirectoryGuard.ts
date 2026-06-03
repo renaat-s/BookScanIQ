@@ -108,7 +108,7 @@ export function useDirectoryGuard({ autoTrigger = false } = {}): DirectoryGuardS
       clearInterval(interval);
       if (status === 'polling') {
         setStatus('needs_setup');
-        toast.error('Setup is taking longer than expected. Please try again.');
+        toast.error('Syncing is taking longer than expected. Please try again.');
       }
     }, 120_000);
 
