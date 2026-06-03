@@ -165,13 +165,13 @@ const Hero = () => {
                     {!user
                       ? "Sign In to Get Started"
                       : installing
-                        ? "Installing File Directory..."
+                        ? "Syncing your workspace…"
                         : checkingStatus
-                          ? "Checking status..."
-                          : "Install Online File Directory"}
+                          ? "Checking status…"
+                          : "Sync My Workspace"}
                   </Button>
                   <p className="text-sm text-muted-foreground max-w-md">
-                    Set up your Google Drive &amp; Sheets file directory to unlock all InvoiceIQ features.
+                    Securely sync InvoiceIQ with your Google workspace to unlock all features. We only access what we create — your other files stay private.
                   </p>
 
                   {/* Show locked feature buttons as preview */}
