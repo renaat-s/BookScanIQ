@@ -604,18 +604,18 @@ const Dashboard = () => {
                       </CardTitle>
                       <CardDescription className="text-xs">Search, filter and inspect every synced invoice.</CardDescription>
                     </div>
-                    <div className="flex flex-col sm:flex-row gap-2">
-                      <div className="relative">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:flex lg:flex-row gap-2 w-full lg:w-auto">
+                      <div className="relative col-span-full sm:col-span-2 lg:col-span-1">
                         <Search className="absolute left-2 top-2.5 w-4 h-4 text-muted-foreground" />
                         <Input
                           placeholder="Search vendor, number, category…"
-                          className="pl-8 w-full sm:w-64"
+                          className="pl-8 w-full lg:w-64"
                           value={search}
                           onChange={(e) => setSearch(e.target.value)}
                         />
                       </div>
                       <Select value={typeFilter} onValueChange={setTypeFilter}>
-                        <SelectTrigger className="w-full sm:w-32"><Filter className="w-3.5 h-3.5 mr-1" /><SelectValue placeholder="Type" /></SelectTrigger>
+                        <SelectTrigger className="w-full lg:w-32"><Filter className="w-3.5 h-3.5 mr-1" /><SelectValue placeholder="Type" /></SelectTrigger>
                         <SelectContent>
                           <SelectItem value="all">All types</SelectItem>
                           <SelectItem value="Income">Income</SelectItem>
@@ -623,7 +623,7 @@ const Dashboard = () => {
                         </SelectContent>
                       </Select>
                       <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-                        <SelectTrigger className="w-full sm:w-40"><SelectValue placeholder="Category" /></SelectTrigger>
+                        <SelectTrigger className="w-full lg:w-40"><SelectValue placeholder="Category" /></SelectTrigger>
                         <SelectContent>
                           <SelectItem value="all">All categories</SelectItem>
                           {categories.map((c) => (
@@ -631,10 +631,11 @@ const Dashboard = () => {
                           ))}
                         </SelectContent>
                       </Select>
-                      <Button variant="outline" size="icon" onClick={() => setDensity(density === "comfortable" ? "compact" : "comfortable")} title="Toggle density">
+                      <Button variant="outline" size="icon" className="hidden lg:inline-flex" onClick={() => setDensity(density === "comfortable" ? "compact" : "comfortable")} title="Toggle density">
                         <ArrowUpDown className="w-4 h-4" />
                       </Button>
                     </div>
+
                   </div>
                 </CardHeader>
                 <CardContent>
