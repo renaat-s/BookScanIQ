@@ -31,8 +31,9 @@ import {
   ArrowUpDown, ExternalLink, FileText, Loader2, Search,
   TrendingUp, TrendingDown, Receipt, Wallet, Sparkles,
   Download, ScanLine, Upload, RefreshCw, Activity,
-  ArrowUpRight, ArrowDownRight, Clock, Building2, Filter,
+  ArrowUpRight, ArrowDownRight, Clock, Building2, Filter, Plug,
 } from "lucide-react";
+import WorkspacesTab from "@/components/WorkspacesTab";
 
 interface Invoice {
   id: string;
@@ -408,6 +409,7 @@ const Dashboard = () => {
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
               <TabsList className="bg-muted/60 backdrop-blur w-full sm:w-auto overflow-x-auto">
                 <TabsTrigger value="overview" className="gap-1.5 flex-1 sm:flex-none"><Activity className="w-4 h-4" /><span className="hidden xs:inline sm:inline">Overview</span></TabsTrigger>
+                <TabsTrigger value="workspaces" className="gap-1.5 flex-1 sm:flex-none"><Plug className="w-4 h-4" /><span className="hidden xs:inline sm:inline">Workspaces</span></TabsTrigger>
                 <TabsTrigger value="documents" className="gap-1.5 flex-1 sm:flex-none"><FileText className="w-4 h-4" /><span className="hidden xs:inline sm:inline">Documents</span></TabsTrigger>
                 <TabsTrigger value="vendors" className="gap-1.5 flex-1 sm:flex-none"><Building2 className="w-4 h-4" /><span className="hidden xs:inline sm:inline">Vendors</span></TabsTrigger>
               </TabsList>
@@ -589,6 +591,11 @@ const Dashboard = () => {
                   </div>
                 </>
               )}
+            </TabsContent>
+
+            {/* WORKSPACES TAB — live Drive, Sheet, Xero, QuickBooks */}
+            <TabsContent value="workspaces" className="m-0">
+              <WorkspacesTab />
             </TabsContent>
 
             {/* DOCUMENTS TAB */}
