@@ -173,7 +173,7 @@ const Hero = () => {
                   <Button
                     variant="hero"
                     size="lg"
-                    className="shadow-elegant"
+                    className="shadow-elegant neon-glow-box"
                     onClick={handleInstallDirectory}
                     disabled={installing || checkingStatus}
                   >
@@ -217,7 +217,7 @@ const Hero = () => {
                   )}
 
                   <Link to="/dashboard">
-                    <Button variant="hero" size="lg" className="shadow-elegant">
+                    <Button variant="hero" size="lg" className="shadow-elegant neon-glow-box">
                       <LayoutDashboard className="w-5 h-5 mr-2" />
                       Open Your Portal
                     </Button>
