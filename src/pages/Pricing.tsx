@@ -2,6 +2,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import PricingSection from "@/components/Pricing";
 import { Helmet } from "react-helmet-async";
+import CyberBackground from "@/components/CyberBackground";
 
 const Pricing = () => {
   return (
@@ -13,8 +14,11 @@ const Pricing = () => {
         <link rel="canonical" href="https://invoice-iq.com/pricing" />
       </Helmet>
       <Header />
-      <main>
-        <PricingSection />
+      <main className="relative overflow-hidden">
+        <CyberBackground />
+        <div className="relative z-10">
+          <PricingSection />
+        </div>
       </main>
       <Footer />
     </div>

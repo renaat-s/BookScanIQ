@@ -3,13 +3,16 @@ import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import logoImage from "@/assets/InvoiceIQ_Logo.png";
 import nanocloneLogo from "@/assets/nanoclone-logo.png";
+import HeaderParticles from "@/components/HeaderParticles";
 
 const Footer = () => {
   return (
-    <footer className="bg-gradient-primary text-white">
-      <div className="container mx-auto px-6 py-16">
+    <footer className="relative bg-gradient-primary text-white overflow-hidden">
+      <HeaderParticles />
+      <div className="absolute inset-0 hero-grid-overlay opacity-30 pointer-events-none" aria-hidden="true" />
+      <div className="container mx-auto px-6 py-16 relative z-10">
         <div className="text-center space-y-8">
-          <h2 className="text-3xl md:text-4xl font-bold">
+          <h2 className="text-3xl md:text-4xl font-bold neon-cyber-text">
             Ready to Transform Your Invoice Processing?
           </h2>
           <p className="text-xl text-white/90 max-w-2xl mx-auto">
@@ -18,7 +21,7 @@ const Footer = () => {
           <Button 
             variant="secondary" 
             size="lg" 
-            className="bg-white text-brand-primary hover:bg-white/90 shadow-elegant"
+            className="bg-white text-brand-primary hover:bg-white/90 shadow-elegant neon-glow-box"
           >
             Start Your Free Trial
             <ArrowRight className="w-5 h-5 ml-2" />

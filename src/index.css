@@ -273,6 +273,63 @@ All colors MUST be HSL.
     60% { transform: translate(-1px, 2px); clip-path: inset(30% 0 40% 0); }
     80% { transform: translate(1px, -2px); clip-path: inset(80% 0 5% 0); }
   }
+  /* Animated full-page scanlines */
+  .cyber-scanlines {
+    background-image: repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent 2px,
+      rgba(0, 240, 255, 0.04) 3px,
+      rgba(0, 240, 255, 0.04) 4px
+    );
+    animation: scan-move 8s linear infinite;
+  }
+  @keyframes scan-move {
+    0% { background-position: 0 0; }
+    100% { background-position: 0 80px; }
+  }
+
+  /* Cyber neon border (animated gradient) */
+  .cyber-border {
+    position: relative;
+    isolation: isolate;
+  }
+  .cyber-border::before {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(
+      130deg,
+      #00f0ff,
+      #a78bfa,
+      #ff00e5,
+      #00f0ff
+    );
+    background-size: 300% 300%;
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+            mask-composite: exclude;
+    animation: cyber-border-move 6s linear infinite;
+    pointer-events: none;
+    z-index: -1;
+  }
+  @keyframes cyber-border-move {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 300% 50%; }
+  }
+
+  /* Neon text accent (cyan/magenta) */
+  .neon-cyber-text {
+    text-shadow:
+      0 0 8px rgba(0, 240, 255, 0.55),
+      0 0 20px rgba(167, 139, 250, 0.45),
+      0 0 38px rgba(255, 0, 229, 0.35);
+  }
+
   @keyframes glitch-2 {
     0%, 100% { transform: translate(0, 0); clip-path: inset(0 0 0 0); }
     25% { transform: translate(2px, 0); clip-path: inset(70% 0 15% 0); }
