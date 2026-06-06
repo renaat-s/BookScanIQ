@@ -1,5 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Mail, Camera, MessageSquare, Brain, Send } from "lucide-react";
+import { motion } from "framer-motion";
 import howItWorksImage from "@/assets/how-it-works-illustration.png";
 
 const steps = [
