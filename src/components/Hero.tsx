@@ -225,7 +225,7 @@ const Hero = () => {
             </div>
           </div>
           
-          <div className="relative">
+          <div className="relative" data-aos="fade-right">
             <div className="relative z-10">
               <img 
                 src={heroImage} 
