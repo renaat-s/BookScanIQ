@@ -593,6 +593,11 @@ const Dashboard = () => {
               )}
             </TabsContent>
 
+            {/* WORKSPACES TAB — live Drive, Sheet, Xero, QuickBooks */}
+            <TabsContent value="workspaces" className="m-0">
+              <WorkspacesTab />
+            </TabsContent>
+
             {/* DOCUMENTS TAB */}
             <TabsContent value="documents" className="space-y-4 m-0">
               <Card className="border-border/60 shadow-card">
