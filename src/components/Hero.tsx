@@ -9,6 +9,7 @@ import { motion } from "framer-motion";
 import heroImage from "@/assets/hero-invoice-illustration.png";
 import logoImage from "@/assets/InvoiceIQ_Logo.png";
 import ParticleField from "./ParticleField";
+import TiltCard from "./TiltCard";
 
 const SUBHEAD = "Stop wasting hours on manual invoice processing. InvoiceIQ's AI agent extracts, validates, and processes invoices with 99% accuracy, saving you time and eliminating costly errors.";
 
@@ -124,11 +125,13 @@ const Hero = () => {
       <div className="container mx-auto px-6 py-20 relative z-10">
         {/* Logo + Brand Name - Centered at Top */}
         <div className="flex flex-col items-center justify-center gap-4 mb-12">
-          <img 
-            src={logoImage} 
-            alt="InvoiceIQ Logo" 
-            className="w-32 h-32 md:w-40 md:h-40 rounded-xl shadow-2xl"
-          />
+          <TiltCard className="w-32 h-32 md:w-40 md:h-40 rounded-xl shadow-2xl">
+            <img
+              src={logoImage}
+              alt="InvoiceIQ Logo"
+              className="w-full h-full rounded-xl"
+            />
+          </TiltCard>
           <span className="text-5xl md:text-7xl font-bold bg-gradient-to-r from-indigo-500 via-purple-500 to-violet-500 bg-clip-text text-transparent [text-shadow:_0_4px_12px_rgb(139_92_246_/_0.4)]">
             InvoiceIQ
           </span>
@@ -248,12 +251,14 @@ const Hero = () => {
 
           <div className="relative">
             <div className="relative z-10">
-              <img
-                src={heroImage}
-                alt="AI-powered invoice processing dashboard showing automated data extraction and validation"
-                className="w-full h-auto rounded-2xl shadow-glow"
-                data-aos="fade-up"
-              />
+              <TiltCard className="rounded-2xl shadow-glow">
+                <img
+                  src={heroImage}
+                  alt="AI-powered invoice processing dashboard showing automated data extraction and validation"
+                  className="w-full h-auto rounded-2xl"
+                  data-aos="fade-up"
+                />
+              </TiltCard>
             </div>
             <div className="absolute top-4 right-4 w-72 h-72 bg-gradient-primary opacity-20 rounded-full blur-3xl"></div>
             <div className="absolute bottom-4 left-4 w-48 h-48 bg-brand-accent opacity-20 rounded-full blur-2xl"></div>

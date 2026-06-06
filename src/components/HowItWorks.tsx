@@ -1,6 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Mail, Camera, MessageSquare, Brain, Send } from "lucide-react";
 import { motion } from "framer-motion";
+import TiltCard from "./TiltCard";
 import howItWorksImage from "@/assets/how-it-works-illustration.png";
 
 const steps = [
@@ -46,12 +47,14 @@ const HowItWorks = () => {
         </div>
         
         <div className="mb-16 flex justify-center">
-          <img 
-            src={howItWorksImage} 
-            alt="Invoice processing workflow illustration showing AI-powered invoice extraction and verification"
-            className="w-full max-w-2xl h-auto rounded-2xl"
-            data-aos="fade-up"
-          />
+          <TiltCard className="w-full max-w-2xl rounded-2xl">
+            <img
+              src={howItWorksImage}
+              alt="Invoice processing workflow illustration showing AI-powered invoice extraction and verification"
+              className="w-full h-auto rounded-2xl"
+              data-aos="fade-up"
+            />
+          </TiltCard>
         </div>
         
         <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-8 max-w-7xl mx-auto">
