@@ -203,4 +203,80 @@ All colors MUST be HSL.
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
+
+  /* Neon glow utilities */
+  .neon-glow-text {
+    text-shadow:
+      0 0 6px hsl(var(--primary) / 0.35),
+      0 0 14px rgba(0, 240, 255, 0.25),
+      0 0 28px rgba(255, 0, 229, 0.18);
+  }
+  .neon-glow-box {
+    box-shadow:
+      0 0 0 1px rgba(0, 240, 255, 0.15),
+      0 0 18px rgba(0, 240, 255, 0.25),
+      0 0 36px rgba(255, 0, 229, 0.18);
+  }
+
+  /* Hero grid / scanline overlay */
+  .hero-grid-overlay {
+    background-image:
+      linear-gradient(to right, hsl(var(--primary) / 0.06) 1px, transparent 1px),
+      linear-gradient(to bottom, hsl(var(--primary) / 0.06) 1px, transparent 1px),
+      repeating-linear-gradient(
+        to bottom,
+        transparent 0,
+        transparent 3px,
+        rgba(0, 240, 255, 0.025) 3px,
+        rgba(0, 240, 255, 0.025) 4px
+      );
+    background-size: 48px 48px, 48px 48px, 100% 4px;
+  }
+
+  /* Glass morphism */
+  .glass-card {
+    background: hsl(var(--card) / 0.55) !important;
+    backdrop-filter: blur(14px) saturate(140%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    border: 1px solid hsl(var(--border) / 0.6) !important;
+  }
+
+  /* Glitch text */
+  .glitch-text {
+    position: relative;
+    display: inline-block;
+  }
+  .glitch-text::before,
+  .glitch-text::after {
+    content: attr(data-text);
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0;
+  }
+  .glitch-text:hover::before {
+    opacity: 0.7;
+    color: #00f0ff;
+    -webkit-text-fill-color: #00f0ff;
+    animation: glitch-1 1.6s infinite linear alternate-reverse;
+  }
+  .glitch-text:hover::after {
+    opacity: 0.7;
+    color: #ff00e5;
+    -webkit-text-fill-color: #ff00e5;
+    animation: glitch-2 2s infinite linear alternate-reverse;
+  }
+  @keyframes glitch-1 {
+    0%, 100% { transform: translate(0, 0); clip-path: inset(0 0 0 0); }
+    20% { transform: translate(-2px, 1px); clip-path: inset(10% 0 70% 0); }
+    40% { transform: translate(2px, -1px); clip-path: inset(60% 0 10% 0); }
+    60% { transform: translate(-1px, 2px); clip-path: inset(30% 0 40% 0); }
+    80% { transform: translate(1px, -2px); clip-path: inset(80% 0 5% 0); }
+  }
+  @keyframes glitch-2 {
+    0%, 100% { transform: translate(0, 0); clip-path: inset(0 0 0 0); }
+    25% { transform: translate(2px, 0); clip-path: inset(70% 0 15% 0); }
+    50% { transform: translate(-2px, 1px); clip-path: inset(20% 0 60% 0); }
+    75% { transform: translate(1px, -1px); clip-path: inset(45% 0 35% 0); }
+  }
 }
