@@ -5,8 +5,13 @@ import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { motion } from "framer-motion";
 import heroImage from "@/assets/hero-invoice-illustration.png";
 import logoImage from "@/assets/InvoiceIQ_Logo.png";
+import ParticleField from "./ParticleField";
+
+const SUBHEAD = "Stop wasting hours on manual invoice processing. InvoiceIQ's AI agent extracts, validates, and processes invoices with 99% accuracy, saving you time and eliminating costly errors.";
+
 
 const Hero = () => {
   const { user, signInWithGoogle } = useAuth();
@@ -111,7 +116,12 @@ const Hero = () => {
 
   return (
     <section className="relative min-h-screen flex items-center bg-gradient-subtle overflow-hidden">
-      <div className="container mx-auto px-6 py-20">
+      {/* 3D particle background */}
+      <ParticleField />
+      {/* Subtle scanline / grid overlay */}
+      <div className="absolute inset-0 pointer-events-none hero-grid-overlay opacity-60" aria-hidden="true" />
+
+      <div className="container mx-auto px-6 py-20 relative z-10">
         {/* Logo + Brand Name - Centered at Top */}
         <div className="flex flex-col items-center justify-center gap-4 mb-12">
           <img 
@@ -132,17 +142,28 @@ const Hero = () => {
                 AI-Powered Invoice Automation
               </div>
 
-              <h1 className="text-4xl md:text-6xl font-bold leading-tight">
+              <h1
+                className="text-4xl md:text-6xl font-bold leading-tight glitch-text neon-glow-text"
+                data-text="InvoiceIQ — AI-Powered Automated Bookkeeping & Invoice Processing"
+              >
                 InvoiceIQ — AI-Powered{" "}
                 <span className="text-gradient">Automated Bookkeeping</span>{" "}
                 &amp; Invoice Processing
               </h1>
 
               <p className="text-lg md:text-xl text-foreground/80 leading-[1.8] tracking-[-0.005em] font-light max-w-xl mx-auto lg:mx-0">
-                Stop wasting hours on manual invoice processing. InvoiceIQ's AI agent
-                extracts, validates, and processes invoices with 99% accuracy, saving
-                you time and eliminating costly errors.
+                {SUBHEAD.split("").map((ch, i) => (
+                  <motion.span
+                    key={i}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.01, delay: i * 0.012 }}
+                  >
+                    {ch}
+                  </motion.span>
+                ))}
               </p>
+
             </div>
 
             <div className="flex flex-col items-center lg:items-start gap-4">
@@ -152,7 +173,7 @@ const Hero = () => {
                   <Button
                     variant="hero"
                     size="lg"
-                    className="shadow-elegant"
+                    className="shadow-elegant neon-glow-box"
                     onClick={handleInstallDirectory}
                     disabled={installing || checkingStatus}
                   >
@@ -196,7 +217,7 @@ const Hero = () => {
                   )}
 
                   <Link to="/dashboard">
-                    <Button variant="hero" size="lg" className="shadow-elegant">
+                    <Button variant="hero" size="lg" className="shadow-elegant neon-glow-box">
                       <LayoutDashboard className="w-5 h-5 mr-2" />
                       Open Your Portal
                     </Button>

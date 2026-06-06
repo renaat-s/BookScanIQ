@@ -1,5 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Mail, Camera, MessageSquare, Brain, Send } from "lucide-react";
+import { motion } from "framer-motion";
 import howItWorksImage from "@/assets/how-it-works-illustration.png";
 
 const steps = [
@@ -55,8 +56,15 @@ const HowItWorks = () => {
         
         <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-8 max-w-7xl mx-auto">
           {steps.map((step, index) => (
-            <div key={index} className="relative">
-              <Card className="h-full border-0 shadow-card bg-background/80 backdrop-blur-sm hover:shadow-elegant transition-smooth">
+            <motion.div
+              key={index}
+              className="relative"
+              initial={{ opacity: 0, y: 40, scale: 0.95 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.55, delay: index * 0.08, ease: "easeOut" }}
+            >
+              <Card className="h-full border-0 shadow-card glass-card hover:shadow-elegant transition-smooth">
                 <CardContent className="p-8 text-center space-y-4">
                   <div className="w-16 h-16 bg-gradient-primary rounded-2xl flex items-center justify-center mx-auto">
                     <step.icon className="w-8 h-8 text-white" />
@@ -74,7 +82,7 @@ const HowItWorks = () => {
               {index < steps.length - 1 && (
                 <div className="hidden lg:block absolute top-1/2 -right-4 w-8 h-0.5 bg-gradient-primary opacity-30"></div>
               )}
-            </div>
+            </motion.div>
           ))}
         </div>
         
