@@ -58,7 +58,7 @@ const Features = () => {
         
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {features.map((feature, index) => (
-            <Card key={index} className={`border-0 shadow-card hover:shadow-elegant transition-smooth backdrop-blur-sm relative ${feature.comingSoon ? 'opacity-50 grayscale bg-muted/50' : 'bg-card/50'}`}>
+            <Card key={index} data-aos="fade-up" data-aos-delay={index * 100} className={`border-0 shadow-card hover:shadow-elegant transition-smooth backdrop-blur-sm relative ${feature.comingSoon ? 'opacity-50 grayscale bg-muted/50' : 'bg-card/50'}`}>
               {feature.comingSoon && (
                 <Badge className="absolute top-4 right-4 bg-muted-foreground/80 text-background">Coming Soon</Badge>
               )}
