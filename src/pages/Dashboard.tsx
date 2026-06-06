@@ -31,8 +31,9 @@ import {
   ArrowUpDown, ExternalLink, FileText, Loader2, Search,
   TrendingUp, TrendingDown, Receipt, Wallet, Sparkles,
   Download, ScanLine, Upload, RefreshCw, Activity,
-  ArrowUpRight, ArrowDownRight, Clock, Building2, Filter,
+  ArrowUpRight, ArrowDownRight, Clock, Building2, Filter, Plug,
 } from "lucide-react";
+import WorkspacesTab from "@/components/WorkspacesTab";
 
 interface Invoice {
   id: string;
