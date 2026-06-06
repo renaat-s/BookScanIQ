@@ -818,15 +818,15 @@ const PremiumStat = ({
   const up = delta >= 0;
   const goodDirection = invertDelta ? !up : up;
   return (
-    <Card className="relative overflow-hidden border-border/60 shadow-card hover:shadow-elegant transition-all hover-scale">
+    <Card className="relative overflow-hidden border-border/60 shadow-card hover:shadow-elegant transition-all hover-scale hud-brackets sweep-line">
       <div className={`absolute inset-0 bg-gradient-to-br ${accentMap[accent]} opacity-60 pointer-events-none`} />
-      <CardContent className="pt-6 relative">
-        <div className="flex items-center justify-between mb-3">
-          <div className={`w-9 h-9 rounded-lg bg-background/80 backdrop-blur flex items-center justify-center ${accentMap[accent].split(" ").pop()}`}>
+      <CardContent className="pt-5 sm:pt-6 relative">
+        <div className="flex items-center justify-between mb-2 sm:mb-3">
+          <div className={`w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-background/80 backdrop-blur flex items-center justify-center ${accentMap[accent].split(" ").pop()}`}>
             {icon}
           </div>
           {isFinite(delta) && (
-            <div className={`flex items-center gap-1 text-xs font-medium px-2 py-1 rounded-full ${
+            <div className={`flex items-center gap-1 text-[10px] sm:text-xs font-medium px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full ${
               goodDirection ? "text-success bg-success/10" : "text-destructive bg-destructive/10"
             }`}>
               {up ? <ArrowUpRight className="w-3 h-3" /> : <ArrowDownRight className="w-3 h-3" />}
@@ -834,13 +834,14 @@ const PremiumStat = ({
             </div>
           )}
         </div>
-        <div className="text-xs uppercase tracking-wide text-muted-foreground mb-1">{label}</div>
-        <div className="text-2xl font-bold text-foreground tabular-nums">{value}</div>
-        <div className="text-[10px] text-muted-foreground mt-1">vs. previous month</div>
+        <div className="data-line !text-[9px] sm:!text-[10px] mb-1 truncate">{label}</div>
+        <div className="text-xl sm:text-2xl font-bold text-foreground tabular-nums break-all">{value}</div>
+        <div className="text-[9px] sm:text-[10px] text-muted-foreground mt-1">vs. previous month</div>
       </CardContent>
     </Card>
   );
 };
+
 
 const LegendDot = ({ color, label }: { color: string; label: string }) => (
   <div className="flex items-center gap-1.5 text-muted-foreground">
