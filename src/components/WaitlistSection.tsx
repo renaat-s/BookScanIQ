@@ -190,7 +190,7 @@ const WaitlistSection = () => {
           </div>
         </div>
 
-        <Card className="max-w-xl mx-auto p-8 md:p-10 backdrop-blur-xl bg-card/70 border-border/60 shadow-elegant animate-fade-in">
+        <Card className="max-w-xl mx-auto p-8 md:p-10 glass-card shadow-elegant animate-fade-in">
           {submitted ? (
             <div className="text-center space-y-6 animate-scale-in">
               <div className="mx-auto w-16 h-16 rounded-full bg-success/10 flex items-center justify-center">
