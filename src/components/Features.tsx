@@ -45,7 +45,7 @@ const Features = () => {
   return (
     <section id="features" className="py-20 bg-background">
       <div className="container mx-auto px-6">
-        <div className="text-center space-y-4 mb-16">
+        <div className="text-center space-y-4 mb-16" data-aos="zoom-in">
           <h2 className="text-3xl md:text-5xl font-bold">
             Powerful Features for{" "}
             <span className="text-gradient">Modern Businesses</span>
