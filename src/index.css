@@ -532,30 +532,6 @@ All colors MUST be HSL.
     text-transform: uppercase;
   }
 
-  /* Scanning sweep line that travels across an element */
-  .sweep-line {
-    position: relative;
-    overflow: hidden;
-  }
-  .sweep-line::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-      105deg,
-      transparent 40%,
-      hsl(var(--primary) / 0.18) 50%,
-      transparent 60%
-    );
-    transform: translateX(-100%);
-    animation: sweep 4s ease-in-out infinite;
-    pointer-events: none;
-  }
-  @keyframes sweep {
-    0%   { transform: translateX(-100%); }
-    60%  { transform: translateX(100%); }
-    100% { transform: translateX(100%); }
-  }
 
   /* Pulse ring */
   @keyframes pulse-ring {
