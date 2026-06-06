@@ -1,6 +1,8 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Helmet } from "react-helmet-async";
+import CyberBackground from "@/components/CyberBackground";
+import TiltCard from "@/components/TiltCard";
 
 import nanocloneImage from "@/assets/nanoclone-systems.png";
 import nanocloneLogo from "@/assets/nanoclone-logo.png";
