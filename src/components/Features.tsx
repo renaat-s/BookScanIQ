@@ -45,7 +45,7 @@ const Features = () => {
   return (
     <section id="features" className="py-20 bg-background">
       <div className="container mx-auto px-6">
-        <div className="text-center space-y-4 mb-16" data-aos="zoom-in">
+        <div className="text-center space-y-4 mb-16">
           <h2 className="text-3xl md:text-5xl font-bold">
             Powerful Features for{" "}
             <span className="text-gradient">Modern Businesses</span>
@@ -58,7 +58,7 @@ const Features = () => {
         
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {features.map((feature, index) => (
-            <Card key={index} data-aos="fade-up" data-aos-delay={index * 100} className={`border-0 shadow-card hover:shadow-elegant transition-smooth backdrop-blur-sm relative ${feature.comingSoon ? 'opacity-50 grayscale bg-muted/50' : 'bg-card/50'}`}>
+            <Card key={index} className={`border-0 shadow-card hover:shadow-elegant transition-smooth backdrop-blur-sm relative ${feature.comingSoon ? 'opacity-50 grayscale bg-muted/50' : 'bg-card/50'}`}>
               {feature.comingSoon && (
                 <Badge className="absolute top-4 right-4 bg-muted-foreground/80 text-background">Coming Soon</Badge>
               )}

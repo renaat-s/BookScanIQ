@@ -34,7 +34,7 @@ const HowItWorks = () => {
   return (
     <section id="how-it-works" className="py-20 bg-gradient-subtle">
       <div className="container mx-auto px-6">
-        <div className="text-center space-y-4 mb-16" data-aos="zoom-in">
+        <div className="text-center space-y-4 mb-16">
           <h2 className="text-3xl md:text-5xl font-bold">
             How <span className="text-gradient">InvoiceIQ</span> Works
           </h2>
@@ -44,7 +44,7 @@ const HowItWorks = () => {
           </p>
         </div>
         
-        <div className="mb-16 flex justify-center" data-aos="fade-right">
+        <div className="mb-16 flex justify-center">
           <img 
             src={howItWorksImage} 
             alt="Invoice processing workflow illustration showing AI-powered invoice extraction and verification"
