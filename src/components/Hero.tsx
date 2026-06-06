@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Zap, Shield, TrendingUp, Camera, Mail, FileText, FolderSync, Loader2, CheckCircle, ExternalLink } from "lucide-react";
+import { Zap, Shield, TrendingUp, FolderSync, Loader2, CheckCircle, ExternalLink, LayoutDashboard } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -173,32 +172,9 @@ const Hero = () => {
                   <p className="text-sm text-muted-foreground max-w-md">
                     Securely sync InvoiceIQ with your Google workspace to unlock all features. We only access what we create — your other files stay private.
                   </p>
-
-                  {/* Show locked feature buttons as preview */}
-                  <div className="flex flex-col gap-3 mt-2 opacity-40 pointer-events-none select-none">
-                    <div className="flex flex-col sm:flex-row gap-4">
-                      <div className="relative">
-                        <Button variant="hero" size="lg" className="shadow-elegant" disabled>
-                          <Camera className="w-5 h-5 mr-2" />
-                          Capture Invoice Now
-                        </Button>
-                        <Badge variant="secondary" className="absolute -top-2 -right-2 text-xs">
-                          Coming Soon
-                        </Badge>
-                      </div>
-                      <Button variant="hero-secondary" size="lg" className="shadow-elegant" disabled>
-                        <Mail className="w-5 h-5 mr-2" />
-                        Detect Invoices Now
-                      </Button>
-                    </div>
-                    <Button variant="hero-tertiary" size="lg" className="sm:self-start" disabled>
-                      <FileText className="w-5 h-5 mr-2" />
-                      File Invoices and Log Transactions
-                    </Button>
-                  </div>
                 </div>
               ) : (
-                /* Unlocked Feature Buttons */
+                /* Unlocked - direct user to Portal */
                 <>
                   <div className="flex items-center gap-2 text-sm text-brand-accent font-medium">
                     <CheckCircle className="w-4 h-4" />
@@ -219,32 +195,18 @@ const Hero = () => {
                     </a>
                   )}
 
-                  <div className="flex flex-col sm:flex-row gap-4">
-                    <div className="relative">
-                      <Button variant="hero" size="lg" className="shadow-elegant opacity-50 cursor-not-allowed" disabled>
-                        <Camera className="w-5 h-5 mr-2" />
-                        Capture Invoice Now
-                      </Button>
-                      <Badge variant="secondary" className="absolute -top-2 -right-2 text-xs">
-                        Coming Soon
-                      </Badge>
-                    </div>
-                    <Link to="/detect-invoices">
-                      <Button variant="hero-secondary" size="lg" className="shadow-elegant">
-                        <Mail className="w-5 h-5 mr-2" />
-                        Detect Invoices Now
-                      </Button>
-                    </Link>
-                  </div>
-                  
-                  <Link to="/file-invoices" className="sm:self-start">
-                    <Button variant="hero-tertiary" size="lg" className="px-[111px]">
-                      <FileText className="w-5 h-5 mr-2" />
-                      File Invoices and Log Transactions
+                  <Link to="/dashboard" className="sm:self-start">
+                    <Button variant="hero" size="lg" className="shadow-elegant">
+                      <LayoutDashboard className="w-5 h-5 mr-2" />
+                      Open Your Portal
                     </Button>
                   </Link>
+                  <p className="text-sm text-muted-foreground max-w-md">
+                    Detect, file, and review every invoice from your personal portal — your full bookkeeping workspace in one place.
+                  </p>
                 </>
               )}
+
             </div>
             
             <div className="flex items-center space-x-8 pt-4">
