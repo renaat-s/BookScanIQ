@@ -321,45 +321,54 @@ const Dashboard = () => {
       <Header />
 
       <main className="flex-1">
-        {/* HERO STRIP */}
-        <section className="relative overflow-hidden border-b border-border bg-gradient-header">
+        {/* HERO STRIP — futuristic command bar */}
+        <section className="relative overflow-hidden border-b border-primary/30 bg-gradient-header">
           <div className="absolute inset-0 opacity-20 pointer-events-none"
                style={{ backgroundImage: "radial-gradient(circle at 20% 10%, hsl(var(--accent) / 0.5), transparent 40%), radial-gradient(circle at 80% 80%, hsl(var(--brand-accent) / 0.4), transparent 45%)" }} />
-          <div className="container mx-auto px-4 sm:px-6 py-8 relative">
-            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 animate-fade-in">
-              <div className="space-y-2">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/20 backdrop-blur-sm text-white/90 text-xs">
-                  <Sparkles className="w-3.5 h-3.5" />
-                  Live workspace
-                  <span className="w-1 h-1 rounded-full bg-white/40 mx-1" />
-                  <Clock className="w-3 h-3" />
-                  Last sync {relativeTime(lastSyncAt)}
+          <div className="absolute inset-0 pointer-events-none bg-hex opacity-30" />
+          <div className="absolute inset-0 pointer-events-none hero-grid-overlay opacity-40" />
+          <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-10 relative">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5 sm:gap-6 animate-fade-in">
+              <div className="space-y-2 sm:space-y-3 min-w-0">
+                <div className="flex flex-wrap items-center gap-2">
+                  <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-white/10 border border-white/25 backdrop-blur-sm text-white/90 text-[10px] sm:text-xs">
+                    <span className="relative flex w-1.5 h-1.5">
+                      <span className="absolute inline-flex w-full h-full rounded-full bg-emerald-300 animate-ping opacity-75" />
+                      <span className="relative inline-flex w-1.5 h-1.5 rounded-full bg-emerald-300" />
+                    </span>
+                    <span className="data-line !text-white/80 !text-[10px]">SYS://LIVE</span>
+                  </div>
+                  <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/10 border border-white/20 text-white/85 text-[10px] sm:text-xs">
+                    <Clock className="w-3 h-3" />
+                    Sync · {relativeTime(lastSyncAt)}
+                  </div>
                 </div>
-                <h1 className="text-3xl md:text-4xl font-bold text-white tracking-tight">
-                  Welcome back, {firstName}.
+                <h1 className="heading-cyber text-2xl sm:text-3xl md:text-4xl font-bold text-white tracking-tight break-words">
+                  <span className="holo-text">Welcome back, {firstName}.</span>
                 </h1>
-                <p className="text-white/80 max-w-xl text-sm md:text-base">
-                  Your bookkeeping, distilled. {invoices.length} document{invoices.length === 1 ? "" : "s"} synced — no spreadsheets required.
+                <p className="text-white/80 max-w-xl text-xs sm:text-sm md:text-base">
+                  {invoices.length} document{invoices.length === 1 ? "" : "s"} synced · neural pipeline online · spreadsheets obsolete.
                 </p>
               </div>
-              <div className="flex flex-wrap gap-2">
-                <Button onClick={handleRefresh} variant="outline" className="bg-white/10 text-white border-white/30 hover:bg-white/20 hover:text-white">
+              <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2 w-full lg:w-auto">
+                <Button onClick={handleRefresh} variant="outline" size="sm" className="bg-white/10 text-white border-white/30 hover:bg-white/20 hover:text-white">
                   <RefreshCw className={`w-4 h-4 ${refreshing ? "animate-spin" : ""}`} />
                   Refresh
                 </Button>
-                <Button onClick={() => navigate("/capture-invoices")} variant="outline" className="bg-white/10 text-white border-white/30 hover:bg-white/20 hover:text-white">
+                <Button onClick={() => navigate("/capture-invoices")} variant="outline" size="sm" className="bg-white/10 text-white border-white/30 hover:bg-white/20 hover:text-white">
                   <Upload className="w-4 h-4" /> Capture
                 </Button>
-                <Button onClick={() => navigate("/detect-invoices")} variant="outline" className="bg-white/10 text-white border-white/30 hover:bg-white/20 hover:text-white">
+                <Button onClick={() => navigate("/detect-invoices")} variant="outline" size="sm" className="bg-white/10 text-white border-white/30 hover:bg-white/20 hover:text-white">
                   <ScanLine className="w-4 h-4" /> Detect
                 </Button>
-                <Button onClick={() => navigate("/file-invoices")} className="bg-white text-primary hover:bg-white/90">
+                <Button onClick={() => navigate("/file-invoices")} size="sm" className="bg-white text-primary hover:bg-white/90">
                   <FileText className="w-4 h-4" /> File
                 </Button>
               </div>
             </div>
           </div>
         </section>
+
 
         <div className="container mx-auto px-4 sm:px-6 py-8 space-y-8">
           {/* PREMIUM STAT CARDS */}
