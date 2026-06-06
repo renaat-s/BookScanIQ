@@ -147,8 +147,59 @@ All colors MUST be HSL.
     @apply border-border;
   }
 
+  html {
+    font-family: 'Rajdhani', ui-sans-serif, system-ui, sans-serif;
+  }
+
   body {
     @apply bg-background text-foreground;
+    font-family: 'Rajdhani', ui-sans-serif, system-ui, sans-serif;
+    font-weight: 400;
+    letter-spacing: 0.01em;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Orbitron', 'Rajdhani', sans-serif;
+    letter-spacing: 0.02em;
+    font-weight: 700;
+  }
+
+  /* Mono accents for tags, labels, badges */
+  code, kbd, samp, pre {
+    font-family: '"JetBrains Mono"', ui-monospace, monospace;
+  }
+
+  /* Global ambient grid behind everything (very subtle) */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background-image:
+      linear-gradient(to right, hsl(var(--primary) / 0.04) 1px, transparent 1px),
+      linear-gradient(to bottom, hsl(var(--primary) / 0.04) 1px, transparent 1px);
+    background-size: 64px 64px;
+    mask-image: radial-gradient(ellipse at center, black 40%, transparent 85%);
+    -webkit-mask-image: radial-gradient(ellipse at center, black 40%, transparent 85%);
+  }
+
+  /* Global animated scanlines on top of everything (very low alpha) */
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9999;
+    background-image: repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent 2px,
+      rgba(0, 240, 255, 0.018) 3px,
+      rgba(0, 240, 255, 0.018) 4px
+    );
+    mix-blend-mode: screen;
+    animation: scan-move 10s linear infinite;
   }
 }
 
