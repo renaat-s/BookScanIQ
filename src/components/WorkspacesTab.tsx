@@ -12,6 +12,7 @@ import {
   FolderOpen, FileSpreadsheet, ExternalLink, Loader2,
   RefreshCw, Receipt, AlertCircle, Plug,
 } from "lucide-react";
+import DriveBrowser from "@/components/DriveBrowser";
 import { useNavigate } from "react-router-dom";
 
 interface Credentials {
@@ -172,42 +173,16 @@ const WorkspacesTab = () => {
 
           {/* DRIVE */}
           <TabsContent value="drive" className="m-0">
-            {!driveFolderEmbed ? (
+            {!creds?.root_folder_id ? (
               <NotConnected
                 icon={<FolderOpen className="w-8 h-8" />}
                 title="Drive directory not synced yet"
-                desc="Sync your workspace to view your InvoiceIQ folder live here."
+                desc="Sync your workspace to browse your InvoiceIQ folder live here."
                 cta="Sync workspace"
                 onClick={() => navigate("/detect-invoices")}
               />
             ) : (
-              <div className="space-y-3">
-                <div className="flex items-center justify-between gap-2">
-                  <Badge variant="outline" className="gap-1.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-success animate-pulse" />
-                    Live · Google Drive
-                  </Badge>
-                  <a
-                    href={`https://drive.google.com/drive/folders/${creds!.root_folder_id}`}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    <Button variant="ghost" size="sm" className="gap-1.5">
-                      Open in Drive <ExternalLink className="w-3.5 h-3.5" />
-                    </Button>
-                  </a>
-                </div>
-                <div className="rounded-xl overflow-hidden border border-border/60 bg-muted/20 h-[640px]">
-                  <iframe
-                    src={driveFolderEmbed}
-                    className="w-full h-full"
-                    title="Google Drive folder"
-                  />
-                </div>
-                <p className="text-xs text-muted-foreground">
-                  If the folder appears empty, make sure you're signed into the same Google account in this browser.
-                </p>
-              </div>
+              <DriveBrowser rootFolderId={creds.root_folder_id} />
             )}
           </TabsContent>
 
