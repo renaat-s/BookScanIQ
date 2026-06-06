@@ -12,6 +12,7 @@ import {
   FolderOpen, FileSpreadsheet, ExternalLink, Loader2,
   RefreshCw, Receipt, AlertCircle, Plug,
 } from "lucide-react";
+import DriveBrowser from "@/components/DriveBrowser";
 import { useNavigate } from "react-router-dom";
 
 interface Credentials {
