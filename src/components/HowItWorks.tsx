@@ -44,7 +44,7 @@ const HowItWorks = () => {
           </p>
         </div>
         
-        <div className="mb-16 flex justify-center">
+        <div className="mb-16 flex justify-center" data-aos="fade-right">
           <img 
             src={howItWorksImage} 
             alt="Invoice processing workflow illustration showing AI-powered invoice extraction and verification"
