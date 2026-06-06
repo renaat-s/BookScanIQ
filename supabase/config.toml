@@ -24,6 +24,12 @@ verify_jwt = true
 [functions.quickbooks-list-accounts]
 verify_jwt = true
 
+[functions.xero-list-transactions]
+verify_jwt = true
+
+[functions.quickbooks-list-transactions]
+verify_jwt = true
+
 [functions.get-oauth-config]
 verify_jwt = false
 
