@@ -321,39 +321,47 @@ const Dashboard = () => {
       <Header />
 
       <main className="flex-1">
-        {/* HERO STRIP */}
-        <section className="relative overflow-hidden border-b border-border bg-gradient-header">
+        {/* HERO STRIP — futuristic command bar */}
+        <section className="relative overflow-hidden border-b border-primary/30 bg-gradient-header">
           <div className="absolute inset-0 opacity-20 pointer-events-none"
                style={{ backgroundImage: "radial-gradient(circle at 20% 10%, hsl(var(--accent) / 0.5), transparent 40%), radial-gradient(circle at 80% 80%, hsl(var(--brand-accent) / 0.4), transparent 45%)" }} />
-          <div className="container mx-auto px-4 sm:px-6 py-8 relative">
-            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 animate-fade-in">
-              <div className="space-y-2">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/20 backdrop-blur-sm text-white/90 text-xs">
-                  <Sparkles className="w-3.5 h-3.5" />
-                  Live workspace
-                  <span className="w-1 h-1 rounded-full bg-white/40 mx-1" />
-                  <Clock className="w-3 h-3" />
-                  Last sync {relativeTime(lastSyncAt)}
+          <div className="absolute inset-0 pointer-events-none bg-hex opacity-30" />
+          <div className="absolute inset-0 pointer-events-none hero-grid-overlay opacity-40" />
+          <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-10 relative">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5 sm:gap-6 animate-fade-in">
+              <div className="space-y-2 sm:space-y-3 min-w-0">
+                <div className="flex flex-wrap items-center gap-2">
+                  <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-white/10 border border-white/25 backdrop-blur-sm text-white/90 text-[10px] sm:text-xs">
+                    <span className="relative flex w-1.5 h-1.5">
+                      <span className="absolute inline-flex w-full h-full rounded-full bg-emerald-300 animate-ping opacity-75" />
+                      <span className="relative inline-flex w-1.5 h-1.5 rounded-full bg-emerald-300" />
+                    </span>
+                    <span className="data-line !text-white/80 !text-[10px]">SYS://LIVE</span>
+                  </div>
+                  <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/10 border border-white/20 text-white/85 text-[10px] sm:text-xs">
+                    <Clock className="w-3 h-3" />
+                    Sync · {relativeTime(lastSyncAt)}
+                  </div>
                 </div>
-                <h1 className="text-3xl md:text-4xl font-bold text-white tracking-tight">
-                  Welcome back, {firstName}.
+                <h1 className="heading-cyber text-2xl sm:text-3xl md:text-4xl font-bold text-white tracking-tight break-words">
+                  <span className="holo-text">Welcome back, {firstName}.</span>
                 </h1>
-                <p className="text-white/80 max-w-xl text-sm md:text-base">
-                  Your bookkeeping, distilled. {invoices.length} document{invoices.length === 1 ? "" : "s"} synced — no spreadsheets required.
+                <p className="text-white/80 max-w-xl text-xs sm:text-sm md:text-base">
+                  {invoices.length} document{invoices.length === 1 ? "" : "s"} synced · neural pipeline online · spreadsheets obsolete.
                 </p>
               </div>
-              <div className="flex flex-wrap gap-2">
-                <Button onClick={handleRefresh} variant="outline" className="bg-white/10 text-white border-white/30 hover:bg-white/20 hover:text-white">
+              <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2 w-full lg:w-auto">
+                <Button onClick={handleRefresh} variant="outline" size="sm" className="bg-white/10 text-white border-white/30 hover:bg-white/20 hover:text-white">
                   <RefreshCw className={`w-4 h-4 ${refreshing ? "animate-spin" : ""}`} />
                   Refresh
                 </Button>
-                <Button onClick={() => navigate("/capture-invoices")} variant="outline" className="bg-white/10 text-white border-white/30 hover:bg-white/20 hover:text-white">
+                <Button onClick={() => navigate("/capture-invoices")} variant="outline" size="sm" className="bg-white/10 text-white border-white/30 hover:bg-white/20 hover:text-white">
                   <Upload className="w-4 h-4" /> Capture
                 </Button>
-                <Button onClick={() => navigate("/detect-invoices")} variant="outline" className="bg-white/10 text-white border-white/30 hover:bg-white/20 hover:text-white">
+                <Button onClick={() => navigate("/detect-invoices")} variant="outline" size="sm" className="bg-white/10 text-white border-white/30 hover:bg-white/20 hover:text-white">
                   <ScanLine className="w-4 h-4" /> Detect
                 </Button>
-                <Button onClick={() => navigate("/file-invoices")} className="bg-white text-primary hover:bg-white/90">
+                <Button onClick={() => navigate("/file-invoices")} size="sm" className="bg-white text-primary hover:bg-white/90">
                   <FileText className="w-4 h-4" /> File
                 </Button>
               </div>
@@ -361,9 +369,10 @@ const Dashboard = () => {
           </div>
         </section>
 
-        <div className="container mx-auto px-4 sm:px-6 py-8 space-y-8">
+
+        <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-6 sm:space-y-8">
           {/* PREMIUM STAT CARDS */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
             <PremiumStat
               icon={<Receipt className="w-5 h-5" />}
               label="Total Documents"
@@ -395,19 +404,20 @@ const Dashboard = () => {
             />
           </div>
 
-          <Tabs defaultValue="overview" className="space-y-6">
+          <Tabs defaultValue="overview" className="space-y-4 sm:space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-              <TabsList className="bg-muted/60 backdrop-blur">
-                <TabsTrigger value="overview" className="gap-1.5"><Activity className="w-4 h-4" />Overview</TabsTrigger>
-                <TabsTrigger value="documents" className="gap-1.5"><FileText className="w-4 h-4" />Documents</TabsTrigger>
-                <TabsTrigger value="vendors" className="gap-1.5"><Building2 className="w-4 h-4" />Vendors</TabsTrigger>
+              <TabsList className="bg-muted/60 backdrop-blur w-full sm:w-auto overflow-x-auto">
+                <TabsTrigger value="overview" className="gap-1.5 flex-1 sm:flex-none"><Activity className="w-4 h-4" /><span className="hidden xs:inline sm:inline">Overview</span></TabsTrigger>
+                <TabsTrigger value="documents" className="gap-1.5 flex-1 sm:flex-none"><FileText className="w-4 h-4" /><span className="hidden xs:inline sm:inline">Documents</span></TabsTrigger>
+                <TabsTrigger value="vendors" className="gap-1.5 flex-1 sm:flex-none"><Building2 className="w-4 h-4" /><span className="hidden xs:inline sm:inline">Vendors</span></TabsTrigger>
               </TabsList>
               <div className="flex gap-2">
-                <Button variant="outline" size="sm" onClick={exportCsv} className="gap-1.5">
+                <Button variant="outline" size="sm" onClick={exportCsv} className="gap-1.5 w-full sm:w-auto">
                   <Download className="w-4 h-4" /> Export CSV
                 </Button>
               </div>
             </div>
+
 
             {/* OVERVIEW TAB */}
             <TabsContent value="overview" className="space-y-6 m-0">
@@ -594,18 +604,18 @@ const Dashboard = () => {
                       </CardTitle>
                       <CardDescription className="text-xs">Search, filter and inspect every synced invoice.</CardDescription>
                     </div>
-                    <div className="flex flex-col sm:flex-row gap-2">
-                      <div className="relative">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:flex lg:flex-row gap-2 w-full lg:w-auto">
+                      <div className="relative col-span-full sm:col-span-2 lg:col-span-1">
                         <Search className="absolute left-2 top-2.5 w-4 h-4 text-muted-foreground" />
                         <Input
                           placeholder="Search vendor, number, category…"
-                          className="pl-8 w-full sm:w-64"
+                          className="pl-8 w-full lg:w-64"
                           value={search}
                           onChange={(e) => setSearch(e.target.value)}
                         />
                       </div>
                       <Select value={typeFilter} onValueChange={setTypeFilter}>
-                        <SelectTrigger className="w-full sm:w-32"><Filter className="w-3.5 h-3.5 mr-1" /><SelectValue placeholder="Type" /></SelectTrigger>
+                        <SelectTrigger className="w-full lg:w-32"><Filter className="w-3.5 h-3.5 mr-1" /><SelectValue placeholder="Type" /></SelectTrigger>
                         <SelectContent>
                           <SelectItem value="all">All types</SelectItem>
                           <SelectItem value="Income">Income</SelectItem>
@@ -613,7 +623,7 @@ const Dashboard = () => {
                         </SelectContent>
                       </Select>
                       <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-                        <SelectTrigger className="w-full sm:w-40"><SelectValue placeholder="Category" /></SelectTrigger>
+                        <SelectTrigger className="w-full lg:w-40"><SelectValue placeholder="Category" /></SelectTrigger>
                         <SelectContent>
                           <SelectItem value="all">All categories</SelectItem>
                           {categories.map((c) => (
@@ -621,10 +631,11 @@ const Dashboard = () => {
                           ))}
                         </SelectContent>
                       </Select>
-                      <Button variant="outline" size="icon" onClick={() => setDensity(density === "comfortable" ? "compact" : "comfortable")} title="Toggle density">
+                      <Button variant="outline" size="icon" className="hidden lg:inline-flex" onClick={() => setDensity(density === "comfortable" ? "compact" : "comfortable")} title="Toggle density">
                         <ArrowUpDown className="w-4 h-4" />
                       </Button>
                     </div>
+
                   </div>
                 </CardHeader>
                 <CardContent>
@@ -808,15 +819,15 @@ const PremiumStat = ({
   const up = delta >= 0;
   const goodDirection = invertDelta ? !up : up;
   return (
-    <Card className="relative overflow-hidden border-border/60 shadow-card hover:shadow-elegant transition-all hover-scale">
+    <Card className="relative overflow-hidden border-border/60 shadow-card hover:shadow-elegant transition-all hover-scale hud-brackets sweep-line">
       <div className={`absolute inset-0 bg-gradient-to-br ${accentMap[accent]} opacity-60 pointer-events-none`} />
-      <CardContent className="pt-6 relative">
-        <div className="flex items-center justify-between mb-3">
-          <div className={`w-9 h-9 rounded-lg bg-background/80 backdrop-blur flex items-center justify-center ${accentMap[accent].split(" ").pop()}`}>
+      <CardContent className="pt-5 sm:pt-6 relative">
+        <div className="flex items-center justify-between mb-2 sm:mb-3">
+          <div className={`w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-background/80 backdrop-blur flex items-center justify-center ${accentMap[accent].split(" ").pop()}`}>
             {icon}
           </div>
           {isFinite(delta) && (
-            <div className={`flex items-center gap-1 text-xs font-medium px-2 py-1 rounded-full ${
+            <div className={`flex items-center gap-1 text-[10px] sm:text-xs font-medium px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full ${
               goodDirection ? "text-success bg-success/10" : "text-destructive bg-destructive/10"
             }`}>
               {up ? <ArrowUpRight className="w-3 h-3" /> : <ArrowDownRight className="w-3 h-3" />}
@@ -824,13 +835,14 @@ const PremiumStat = ({
             </div>
           )}
         </div>
-        <div className="text-xs uppercase tracking-wide text-muted-foreground mb-1">{label}</div>
-        <div className="text-2xl font-bold text-foreground tabular-nums">{value}</div>
-        <div className="text-[10px] text-muted-foreground mt-1">vs. previous month</div>
+        <div className="data-line !text-[9px] sm:!text-[10px] mb-1 truncate">{label}</div>
+        <div className="text-xl sm:text-2xl font-bold text-foreground tabular-nums break-all">{value}</div>
+        <div className="text-[9px] sm:text-[10px] text-muted-foreground mt-1">vs. previous month</div>
       </CardContent>
     </Card>
   );
 };
+
 
 const LegendDot = ({ color, label }: { color: string; label: string }) => (
   <div className="flex items-center gap-1.5 text-muted-foreground">

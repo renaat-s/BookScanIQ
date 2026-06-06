@@ -55,11 +55,11 @@ const Header = () => {
 
   return (
     <header className="sticky top-0 z-50 bg-gradient-header shadow-card">
-      <nav className="container mx-auto px-6 py-4">
-        <div className="flex items-center justify-between">
-          <Link to="/" className="flex items-center space-x-2">
-            <img src={logoImage} alt="InvoiceIQ Logo" className="w-8 h-8 rounded-lg" />
-            <span className="text-xl font-bold text-white">InvoiceIQ</span>
+      <nav className="container mx-auto px-4 sm:px-6 py-3 sm:py-4">
+        <div className="flex items-center justify-between gap-2">
+          <Link to="/" className="flex items-center space-x-2 min-w-0">
+            <img src={logoImage} alt="InvoiceIQ Logo" className="w-8 h-8 rounded-lg shrink-0" />
+            <span className="text-lg sm:text-xl font-bold text-white truncate">InvoiceIQ</span>
           </Link>
           
           <div className="hidden md:flex items-center space-x-8">
