@@ -370,9 +370,9 @@ const Dashboard = () => {
         </section>
 
 
-        <div className="container mx-auto px-4 sm:px-6 py-8 space-y-8">
+        <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-6 sm:space-y-8">
           {/* PREMIUM STAT CARDS */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
             <PremiumStat
               icon={<Receipt className="w-5 h-5" />}
               label="Total Documents"
@@ -404,19 +404,20 @@ const Dashboard = () => {
             />
           </div>
 
-          <Tabs defaultValue="overview" className="space-y-6">
+          <Tabs defaultValue="overview" className="space-y-4 sm:space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-              <TabsList className="bg-muted/60 backdrop-blur">
-                <TabsTrigger value="overview" className="gap-1.5"><Activity className="w-4 h-4" />Overview</TabsTrigger>
-                <TabsTrigger value="documents" className="gap-1.5"><FileText className="w-4 h-4" />Documents</TabsTrigger>
-                <TabsTrigger value="vendors" className="gap-1.5"><Building2 className="w-4 h-4" />Vendors</TabsTrigger>
+              <TabsList className="bg-muted/60 backdrop-blur w-full sm:w-auto overflow-x-auto">
+                <TabsTrigger value="overview" className="gap-1.5 flex-1 sm:flex-none"><Activity className="w-4 h-4" /><span className="hidden xs:inline sm:inline">Overview</span></TabsTrigger>
+                <TabsTrigger value="documents" className="gap-1.5 flex-1 sm:flex-none"><FileText className="w-4 h-4" /><span className="hidden xs:inline sm:inline">Documents</span></TabsTrigger>
+                <TabsTrigger value="vendors" className="gap-1.5 flex-1 sm:flex-none"><Building2 className="w-4 h-4" /><span className="hidden xs:inline sm:inline">Vendors</span></TabsTrigger>
               </TabsList>
               <div className="flex gap-2">
-                <Button variant="outline" size="sm" onClick={exportCsv} className="gap-1.5">
+                <Button variant="outline" size="sm" onClick={exportCsv} className="gap-1.5 w-full sm:w-auto">
                   <Download className="w-4 h-4" /> Export CSV
                 </Button>
               </div>
             </div>
+
 
             {/* OVERVIEW TAB */}
             <TabsContent value="overview" className="space-y-6 m-0">
