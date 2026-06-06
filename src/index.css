@@ -169,6 +169,19 @@ All colors MUST be HSL.
     font-family: '"JetBrains Mono"', ui-monospace, monospace;
   }
 
+  /* ===== Global mobile polish — prevents the "squeezed" feel on small screens ===== */
+  @media (max-width: 640px) {
+    html { font-size: 15px; }
+    html, body { overflow-x: hidden; }
+    h1 { line-height: 1.15 !important; word-break: break-word; }
+    h2 { line-height: 1.2 !important; word-break: break-word; }
+    .container { padding-left: 1rem !important; padding-right: 1rem !important; }
+    body::before { background-size: 40px 40px; opacity: 0.55; }
+    /* Let dense tables scroll horizontally instead of squishing into nothing */
+    .table-scroll table, table.responsive-table { min-width: 560px; }
+  }
+
+
   /* Global ambient grid behind everything (very subtle) */
   body::before {
     content: "";
