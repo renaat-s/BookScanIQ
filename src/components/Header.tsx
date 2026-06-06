@@ -67,7 +67,7 @@ const Header = () => {
               <img src={logoImage} alt="InvoiceIQ Logo" className="w-8 h-8 rounded-lg shrink-0 relative z-10" />
               <div className="absolute inset-0 rounded-lg bg-primary/40 blur-md opacity-0 group-hover:opacity-100 transition-opacity" />
             </div>
-            <span className="text-lg sm:text-xl font-bold tracking-[0.18em] uppercase bg-gradient-to-r from-primary via-foreground to-accent bg-clip-text text-transparent truncate">
+            <span className="text-lg sm:text-xl font-bold tracking-[0.18em] uppercase bg-gradient-to-r from-violet-500 to-violet-300 bg-clip-text text-transparent truncate">
               InvoiceIQ
             </span>
           </Link>
