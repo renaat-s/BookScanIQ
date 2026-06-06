@@ -59,22 +59,30 @@ const Features = () => {
         
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {features.map((feature, index) => (
-            <Card key={index} data-aos="fade-up" className={`border-0 shadow-card hover:shadow-elegant transition-smooth backdrop-blur-sm relative ${feature.comingSoon ? 'opacity-50 grayscale bg-muted/50' : 'bg-card/50'}`}>
-              {feature.comingSoon && (
-                <Badge className="absolute top-4 right-4 bg-muted-foreground/80 text-background">Coming Soon</Badge>
-              )}
-              <CardHeader className="space-y-4">
-                <div className="w-12 h-12 bg-gradient-primary rounded-xl flex items-center justify-center">
-                  <feature.icon className="w-6 h-6 text-white" />
-                </div>
-                <CardTitle className="text-xl">{feature.title}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground leading-relaxed">
-                  {feature.description}
-                </p>
-              </CardContent>
-            </Card>
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 30, scale: 0.96 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              viewport={{ once: true, amount: 0.25 }}
+              transition={{ duration: 0.5, delay: index * 0.06, ease: "easeOut" }}
+            >
+              <Card className={`h-full border-0 shadow-card hover:shadow-elegant transition-smooth glass-card relative ${feature.comingSoon ? 'opacity-50 grayscale' : ''}`}>
+                {feature.comingSoon && (
+                  <Badge className="absolute top-4 right-4 bg-muted-foreground/80 text-background">Coming Soon</Badge>
+                )}
+                <CardHeader className="space-y-4">
+                  <div className="w-12 h-12 bg-gradient-primary rounded-xl flex items-center justify-center">
+                    <feature.icon className="w-6 h-6 text-white" />
+                  </div>
+                  <CardTitle className="text-xl">{feature.title}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground leading-relaxed">
+                    {feature.description}
+                  </p>
+                </CardContent>
+              </Card>
+            </motion.div>
           ))}
         </div>
       </div>
