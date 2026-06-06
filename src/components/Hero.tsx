@@ -125,34 +125,34 @@ const Hero = () => {
         </div>
 
         <div className="grid lg:grid-cols-2 gap-12 items-center">
-          <div className="space-y-8">
+          <div className="space-y-8 text-center lg:text-left">
             <div className="space-y-4">
               <div className="inline-flex items-center px-4 py-2 bg-brand-primary/10 border border-brand-primary/20 rounded-full text-sm text-brand-primary font-medium">
                 <Zap className="w-4 h-4 mr-2" />
                 AI-Powered Invoice Automation
               </div>
-              
+
               <h1 className="text-4xl md:text-6xl font-bold leading-tight">
                 InvoiceIQ — AI-Powered{" "}
                 <span className="text-gradient">Automated Bookkeeping</span>{" "}
                 &amp; Invoice Processing
               </h1>
-              
-              <p className="text-lg md:text-xl text-foreground/80 leading-[1.8] tracking-[-0.005em] font-light">
-                Stop wasting hours on manual invoice processing. InvoiceIQ's AI agent 
-                extracts, validates, and processes invoices with 99% accuracy, saving 
+
+              <p className="text-lg md:text-xl text-foreground/80 leading-[1.8] tracking-[-0.005em] font-light max-w-xl mx-auto lg:mx-0">
+                Stop wasting hours on manual invoice processing. InvoiceIQ's AI agent
+                extracts, validates, and processes invoices with 99% accuracy, saving
                 you time and eliminating costly errors.
               </p>
             </div>
-            
-            <div className="flex flex-col gap-4">
+
+            <div className="flex flex-col items-center lg:items-start gap-4">
               {!showFeatureButtons ? (
                 /* Install Directory Button - Gate */
-                <div className="flex flex-col gap-3">
+                <div className="flex flex-col items-center lg:items-start gap-3">
                   <Button
                     variant="hero"
                     size="lg"
-                    className="shadow-elegant sm:self-start"
+                    className="shadow-elegant"
                     onClick={handleInstallDirectory}
                     disabled={installing || checkingStatus}
                   >
@@ -175,7 +175,7 @@ const Hero = () => {
                 </div>
               ) : (
                 /* Unlocked - direct user to Portal */
-                <>
+                <div className="flex flex-col items-center lg:items-start gap-3">
                   <div className="flex items-center gap-2 text-sm text-brand-accent font-medium">
                     <CheckCircle className="w-4 h-4" />
                     {setupComplete
@@ -195,7 +195,7 @@ const Hero = () => {
                     </a>
                   )}
 
-                  <Link to="/dashboard" className="sm:self-start">
+                  <Link to="/dashboard">
                     <Button variant="hero" size="lg" className="shadow-elegant">
                       <LayoutDashboard className="w-5 h-5 mr-2" />
                       Open Your Portal
@@ -204,12 +204,12 @@ const Hero = () => {
                   <p className="text-sm text-muted-foreground max-w-md">
                     Detect, file, and review every invoice from your personal portal — your full bookkeeping workspace in one place.
                   </p>
-                </>
+                </div>
               )}
 
             </div>
-            
-            <div className="flex items-center space-x-8 pt-4">
+
+            <div className="flex items-center justify-center lg:justify-start space-x-8 pt-4">
               <div className="flex items-center space-x-2">
                 <Shield className="w-5 h-5 text-brand-accent" />
                 <span className="text-sm text-muted-foreground">99% Accuracy</span>
@@ -224,11 +224,11 @@ const Hero = () => {
               </div>
             </div>
           </div>
-          
+
           <div className="relative">
             <div className="relative z-10">
-              <img 
-                src={heroImage} 
+              <img
+                src={heroImage}
                 alt="AI-powered invoice processing dashboard showing automated data extraction and validation"
                 className="w-full h-auto rounded-2xl shadow-glow"
                 data-aos="fade-up"
