@@ -13,6 +13,12 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        sans: ['Rajdhani', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        display: ['Orbitron', 'Rajdhani', 'sans-serif'],
+        cyber: ['"Chakra Petch"', 'Rajdhani', 'sans-serif'],
+        mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
