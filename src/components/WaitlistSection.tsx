@@ -166,6 +166,7 @@ const WaitlistSection = () => {
           <h2
             id="waitlist-heading"
             className="text-4xl md:text-5xl font-bold mb-4"
+            data-aos="zoom-in"
           >
             Join the <span className="text-gradient">Waitlist</span>
           </h2>

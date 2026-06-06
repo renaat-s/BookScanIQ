@@ -35,7 +35,7 @@ const HowItWorks = () => {
     <section id="how-it-works" className="py-20 bg-gradient-subtle">
       <div className="container mx-auto px-6">
         <div className="text-center space-y-4 mb-16">
-          <h2 className="text-3xl md:text-5xl font-bold">
+          <h2 className="text-3xl md:text-5xl font-bold" data-aos="zoom-in">
             How <span className="text-gradient">InvoiceIQ</span> Works
           </h2>
           <p className="text-lg md:text-xl text-foreground/80 max-w-3xl mx-auto leading-[1.8] tracking-[-0.005em] font-light">
@@ -49,6 +49,7 @@ const HowItWorks = () => {
             src={howItWorksImage} 
             alt="Invoice processing workflow illustration showing AI-powered invoice extraction and verification"
             className="w-full max-w-2xl h-auto rounded-2xl"
+            data-aos="fade-up"
           />
         </div>
         

@@ -231,6 +231,7 @@ const Hero = () => {
                 src={heroImage} 
                 alt="AI-powered invoice processing dashboard showing automated data extraction and validation"
                 className="w-full h-auto rounded-2xl shadow-glow"
+                data-aos="fade-up"
               />
             </div>
             <div className="absolute top-4 right-4 w-72 h-72 bg-gradient-primary opacity-20 rounded-full blur-3xl"></div>
