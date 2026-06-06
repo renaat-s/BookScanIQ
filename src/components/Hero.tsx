@@ -137,9 +137,9 @@ const Hero = () => {
           </span>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
-          <div className="space-y-8 text-center lg:text-left">
-            <div className="space-y-4">
+        <div className="flex flex-col items-center gap-12 max-w-5xl mx-auto">
+          <div className="space-y-8 text-center flex flex-col items-center">
+            <div className="space-y-4 flex flex-col items-center">
               <div className="inline-flex items-center px-4 py-2 bg-brand-primary/10 border border-brand-primary/20 rounded-full text-sm text-brand-primary font-medium">
                 <Zap className="w-4 h-4 mr-2" />
                 AI-Powered Invoice Automation
@@ -154,7 +154,7 @@ const Hero = () => {
                 &amp; Invoice Processing
               </h1>
 
-              <p className="text-lg md:text-xl text-foreground/80 leading-[1.8] tracking-[-0.005em] font-light max-w-xl mx-auto lg:mx-0">
+              <p className="text-lg md:text-xl text-foreground/80 leading-[1.8] tracking-[-0.005em] font-light max-w-2xl mx-auto">
                 {SUBHEAD.split("").map((ch, i) => (
                   <motion.span
                     key={i}
@@ -166,13 +166,11 @@ const Hero = () => {
                   </motion.span>
                 ))}
               </p>
-
             </div>
 
-            <div className="flex flex-col items-center lg:items-start gap-4">
+            <div className="flex flex-col items-center gap-4">
               {!showFeatureButtons ? (
-                /* Install Directory Button - Gate */
-                <div className="flex flex-col items-center lg:items-start gap-3">
+                <div className="flex flex-col items-center gap-3">
                   <Button
                     variant="hero"
                     size="lg"
@@ -193,13 +191,12 @@ const Hero = () => {
                           ? "Checking status…"
                           : "Sync My Workspace"}
                   </Button>
-                  <p className="text-sm text-muted-foreground max-w-md">
+                  <p className="text-sm text-muted-foreground max-w-md text-center">
                     Securely sync InvoiceIQ with your Google workspace to unlock all features. We only access what we create — your other files stay private.
                   </p>
                 </div>
               ) : (
-                /* Unlocked - direct user to Portal */
-                <div className="flex flex-col items-center lg:items-start gap-3">
+                <div className="flex flex-col items-center gap-3">
                   <div className="flex items-center gap-2 text-sm text-brand-accent font-medium">
                     <CheckCircle className="w-4 h-4" />
                     {setupComplete
@@ -225,15 +222,14 @@ const Hero = () => {
                       Open Your Portal
                     </Button>
                   </Link>
-                  <p className="text-sm text-muted-foreground max-w-md">
+                  <p className="text-sm text-muted-foreground max-w-md text-center">
                     Detect, file, and review every invoice from your personal portal — your full bookkeeping workspace in one place.
                   </p>
                 </div>
               )}
-
             </div>
 
-            <div className="flex items-center justify-center lg:justify-start space-x-8 pt-4">
+            <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 pt-4">
               <div className="flex items-center space-x-2">
                 <Shield className="w-5 h-5 text-brand-accent" />
                 <span className="text-sm text-muted-foreground">99% Accuracy</span>
@@ -249,7 +245,7 @@ const Hero = () => {
             </div>
           </div>
 
-          <div className="relative">
+          <div className="relative w-full max-w-3xl mx-auto">
             <div className="relative z-10">
               <TiltCard className="rounded-2xl shadow-glow">
                 <img
@@ -264,6 +260,7 @@ const Hero = () => {
             <div className="absolute bottom-4 left-4 w-48 h-48 bg-brand-accent opacity-20 rounded-full blur-2xl"></div>
           </div>
         </div>
+
       </div>
     </section>
   );
