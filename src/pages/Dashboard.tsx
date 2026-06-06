@@ -819,7 +819,7 @@ const PremiumStat = ({
   const up = delta >= 0;
   const goodDirection = invertDelta ? !up : up;
   return (
-    <Card className="relative overflow-hidden border-border/60 shadow-card hover:shadow-elegant transition-all hover-scale hud-brackets sweep-line">
+    <Card className="relative overflow-hidden border-border/60 shadow-card hover:shadow-elegant transition-all hover-scale hud-brackets">
       <div className={`absolute inset-0 bg-gradient-to-br ${accentMap[accent]} opacity-60 pointer-events-none`} />
       <CardContent className="pt-5 sm:pt-6 relative">
         <div className="flex items-center justify-between mb-2 sm:mb-3">
