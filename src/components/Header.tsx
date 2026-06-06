@@ -24,7 +24,7 @@ import {
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import ThemeToggle from "@/components/ThemeToggle";
 import { toast } from "sonner";
-import HeaderParticles from "@/components/HeaderParticles";
+
 
 const Header = () => {
   const location = useLocation();
@@ -54,10 +54,8 @@ const Header = () => {
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-gradient-header/70 backdrop-blur-md border-b border-white/10 relative overflow-hidden">
-      <HeaderParticles />
-      <div className="absolute inset-0 hero-grid-overlay opacity-25 pointer-events-none" aria-hidden="true" />
-      <nav className="container mx-auto px-6 py-4 relative z-10">
+    <header className="sticky top-0 z-50 bg-gradient-header shadow-card">
+      <nav className="container mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
           <Link to="/" className="flex items-center space-x-2">
             <img src={logoImage} alt="InvoiceIQ Logo" className="w-8 h-8 rounded-lg" />
