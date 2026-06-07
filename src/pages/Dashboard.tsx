@@ -102,6 +102,8 @@ const Dashboard = () => {
   const [sortDir, setSortDir] = useState<SortDir>("desc");
   const [selected, setSelected] = useState<Invoice | null>(null);
   const [density, setDensity] = useState<"comfortable" | "compact">("comfortable");
+  const [liveStats, setLiveStats] = useState<{ totalDocuments: number; income: number; expense: number; net: number } | null>(null);
+  const [liveLoading, setLiveLoading] = useState(false);
 
   useEffect(() => {
     if (!authLoading && !user) navigate("/");
@@ -117,6 +119,19 @@ const Dashboard = () => {
     setInvoices((data as Invoice[]) || []);
   };
 
+  const loadLiveStats = async () => {
+    if (!user) return;
+    setLiveLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("dashboard-live-stats");
+      if (!error && data && !data.error) setLiveStats(data);
+    } catch (e) {
+      console.error("live stats error", e);
+    } finally {
+      setLiveLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (!user) return;
     (async () => {
@@ -124,12 +139,13 @@ const Dashboard = () => {
       await loadInvoices();
       setLoading(false);
     })();
+    loadLiveStats();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   const handleRefresh = async () => {
     setRefreshing(true);
-    await loadInvoices();
+    await Promise.all([loadInvoices(), loadLiveStats()]);
     setTimeout(() => setRefreshing(false), 400);
   };
 
@@ -374,21 +390,21 @@ const Dashboard = () => {
             <PremiumStat
               icon={<Receipt className="w-5 h-5" />}
               label="Total Documents"
-              value={String(stats.total)}
+              value={liveStats ? String(liveStats.totalDocuments) : (liveLoading ? "…" : String(stats.total))}
               delta={stats.docsDelta}
               accent="primary"
             />
             <PremiumStat
               icon={<TrendingUp className="w-5 h-5" />}
               label="Income"
-              value={formatMoney(stats.income)}
+              value={formatMoney(liveStats ? liveStats.income : stats.income)}
               delta={stats.incomeDelta}
               accent="success"
             />
             <PremiumStat
               icon={<TrendingDown className="w-5 h-5" />}
               label="Expenses"
-              value={formatMoney(stats.expense)}
+              value={formatMoney(liveStats ? liveStats.expense : stats.expense)}
               delta={stats.expenseDelta}
               accent="destructive"
               invertDelta
@@ -396,11 +412,12 @@ const Dashboard = () => {
             <PremiumStat
               icon={<Wallet className="w-5 h-5" />}
               label="Net Position"
-              value={formatMoney(stats.net)}
+              value={formatMoney(liveStats ? liveStats.net : stats.net)}
               delta={stats.netDelta}
               accent="indigo"
             />
           </div>
+
 
           <Tabs defaultValue="overview" className="space-y-4 sm:space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">

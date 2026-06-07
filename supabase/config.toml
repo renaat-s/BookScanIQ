@@ -33,6 +33,9 @@ verify_jwt = true
 [functions.drive-browse]
 verify_jwt = true
 
+[functions.dashboard-live-stats]
+verify_jwt = true
+
 [functions.get-oauth-config]
 verify_jwt = false
 
