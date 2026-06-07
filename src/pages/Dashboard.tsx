@@ -55,7 +55,7 @@ type SortDir = "asc" | "desc";
 
 const parseAmount = (v: string | null) => {
   if (!v) return 0;
-  const n = parseFloat(v.replace(/[^0-9.\-]/g, ""));
+  const n = parseFloat(v.replace(/[^0-9.-]/g, ""));
   return isNaN(n) ? 0 : n;
 };
 
@@ -166,8 +166,8 @@ const Dashboard = () => {
       );
     }
     const sorted = [...list].sort((a, b) => {
-      let av: any = a[sortKey];
-      let bv: any = b[sortKey];
+      let av: string | number = a[sortKey] ?? "";
+      let bv: string | number = b[sortKey] ?? "";
       if (sortKey === "invoice_total") {
         av = parseAmount(a.invoice_total);
         bv = parseAmount(b.invoice_total);
@@ -480,7 +480,7 @@ const Dashboard = () => {
                                   borderRadius: 8,
                                   fontSize: 12,
                                 }}
-                                formatter={(v: any) => formatMoneyFull(v as number)}
+                                formatter={(v: number | string) => formatMoneyFull(Number(v))}
                               />
                               <Area type="monotone" dataKey="income" stroke="hsl(var(--success))" strokeWidth={2} fill="url(#gradIncome)" />
                               <Area type="monotone" dataKey="expense" stroke="hsl(var(--destructive))" strokeWidth={2} fill="url(#gradExpense)" />
