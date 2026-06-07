@@ -102,6 +102,8 @@ const Dashboard = () => {
   const [sortDir, setSortDir] = useState<SortDir>("desc");
   const [selected, setSelected] = useState<Invoice | null>(null);
   const [density, setDensity] = useState<"comfortable" | "compact">("comfortable");
+  const [liveStats, setLiveStats] = useState<{ totalDocuments: number; income: number; expense: number; net: number } | null>(null);
+  const [liveLoading, setLiveLoading] = useState(false);
 
   useEffect(() => {
     if (!authLoading && !user) navigate("/");
