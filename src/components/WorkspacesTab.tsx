@@ -101,8 +101,8 @@ const WorkspacesTab = () => {
       if (error) throw error;
       if (data?.error) setXeroError(data.error);
       setXero(data?.transactions ?? []);
-    } catch (e: any) {
-      setXeroError(e.message ?? "Failed to load Xero data");
+    } catch (e) {
+      setXeroError(e instanceof Error ? e.message : "Failed to load Xero data");
       setXero([]);
     } finally {
       setXeroLoading(false);
@@ -117,8 +117,8 @@ const WorkspacesTab = () => {
       if (error) throw error;
       if (data?.error) setQbError(data.error);
       setQb(data?.transactions ?? []);
-    } catch (e: any) {
-      setQbError(e.message ?? "Failed to load QuickBooks data");
+    } catch (e) {
+      setQbError(e instanceof Error ? e.message : "Failed to load QuickBooks data");
       setQb([]);
     } finally {
       setQbLoading(false);

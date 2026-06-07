@@ -34,8 +34,7 @@ const ChatDialog = ({ open, onOpenChange, userName = "there", receiptData, onCat
 
   const submitCategoryToN8n = async (category: string) => {
     try {
-      console.log("Submitting category to n8n:", category);
-      const { data, error } = await supabase.functions.invoke("chat-assistant", {
+      const { error } = await supabase.functions.invoke("chat-assistant", {
         body: { 
           submitCategory: true, 
           category, 
@@ -46,8 +45,6 @@ const ChatDialog = ({ open, onOpenChange, userName = "there", receiptData, onCat
 
       if (error) {
         console.error("Failed to submit category to n8n:", error);
-      } else {
-        console.log("Category submitted successfully:", data);
       }
     } catch (err) {
       console.error("Error submitting category:", err);

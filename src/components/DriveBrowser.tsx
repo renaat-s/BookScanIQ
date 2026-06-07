@@ -61,8 +61,8 @@ const DriveBrowser = ({ rootFolderId }: { rootFolderId: string }) => {
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       setData(data as FolderResp);
-    } catch (e: any) {
-      setError(e.message ?? "Failed to load folder");
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Failed to load folder");
     } finally {
       setLoading(false);
     }

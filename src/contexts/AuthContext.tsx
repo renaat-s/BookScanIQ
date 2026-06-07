@@ -37,8 +37,6 @@ const storeRefreshToken = async (userId: string, refreshToken: string) => {
       );
     if (error) {
       console.error('Failed to store refresh token:', error.message);
-    } else {
-      console.log('Google refresh token stored successfully');
     }
   } catch (err) {
     console.error('Error storing refresh token:', err);
