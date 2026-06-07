@@ -58,6 +58,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState(true);
   const [providerToken, setProviderToken] = useState<string | null>(null);
   const [subscription, setSubscription] = useState<SubscriptionState>(DEFAULT_SUB);
+  // Tracks whether the current sign-out was user-initiated. Used to ignore
+  // spurious SIGNED_OUT events emitted when a background API/refresh fails
+  // (e.g. a Xero/QuickBooks sync hiccup) so the user is not bounced to "/".
+  const intentionalSignOutRef = useRef(false);
 
   const checkSubscription = useCallback(async () => {
     const { data: { session: currentSession } } = await supabase.auth.getSession();
