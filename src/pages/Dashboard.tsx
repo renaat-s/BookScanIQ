@@ -347,9 +347,6 @@ const Dashboard = () => {
                 <h1 className="heading-cyber text-2xl sm:text-3xl md:text-4xl font-bold text-white tracking-tight break-words">
                   <span className="holo-text">Welcome back, {firstName}.</span>
                 </h1>
-                <p className="text-white/80 max-w-xl text-xs sm:text-sm md:text-base">
-                  {invoices.length} document{invoices.length === 1 ? "" : "s"} synced · neural pipeline online · spreadsheets obsolete.
-                </p>
               </div>
               <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2 w-full lg:w-auto">
                 <Button onClick={handleRefresh} variant="outline" size="sm" className="bg-white/10 text-white border-white/30 hover:bg-white/20 hover:text-white">
