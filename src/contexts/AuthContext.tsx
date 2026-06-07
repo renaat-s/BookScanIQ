@@ -196,6 +196,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const signOut = async () => {
+    // Mark this sign-out as intentional so the SIGNED_OUT event handler clears
+    // state instead of trying to recover the session.
+    intentionalSignOutRef.current = true;
     // Reset directory_installed for developer accounts during development
     if (user && isDeveloperEmail(user.email)) {
       await supabase
@@ -211,6 +214,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       method: 'POST',
     });
     if (!error) {
+      intentionalSignOutRef.current = true;
       await supabase.auth.signOut();
     }
     return { error: error as Error | null };
