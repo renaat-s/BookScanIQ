@@ -119,6 +119,19 @@ const Dashboard = () => {
     setInvoices((data as Invoice[]) || []);
   };
 
+  const loadLiveStats = async () => {
+    if (!user) return;
+    setLiveLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("dashboard-live-stats");
+      if (!error && data && !data.error) setLiveStats(data);
+    } catch (e) {
+      console.error("live stats error", e);
+    } finally {
+      setLiveLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (!user) return;
     (async () => {
@@ -126,12 +139,13 @@ const Dashboard = () => {
       await loadInvoices();
       setLoading(false);
     })();
+    loadLiveStats();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   const handleRefresh = async () => {
     setRefreshing(true);
-    await loadInvoices();
+    await Promise.all([loadInvoices(), loadLiveStats()]);
     setTimeout(() => setRefreshing(false), 400);
   };
 
