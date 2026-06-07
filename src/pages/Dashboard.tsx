@@ -390,21 +390,21 @@ const Dashboard = () => {
             <PremiumStat
               icon={<Receipt className="w-5 h-5" />}
               label="Total Documents"
-              value={String(stats.total)}
+              value={liveStats ? String(liveStats.totalDocuments) : (liveLoading ? "…" : String(stats.total))}
               delta={stats.docsDelta}
               accent="primary"
             />
             <PremiumStat
               icon={<TrendingUp className="w-5 h-5" />}
               label="Income"
-              value={formatMoney(stats.income)}
+              value={formatMoney(liveStats ? liveStats.income : stats.income)}
               delta={stats.incomeDelta}
               accent="success"
             />
             <PremiumStat
               icon={<TrendingDown className="w-5 h-5" />}
               label="Expenses"
-              value={formatMoney(stats.expense)}
+              value={formatMoney(liveStats ? liveStats.expense : stats.expense)}
               delta={stats.expenseDelta}
               accent="destructive"
               invertDelta
@@ -412,11 +412,12 @@ const Dashboard = () => {
             <PremiumStat
               icon={<Wallet className="w-5 h-5" />}
               label="Net Position"
-              value={formatMoney(stats.net)}
+              value={formatMoney(liveStats ? liveStats.net : stats.net)}
               delta={stats.netDelta}
               accent="indigo"
             />
           </div>
+
 
           <Tabs defaultValue="overview" className="space-y-4 sm:space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
