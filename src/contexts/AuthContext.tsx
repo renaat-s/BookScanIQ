@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, useCallback, ReactNode } from 'react';
+import { createContext, useContext, useEffect, useRef, useState, useCallback, ReactNode } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { isDeveloperEmail } from '@/lib/developer-access';
@@ -58,6 +58,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState(true);
   const [providerToken, setProviderToken] = useState<string | null>(null);
   const [subscription, setSubscription] = useState<SubscriptionState>(DEFAULT_SUB);
+  // Tracks whether the current sign-out was user-initiated. Used to ignore
+  // spurious SIGNED_OUT events emitted when a background API/refresh fails
+  // (e.g. a Xero/QuickBooks sync hiccup) so the user is not bounced to "/".
+  const intentionalSignOutRef = useRef(false);
 
   const checkSubscription = useCallback(async () => {
     const { data: { session: currentSession } } = await supabase.auth.getSession();
@@ -99,21 +103,49 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     const { data: { subscription: authSub } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        setSession(session);
-        setUser(session?.user ?? null);
-        if (session?.provider_token) {
-          setProviderToken(session.provider_token);
+      (event, newSession) => {
+        // Guard against unintentional sign-outs. Supabase emits SIGNED_OUT when
+        // a token refresh fails (e.g. triggered indirectly by an unrelated
+        // edge-function 401 such as a Xero/QuickBooks sync error). If the user
+        // didn't click "Sign out", try to recover the session from storage
+        // before clearing local auth state.
+        if (event === 'SIGNED_OUT' && !intentionalSignOutRef.current) {
+          supabase.auth.getSession().then(({ data }) => {
+            if (data.session) {
+              // Stored session still valid — keep the user signed in.
+              setSession(data.session);
+              setUser(data.session.user);
+              setLoading(false);
+              return;
+            }
+            // No recoverable session — treat as a real sign-out.
+            setSession(null);
+            setUser(null);
+            setLoading(false);
+            setSubscription({ ...DEFAULT_SUB, loading: false });
+          });
+          return;
         }
-        if (session?.provider_refresh_token && session?.user) {
+
+        // Reset the intentional flag once the SIGNED_OUT it covered has fired.
+        if (event === 'SIGNED_OUT') {
+          intentionalSignOutRef.current = false;
+        }
+
+        setSession(newSession);
+        setUser(newSession?.user ?? null);
+        if (newSession?.provider_token) {
+          setProviderToken(newSession.provider_token);
+        }
+        if (newSession?.provider_refresh_token && newSession?.user) {
           setTimeout(() => {
-            storeRefreshToken(session.user.id, session.provider_refresh_token!);
+            storeRefreshToken(newSession.user.id, newSession.provider_refresh_token!);
           }, 0);
         }
         setLoading(false);
 
         // Check subscription after auth state change
-        if (session?.user) {
+        if (newSession?.user) {
           setTimeout(() => checkSubscription(), 0);
         } else {
           setSubscription({ ...DEFAULT_SUB, loading: false });
@@ -164,6 +196,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const signOut = async () => {
+    // Mark this sign-out as intentional so the SIGNED_OUT event handler clears
+    // state instead of trying to recover the session.
+    intentionalSignOutRef.current = true;
     // Reset directory_installed for developer accounts during development
     if (user && isDeveloperEmail(user.email)) {
       await supabase
@@ -179,6 +214,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       method: 'POST',
     });
     if (!error) {
+      intentionalSignOutRef.current = true;
       await supabase.auth.signOut();
     }
     return { error: error as Error | null };
