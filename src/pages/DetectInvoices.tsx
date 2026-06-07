@@ -43,7 +43,7 @@ const parseErrorMessage = (error: unknown): string => {
 };
 
 const DetectInvoices = () => {
-  const { user, loading, signInWithGoogle } = useAuth();
+  const { user, loading, signInWithGoogle, signOut } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
   const guard = useDirectoryGuard();
