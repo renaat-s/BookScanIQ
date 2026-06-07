@@ -103,21 +103,49 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     const { data: { subscription: authSub } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        setSession(session);
-        setUser(session?.user ?? null);
-        if (session?.provider_token) {
-          setProviderToken(session.provider_token);
+      (event, newSession) => {
+        // Guard against unintentional sign-outs. Supabase emits SIGNED_OUT when
+        // a token refresh fails (e.g. triggered indirectly by an unrelated
+        // edge-function 401 such as a Xero/QuickBooks sync error). If the user
+        // didn't click "Sign out", try to recover the session from storage
+        // before clearing local auth state.
+        if (event === 'SIGNED_OUT' && !intentionalSignOutRef.current) {
+          supabase.auth.getSession().then(({ data }) => {
+            if (data.session) {
+              // Stored session still valid — keep the user signed in.
+              setSession(data.session);
+              setUser(data.session.user);
+              setLoading(false);
+              return;
+            }
+            // No recoverable session — treat as a real sign-out.
+            setSession(null);
+            setUser(null);
+            setLoading(false);
+            setSubscription({ ...DEFAULT_SUB, loading: false });
+          });
+          return;
         }
-        if (session?.provider_refresh_token && session?.user) {
+
+        // Reset the intentional flag once the SIGNED_OUT it covered has fired.
+        if (event === 'SIGNED_OUT') {
+          intentionalSignOutRef.current = false;
+        }
+
+        setSession(newSession);
+        setUser(newSession?.user ?? null);
+        if (newSession?.provider_token) {
+          setProviderToken(newSession.provider_token);
+        }
+        if (newSession?.provider_refresh_token && newSession?.user) {
           setTimeout(() => {
-            storeRefreshToken(session.user.id, session.provider_refresh_token!);
+            storeRefreshToken(newSession.user.id, newSession.provider_refresh_token!);
           }, 0);
         }
         setLoading(false);
 
         // Check subscription after auth state change
-        if (session?.user) {
+        if (newSession?.user) {
           setTimeout(() => checkSubscription(), 0);
         } else {
           setSubscription({ ...DEFAULT_SUB, loading: false });
