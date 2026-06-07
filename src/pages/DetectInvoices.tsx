@@ -218,7 +218,7 @@ const DetectInvoices = () => {
   };
 
   const handleUseDifferentEmail = async () => {
-    await supabase.auth.signOut();
+    await signOut();
     setStep('auth');
   };
 
