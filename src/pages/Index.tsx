@@ -1,6 +1,6 @@
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
-import WaitlistSection from "@/components/WaitlistSection";
+
 import Features from "@/components/Features";
 import HowItWorks from "@/components/HowItWorks";
 import Footer from "@/components/Footer";
@@ -29,7 +29,7 @@ const Index = () => {
         <title>InvoiceIQ - Automated Bookkeeping & AI Invoice Processing</title>
         <meta
           name="description"
-          content="InvoiceIQ — Automate your bookkeeping. AI-powered invoice processing with Google Drive, Xero, and QuickBooks integration. Join the waitlist today."
+          content="InvoiceIQ — Automate your bookkeeping. AI-powered invoice processing with Google Drive, Xero, and QuickBooks integration."
         />
         <meta
           name="keywords"
@@ -43,7 +43,6 @@ const Index = () => {
       <Header />
       <main>
         <Hero />
-        <WaitlistSection />
         <Features />
         <HowItWorks />
       </main>
