@@ -169,6 +169,7 @@ export type Database = {
           quickbooks_income_account: string | null
           quickbooks_refresh_token: string | null
           root_folder_id: string | null
+          uncat_folder_id: string | null
           updated_at: string
           user_id: string
           user_spreadsheet_id: string | null
@@ -189,6 +190,7 @@ export type Database = {
           quickbooks_income_account?: string | null
           quickbooks_refresh_token?: string | null
           root_folder_id?: string | null
+          uncat_folder_id?: string | null
           updated_at?: string
           user_id: string
           user_spreadsheet_id?: string | null
@@ -209,6 +211,7 @@ export type Database = {
           quickbooks_income_account?: string | null
           quickbooks_refresh_token?: string | null
           root_folder_id?: string | null
+          uncat_folder_id?: string | null
           updated_at?: string
           user_id?: string
           user_spreadsheet_id?: string | null
