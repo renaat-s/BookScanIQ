@@ -15,6 +15,7 @@ import ScrollToTop from "./components/ScrollToTop";
 
 // Lazy load all other routes
 const About = lazy(() => import("./pages/About"));
+const AboutInvoiceIQ = lazy(() => import("./pages/AboutInvoiceIQ"));
 const FAQ = lazy(() => import("./pages/FAQ"));
 const Compliance = lazy(() => import("./pages/Compliance"));
 const Privacy = lazy(() => import("./pages/Privacy"));
@@ -58,6 +59,7 @@ const App = () => (
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/about" element={<About />} />
+              <Route path="/about-invoiceiq" element={<AboutInvoiceIQ />} />
               <Route path="/faq" element={<FAQ />} />
               <Route path="/compliance" element={<Compliance />} />
               <Route path="/privacy" element={<Privacy />} />

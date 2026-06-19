@@ -6,7 +6,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
-import heroImage from "@/assets/hero-invoice-illustration.png";
+
 import logoImage from "@/assets/InvoiceIQ_Logo.png";
 import ParticleField from "./ParticleField";
 import TiltCard from "./TiltCard";
@@ -245,20 +245,6 @@ const Hero = () => {
             </div>
           </div>
 
-          <div className="relative w-full max-w-3xl mx-auto">
-            <div className="relative z-10">
-              <TiltCard className="rounded-2xl shadow-glow">
-                <img
-                  src={heroImage}
-                  alt="AI-powered invoice processing dashboard showing automated data extraction and validation"
-                  className="w-full h-auto rounded-2xl"
-                  data-aos="fade-up"
-                />
-              </TiltCard>
-            </div>
-            <div className="absolute top-4 right-4 w-72 h-72 bg-gradient-primary opacity-20 rounded-full blur-3xl"></div>
-            <div className="absolute bottom-4 left-4 w-48 h-48 bg-brand-accent opacity-20 rounded-full blur-2xl"></div>
-          </div>
         </div>
 
       </div>

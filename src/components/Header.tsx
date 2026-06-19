@@ -115,6 +115,9 @@ const Header = () => {
                   <DropdownMenuItem onClick={() => navigate('/about')} className="font-mono text-xs uppercase tracking-wider">
                     <Info className="h-4 w-4 mr-2" /> About
                   </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate('/about-invoiceiq')} className="font-mono text-xs uppercase tracking-wider">
+                    <Info className="h-4 w-4 mr-2" /> About InvoiceIQ
+                  </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => navigate('/faq')} className="font-mono text-xs uppercase tracking-wider">
                     <HelpCircle className="h-4 w-4 mr-2" /> FAQ
                   </DropdownMenuItem>
@@ -171,6 +174,9 @@ const Header = () => {
                 )}
                 <Link to="/about" className="px-3 py-3 rounded-md hover:bg-primary/10 hover:text-primary transition-smooth flex items-center gap-2">
                   <Info className="h-4 w-4" /> About
+                </Link>
+                <Link to="/about-invoiceiq" className="px-3 py-3 rounded-md hover:bg-primary/10 hover:text-primary transition-smooth flex items-center gap-2">
+                  <Info className="h-4 w-4" /> About InvoiceIQ
                 </Link>
                 <Link to="/faq" className="px-3 py-3 rounded-md hover:bg-primary/10 hover:text-primary transition-smooth flex items-center gap-2">
                   <HelpCircle className="h-4 w-4" /> FAQ
