@@ -6,7 +6,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
-import heroImage from "@/assets/hero-invoice-illustration.png";
+
 import logoImage from "@/assets/InvoiceIQ_Logo.png";
 import ParticleField from "./ParticleField";
 import TiltCard from "./TiltCard";
