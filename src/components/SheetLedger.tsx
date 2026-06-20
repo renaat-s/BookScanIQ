@@ -50,26 +50,23 @@ const SheetLedger = () => {
   const [query, setQuery] = useState("");
   const [page, setPage] = useState(0);
 
-  const load = useCallback(
-    async (sheetName?: string) => {
-      setLoading(true);
-      setError(null);
-      try {
-        const { data, error } = await supabase.functions.invoke("sheet-read", {
-          body: sheetName ? { sheetName } : {},
-        });
-        if (error) throw error;
-        if (data?.error) throw new Error(data.error);
-        setData(data as SheetResp);
-        if (!activeTab && data?.active?.title) setActiveTab(data.active.title);
-      } catch (e) {
-        setError(e instanceof Error ? e.message : "Failed to load ledger");
-      } finally {
-        setLoading(false);
-      }
-    },
-    [activeTab],
-  );
+  const load = useCallback(async (sheetName?: string) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const { data, error } = await supabase.functions.invoke("sheet-read", {
+        body: sheetName ? { sheetName } : {},
+      });
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      setData(data as SheetResp);
+      setActiveTab((prev) => prev ?? (data?.active?.title as string | undefined));
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Failed to load ledger");
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
     load(activeTab);
