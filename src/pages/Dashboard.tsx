@@ -390,9 +390,10 @@ const Dashboard = () => {
             <PremiumStat
               icon={<Receipt className="w-5 h-5" />}
               label="Total Documents"
-              value={liveStats ? String(liveStats.totalDocuments) : (liveLoading ? "…" : String(stats.total))}
+              value={liveStats ? String(liveStats.totalDocuments) : String(stats.total)}
               delta={stats.docsDelta}
               accent="primary"
+              loading={liveLoading && !liveStats}
             />
             <PremiumStat
               icon={<TrendingUp className="w-5 h-5" />}
@@ -400,6 +401,7 @@ const Dashboard = () => {
               value={formatMoney(liveStats ? liveStats.income : stats.income)}
               delta={stats.incomeDelta}
               accent="success"
+              loading={liveLoading && !liveStats}
             />
             <PremiumStat
               icon={<TrendingDown className="w-5 h-5" />}
@@ -408,6 +410,7 @@ const Dashboard = () => {
               delta={stats.expenseDelta}
               accent="destructive"
               invertDelta
+              loading={liveLoading && !liveStats}
             />
             <PremiumStat
               icon={<Wallet className="w-5 h-5" />}
@@ -415,6 +418,7 @@ const Dashboard = () => {
               value={formatMoney(liveStats ? liveStats.net : stats.net)}
               delta={stats.netDelta}
               accent="indigo"
+              loading={liveLoading && !liveStats}
             />
           </div>
 
