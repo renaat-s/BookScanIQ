@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -94,7 +94,7 @@ const WorkspacesTab = () => {
     [creds]
   );
 
-  const loadXero = async () => {
+  const loadXero = useCallback(async () => {
     setXeroLoading(true);
     setXeroError(null);
     try {
@@ -108,9 +108,9 @@ const WorkspacesTab = () => {
     } finally {
       setXeroLoading(false);
     }
-  };
+  }, []);
 
-  const loadQb = async () => {
+  const loadQb = useCallback(async () => {
     setQbLoading(true);
     setQbError(null);
     try {
@@ -124,17 +124,17 @@ const WorkspacesTab = () => {
     } finally {
       setQbLoading(false);
     }
-  };
+  }, []);
 
-  // Auto-load when credentials confirm connection
+  // Auto-load when credentials confirm connection (once per session)
+  const xeroReady = !!(creds?.xero_refresh_token && creds?.xero_tenant_id);
+  const qbReady = !!(creds?.quickbooks_refresh_token && creds?.qb_realm_id);
   useEffect(() => {
-    if (creds?.xero_refresh_token && creds?.xero_tenant_id && xero === null) loadXero();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [creds]);
+    if (xeroReady && xero === null) loadXero();
+  }, [xeroReady, xero, loadXero]);
   useEffect(() => {
-    if (creds?.quickbooks_refresh_token && creds?.qb_realm_id && qb === null) loadQb();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [creds]);
+    if (qbReady && qb === null) loadQb();
+  }, [qbReady, qb, loadQb]);
 
   if (loadingCreds) {
     return (
