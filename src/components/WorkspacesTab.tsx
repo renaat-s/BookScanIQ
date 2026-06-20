@@ -13,6 +13,7 @@ import {
   RefreshCw, Receipt, AlertCircle, Plug,
 } from "lucide-react";
 import DriveBrowser from "@/components/DriveBrowser";
+import SheetLedger from "@/components/SheetLedger";
 import { useNavigate } from "react-router-dom";
 
 interface Credentials {
@@ -188,7 +189,7 @@ const WorkspacesTab = () => {
 
           {/* SHEET */}
           <TabsContent value="sheet" className="m-0">
-            {!sheetEmbed ? (
+            {!creds?.user_spreadsheet_id ? (
               <NotConnected
                 icon={<FileSpreadsheet className="w-8 h-8" />}
                 title="Ledger spreadsheet not synced yet"
@@ -197,33 +198,7 @@ const WorkspacesTab = () => {
                 onClick={() => navigate("/detect-invoices")}
               />
             ) : (
-              <div className="space-y-3">
-                <div className="flex items-center justify-between gap-2">
-                  <Badge variant="outline" className="gap-1.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-success animate-pulse" />
-                    Live · Google Sheets
-                  </Badge>
-                  <a
-                    href={`https://docs.google.com/spreadsheets/d/${creds!.user_spreadsheet_id}/edit`}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    <Button variant="ghost" size="sm" className="gap-1.5">
-                      Open in Sheets <ExternalLink className="w-3.5 h-3.5" />
-                    </Button>
-                  </a>
-                </div>
-                <div className="rounded-xl overflow-hidden border border-border/60 bg-muted/20 h-[640px]">
-                  <iframe
-                    src={sheetEmbed}
-                    className="w-full h-full"
-                    title="Google Sheet ledger"
-                  />
-                </div>
-                <p className="text-xs text-muted-foreground">
-                  Live updates appear as InvoiceIQ writes new rows. Sign-in to the same Google account is required.
-                </p>
-              </div>
+              <SheetLedger />
             )}
           </TabsContent>
 
