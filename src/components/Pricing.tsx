@@ -67,7 +67,7 @@ const Pricing = () => {
     <section id="pricing" className="py-20 bg-transparent relative overflow-hidden">
       <div className="container mx-auto px-4 sm:px-6 relative z-10">
         <div className="text-center space-y-4 mb-16">
-          <h2 className="text-3xl md:text-5xl font-bold neon-cyber-text">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold neon-cyber-text">
             Simple, <span className="text-gradient">Transparent Pricing</span>
           </h2>
           <p className="text-lg md:text-xl text-foreground/80 max-w-3xl mx-auto leading-[1.8] tracking-[-0.005em] font-light">

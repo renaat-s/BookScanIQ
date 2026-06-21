@@ -132,7 +132,7 @@ const Hero = () => {
               className="w-full h-full rounded-xl"
             />
           </TiltCard>
-          <span className="text-4xl sm:text-5xl md:text-7xl font-bold bg-gradient-to-r from-indigo-500 via-purple-500 to-violet-500 bg-clip-text text-transparent [text-shadow:_0_4px_12px_rgb(139_92_246_/_0.4)] text-center">
+          <span className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold bg-gradient-to-r from-indigo-500 via-purple-500 to-violet-500 bg-clip-text text-transparent [text-shadow:_0_4px_12px_rgb(139_92_246_/_0.4)] text-center">
             InvoiceIQ
           </span>
         </div>
@@ -146,7 +146,7 @@ const Hero = () => {
               </div>
 
               <h1
-                className="text-3xl sm:text-4xl md:text-6xl font-bold leading-tight glitch-text neon-glow-text break-words"
+                className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight glitch-text neon-glow-text break-words"
                 data-text="InvoiceIQ — AI-Powered Automated Bookkeeping & Invoice Processing"
               >
                 InvoiceIQ — AI-Powered{" "}
