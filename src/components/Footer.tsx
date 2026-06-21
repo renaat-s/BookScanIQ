@@ -30,8 +30,9 @@ const Footer = () => {
             <ArrowRight className="w-5 h-5 ml-2" />
           </Button>
         </div>
-        
-        <div className="border-t border-white/20 mt-16 pt-8">
+        )}
+
+        <div className={showCTA ? "border-t border-white/20 mt-16 pt-8" : ""}>
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <div className="flex items-center space-x-2">
               <img src={logoImage} alt="InvoiceIQ Logo" className="w-8 h-8 rounded-lg" />
