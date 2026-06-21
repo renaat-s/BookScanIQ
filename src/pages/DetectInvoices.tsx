@@ -664,14 +664,14 @@ const DetectInvoices = () => {
                     : 'Your backlog scan has completed successfully.'}
               </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <Button 
-                  onClick={() => navigate('/')} 
-                  className="w-full" 
+              <CardContent className="space-y-3">
+                <p className="text-xs text-center text-muted-foreground">Taking you to your dashboard…</p>
+                <Button
+                  onClick={() => navigate('/dashboard')}
+                  className="w-full"
                   size="lg"
-                  variant="outline"
                 >
-                  Return to Home
+                  Go to Dashboard
                 </Button>
               </CardContent>
             </Card>
