@@ -14,6 +14,57 @@ export type Database = {
   }
   public: {
     Tables: {
+      audit_events: {
+        Row: {
+          created_at: string
+          event_type: string
+          id: string
+          invoice_id: string | null
+          message: string
+          metadata: Json | null
+          reasoning: string | null
+          scan_job_id: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          event_type: string
+          id?: string
+          invoice_id?: string | null
+          message: string
+          metadata?: Json | null
+          reasoning?: string | null
+          scan_job_id?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          event_type?: string
+          id?: string
+          invoice_id?: string | null
+          message?: string
+          metadata?: Json | null
+          reasoning?: string | null
+          scan_job_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "audit_events_invoice_id_fkey"
+            columns: ["invoice_id"]
+            isOneToOne: false
+            referencedRelation: "invoices"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "audit_events_scan_job_id_fkey"
+            columns: ["scan_job_id"]
+            isOneToOne: false
+            referencedRelation: "scan_jobs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       invoices: {
         Row: {
           created_at: string
@@ -81,6 +132,7 @@ export type Database = {
           email: string | null
           full_name: string | null
           id: string
+          minutes_per_doc: number
           n8n_webhook_connected: boolean | null
           updated_at: string
           user_id: string
@@ -92,6 +144,7 @@ export type Database = {
           email?: string | null
           full_name?: string | null
           id?: string
+          minutes_per_doc?: number
           n8n_webhook_connected?: boolean | null
           updated_at?: string
           user_id: string
@@ -103,6 +156,7 @@ export type Database = {
           email?: string | null
           full_name?: string | null
           id?: string
+          minutes_per_doc?: number
           n8n_webhook_connected?: boolean | null
           updated_at?: string
           user_id?: string
