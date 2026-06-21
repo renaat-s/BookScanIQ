@@ -35,6 +35,8 @@ import {
 } from "lucide-react";
 import WorkspacesTab from "@/components/WorkspacesTab";
 import AuditLogTab from "@/components/AuditLogTab";
+import SavingsWidget from "@/components/SavingsWidget";
+import TipsCard from "@/components/TipsCard";
 import { ShieldCheck } from "lucide-react";
 
 interface Invoice {
@@ -221,6 +223,7 @@ const Dashboard = () => {
       income,
       expense,
       net: income - expense,
+      countThis,
       docsDelta: pct(countThis, countLast),
       incomeDelta: pct(incomeThis, incomeLast),
       expenseDelta: pct(expenseThis, expenseLast),
@@ -448,6 +451,12 @@ const Dashboard = () => {
                 <EmptyState onAction={() => navigate("/detect-invoices")} />
               ) : (
                 <>
+                  <div className="grid lg:grid-cols-3 gap-4">
+                    <div className="lg:col-span-2">
+                      <SavingsWidget documentsThisMonth={stats.countThis} />
+                    </div>
+                    <TipsCard />
+                  </div>
                   <div className="grid lg:grid-cols-3 gap-4">
                     {/* Cashflow */}
                     <Card className="lg:col-span-2 overflow-hidden border-border/60 shadow-card">
