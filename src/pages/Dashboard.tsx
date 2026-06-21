@@ -221,6 +221,7 @@ const Dashboard = () => {
       income,
       expense,
       net: income - expense,
+      countThis,
       docsDelta: pct(countThis, countLast),
       incomeDelta: pct(incomeThis, incomeLast),
       expenseDelta: pct(expenseThis, expenseLast),
