@@ -42,6 +42,15 @@ const statusColor = (v: string) => {
   return "";
 };
 
+// Detect income/expense type cells for green/red styling
+const detectType = (val: string): "income" | "expense" | null => {
+  const s = (val ?? "").trim().toLowerCase();
+  if (!s) return null;
+  if (s === "income" || s.includes("↗") || s === "credit" || s === "revenue" || s === "in") return "income";
+  if (s === "expense" || s.includes("↘") || s === "debit" || s === "cost" || s === "out") return "expense";
+  return null;
+};
+
 const SheetLedger = () => {
   const [data, setData] = useState<SheetResp | null>(null);
   const [loading, setLoading] = useState(false);
@@ -163,13 +172,13 @@ const SheetLedger = () => {
             <table className="w-full text-sm">
               <thead className="bg-muted/60 backdrop-blur sticky top-0 z-10">
                 <tr className="border-b border-border/60">
-                  <th className="px-3 py-2 text-left text-[11px] uppercase tracking-wider text-muted-foreground font-semibold w-10">
+                  <th className="px-3 py-2 text-center text-[11px] uppercase tracking-wider text-muted-foreground font-semibold w-10">
                     #
                   </th>
                   {header.map((h, i) => (
                     <th
                       key={i}
-                      className="px-3 py-2 text-left text-[11px] uppercase tracking-wider text-muted-foreground font-semibold whitespace-nowrap"
+                      className="px-3 py-2 text-center text-[11px] uppercase tracking-wider text-muted-foreground font-semibold whitespace-nowrap"
                     >
                       {h || `Col ${i + 1}`}
                     </th>
@@ -182,7 +191,7 @@ const SheetLedger = () => {
                     key={ri}
                     className="hover:bg-muted/40 transition-colors"
                   >
-                    <td className="px-3 py-2 text-xs text-muted-foreground tabular-nums">
+                    <td className="px-3 py-2 text-center text-xs text-muted-foreground tabular-nums">
                       {page * PAGE_SIZE + ri + 2}
                     </td>
                     {header.map((_, ci) => {
@@ -194,15 +203,27 @@ const SheetLedger = () => {
                           headerName.includes(k),
                         );
                       const looksStatus = ["status", "state"].some((k) => headerName.includes(k));
+                      const looksType = ["type", "direction", "flow"].some((k) => headerName.includes(k));
+                      const txnType = looksType ? detectType(val) : null;
                       const chipCls = looksStatus ? statusColor(val) : "";
                       return (
                         <td
                           key={ci}
-                          className={`px-3 py-2 align-middle whitespace-nowrap ${
-                            looksMoney ? "text-right font-semibold tabular-nums" : ""
+                          className={`px-3 py-2 align-middle text-center whitespace-nowrap ${
+                            looksMoney ? "font-semibold tabular-nums" : ""
                           }`}
                         >
-                          {looksStatus && val ? (
+                          {txnType ? (
+                            <span
+                              className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full border text-[11px] font-semibold ${
+                                txnType === "income"
+                                  ? "bg-success/15 text-success border-success/30"
+                                  : "bg-destructive/15 text-destructive border-destructive/30"
+                              }`}
+                            >
+                              {txnType === "income" ? "↗ Income" : "↘ Expense"}
+                            </span>
+                          ) : looksStatus && val ? (
                             <span
                               className={`inline-flex items-center px-2 py-0.5 rounded-full border text-[11px] font-medium ${
                                 chipCls || "bg-muted text-muted-foreground border-border"

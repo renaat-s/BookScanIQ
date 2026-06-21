@@ -1,16 +1,19 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import logoImage from "@/assets/InvoiceIQ_Logo.png";
 import nanocloneLogo from "@/assets/nanoclone-logo.png";
 import HeaderParticles from "@/components/HeaderParticles";
 
 const Footer = () => {
+  const { pathname } = useLocation();
+  const showCTA = pathname === "/";
   return (
     <footer className="relative bg-gradient-primary text-white overflow-hidden">
       <HeaderParticles />
       <div className="absolute inset-0 hero-grid-overlay opacity-30 pointer-events-none" aria-hidden="true" />
-      <div className="container mx-auto px-4 sm:px-6 py-16 relative z-10">
+      <div className={`container mx-auto px-4 sm:px-6 relative z-10 ${showCTA ? "py-16" : "py-8"}`}>
+        {showCTA && (
         <div className="text-center space-y-8">
           <h2 className="text-3xl md:text-4xl font-bold neon-cyber-text">
             Ready to Transform Your Invoice Processing?
@@ -27,8 +30,9 @@ const Footer = () => {
             <ArrowRight className="w-5 h-5 ml-2" />
           </Button>
         </div>
-        
-        <div className="border-t border-white/20 mt-16 pt-8">
+        )}
+
+        <div className={showCTA ? "border-t border-white/20 mt-16 pt-8" : ""}>
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <div className="flex items-center space-x-2">
               <img src={logoImage} alt="InvoiceIQ Logo" className="w-8 h-8 rounded-lg" />
