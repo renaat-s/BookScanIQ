@@ -48,6 +48,15 @@ const DetectInvoices = () => {
   const navigate = useNavigate();
   const guard = useDirectoryGuard();
   const [step, setStep] = useState<'auth' | 'confirm' | 'select-scan' | 'select-backlog-duration' | 'select-scan-date' | 'connecting' | 'scanning' | 'results' | 'connected' | 'failed'>('auth');
+
+  // Auto-redirect to Dashboard once the scan finishes so users land on their results
+  // without an extra click. 4s gives them time to read the success state.
+  useEffect(() => {
+    if (step === 'results' || step === 'connected') {
+      const t = setTimeout(() => navigate('/dashboard'), 4000);
+      return () => clearTimeout(t);
+    }
+  }, [step, navigate]);
   const [selectedScanType, setSelectedScanType] = useState<ScanType | null>(null);
   const [backlogDuration, setBacklogDuration] = useState<BacklogDuration | null>(null);
   const [customScanDate, setCustomScanDate] = useState<Date | undefined>(undefined);
