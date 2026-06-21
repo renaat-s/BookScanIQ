@@ -35,6 +35,8 @@ import {
 } from "lucide-react";
 import WorkspacesTab from "@/components/WorkspacesTab";
 import AuditLogTab from "@/components/AuditLogTab";
+import SavingsWidget from "@/components/SavingsWidget";
+import TipsCard from "@/components/TipsCard";
 import { ShieldCheck } from "lucide-react";
 
 interface Invoice {
