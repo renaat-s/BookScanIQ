@@ -20,7 +20,7 @@ const Terms = () => {
               <div className="mx-auto w-20 h-20 rounded-2xl bg-card/80 backdrop-blur-sm border border-border/50 shadow-elegant flex items-center justify-center">
                 <ScrollText className="w-9 h-9 text-violet-500" />
               </div>
-              <h1 className="text-4xl md:text-5xl font-light tracking-tight text-foreground leading-tight py-1">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-light tracking-tight text-foreground leading-tight py-1">
                 Terms of Service
               </h1>
               <div className="w-16 h-px bg-gradient-to-r from-transparent via-border to-transparent mx-auto" />
