@@ -452,6 +452,12 @@ const Dashboard = () => {
               ) : (
                 <>
                   <div className="grid lg:grid-cols-3 gap-4">
+                    <div className="lg:col-span-2">
+                      <SavingsWidget documentsThisMonth={stats.countThis} />
+                    </div>
+                    <TipsCard />
+                  </div>
+                  <div className="grid lg:grid-cols-3 gap-4">
                     {/* Cashflow */}
                     <Card className="lg:col-span-2 overflow-hidden border-border/60 shadow-card">
                       <CardHeader className="pb-2">
