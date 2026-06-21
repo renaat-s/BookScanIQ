@@ -12,6 +12,7 @@ import { Loader2 } from "lucide-react";
 // Eagerly load the landing page
 import Index from "./pages/Index";
 import ScrollToTop from "./components/ScrollToTop";
+import FeedbackWidget from "./components/FeedbackWidget";
 
 // Lazy load all other routes
 const About = lazy(() => import("./pages/About"));
@@ -78,6 +79,7 @@ const App = () => (
               <Route path="*" element={<NotFound />} />
             </Routes>
             </Suspense>
+            <FeedbackWidget />
             </BrowserRouter>
           </TooltipProvider>
         </AuthProvider>
