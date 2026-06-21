@@ -34,6 +34,8 @@ import {
   ArrowUpRight, ArrowDownRight, Clock, Building2, Filter, Plug,
 } from "lucide-react";
 import WorkspacesTab from "@/components/WorkspacesTab";
+import AuditLogTab from "@/components/AuditLogTab";
+import { ShieldCheck } from "lucide-react";
 
 interface Invoice {
   id: string;
@@ -430,6 +432,7 @@ const Dashboard = () => {
                 <TabsTrigger value="workspaces" className="gap-1.5 flex-1 sm:flex-none"><Plug className="w-4 h-4" /><span className="hidden xs:inline sm:inline">Workspaces</span></TabsTrigger>
                 <TabsTrigger value="documents" className="gap-1.5 flex-1 sm:flex-none"><FileText className="w-4 h-4" /><span className="hidden xs:inline sm:inline">Documents</span></TabsTrigger>
                 <TabsTrigger value="vendors" className="gap-1.5 flex-1 sm:flex-none"><Building2 className="w-4 h-4" /><span className="hidden xs:inline sm:inline">Vendors</span></TabsTrigger>
+                <TabsTrigger value="audit" className="gap-1.5 flex-1 sm:flex-none"><ShieldCheck className="w-4 h-4" /><span className="hidden xs:inline sm:inline">Audit Log</span></TabsTrigger>
               </TabsList>
               <div className="flex gap-2">
                 <Button variant="outline" size="sm" onClick={exportCsv} className="gap-1.5 w-full sm:w-auto">
