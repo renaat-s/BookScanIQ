@@ -626,14 +626,16 @@ const DetectInvoices = () => {
                 </p>
 
                 {step === 'results' && (
-                  <Button
-                    onClick={() => navigate('/')}
-                    className="w-full"
-                    size="lg"
-                    variant="outline"
-                  >
-                    Return to Home
-                  </Button>
+                  <>
+                    <p className="text-[11px] text-center text-muted-foreground -mt-1">Taking you to your dashboard…</p>
+                    <Button
+                      onClick={() => navigate('/dashboard')}
+                      className="w-full"
+                      size="lg"
+                    >
+                      Go to Dashboard
+                    </Button>
+                  </>
                 )}
               </CardContent>
             </Card>
@@ -643,7 +645,7 @@ const DetectInvoices = () => {
             <InvoiceResultsCard
               jobId={currentJobId}
               onBack={() => setStep('select-scan')}
-              onHome={() => navigate('/')}
+              onHome={() => navigate('/dashboard')}
             />
           )}
 
