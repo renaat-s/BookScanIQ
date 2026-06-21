@@ -48,6 +48,15 @@ const DetectInvoices = () => {
   const navigate = useNavigate();
   const guard = useDirectoryGuard();
   const [step, setStep] = useState<'auth' | 'confirm' | 'select-scan' | 'select-backlog-duration' | 'select-scan-date' | 'connecting' | 'scanning' | 'results' | 'connected' | 'failed'>('auth');
+
+  // Auto-redirect to Dashboard once the scan finishes so users land on their results
+  // without an extra click. 4s gives them time to read the success state.
+  useEffect(() => {
+    if (step === 'results' || step === 'connected') {
+      const t = setTimeout(() => navigate('/dashboard'), 4000);
+      return () => clearTimeout(t);
+    }
+  }, [step, navigate]);
   const [selectedScanType, setSelectedScanType] = useState<ScanType | null>(null);
   const [backlogDuration, setBacklogDuration] = useState<BacklogDuration | null>(null);
   const [customScanDate, setCustomScanDate] = useState<Date | undefined>(undefined);
@@ -617,14 +626,16 @@ const DetectInvoices = () => {
                 </p>
 
                 {step === 'results' && (
-                  <Button
-                    onClick={() => navigate('/')}
-                    className="w-full"
-                    size="lg"
-                    variant="outline"
-                  >
-                    Return to Home
-                  </Button>
+                  <>
+                    <p className="text-[11px] text-center text-muted-foreground -mt-1">Taking you to your dashboard…</p>
+                    <Button
+                      onClick={() => navigate('/dashboard')}
+                      className="w-full"
+                      size="lg"
+                    >
+                      Go to Dashboard
+                    </Button>
+                  </>
                 )}
               </CardContent>
             </Card>
@@ -634,7 +645,7 @@ const DetectInvoices = () => {
             <InvoiceResultsCard
               jobId={currentJobId}
               onBack={() => setStep('select-scan')}
-              onHome={() => navigate('/')}
+              onHome={() => navigate('/dashboard')}
             />
           )}
 
@@ -653,14 +664,14 @@ const DetectInvoices = () => {
                     : 'Your backlog scan has completed successfully.'}
               </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <Button 
-                  onClick={() => navigate('/')} 
-                  className="w-full" 
+              <CardContent className="space-y-3">
+                <p className="text-xs text-center text-muted-foreground">Taking you to your dashboard…</p>
+                <Button
+                  onClick={() => navigate('/dashboard')}
+                  className="w-full"
                   size="lg"
-                  variant="outline"
                 >
-                  Return to Home
+                  Go to Dashboard
                 </Button>
               </CardContent>
             </Card>
