@@ -763,6 +763,11 @@ const Dashboard = () => {
                 </CardContent>
               </Card>
             </TabsContent>
+
+            {/* AUDIT LOG TAB */}
+            <TabsContent value="audit" className="m-0">
+              <AuditLogTab />
+            </TabsContent>
           </Tabs>
         </div>
       </main>
