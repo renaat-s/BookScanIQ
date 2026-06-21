@@ -35,7 +35,7 @@ const steps = [
 const HowItWorks = () => {
   return (
     <section id="how-it-works" className="py-20 bg-gradient-subtle">
-      <div className="container mx-auto px-6">
+      <div className="container mx-auto px-4 sm:px-6">
         <div className="text-center space-y-4 mb-16">
           <h2 className="text-3xl md:text-5xl font-bold neon-cyber-text glitch-text" data-text="How InvoiceIQ Works" data-aos="zoom-in">
             How <span className="text-gradient">InvoiceIQ</span> Works

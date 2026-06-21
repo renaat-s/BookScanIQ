@@ -66,7 +66,7 @@ const Support = () => {
       <Header />
       <main className="bg-gradient-subtle">
         <section className="py-20 md:py-28">
-          <div className="container mx-auto px-6">
+          <div className="container mx-auto px-4 sm:px-6">
             <div className="max-w-5xl mx-auto">
               {/* Header */}
               <div className="text-center space-y-5 mb-16">

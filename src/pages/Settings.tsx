@@ -437,7 +437,7 @@ const Settings = () => {
       <Header />
 
       <main className="bg-gradient-subtle">
-        <div className="container mx-auto px-6 py-20">
+        <div className="container mx-auto px-4 sm:px-6 py-20">
           <div className="max-w-2xl mx-auto space-y-10">
             <div className="text-center space-y-5">
               <div className="mx-auto w-20 h-20 rounded-2xl bg-card/80 backdrop-blur-sm border border-border/50 shadow-elegant flex items-center justify-center">

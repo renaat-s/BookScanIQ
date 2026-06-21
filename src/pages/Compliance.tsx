@@ -75,7 +75,7 @@ const Compliance = () => {
       <Header />
       <main className="bg-gradient-subtle">
         <section className="py-20 md:py-28">
-          <div className="container mx-auto px-6">
+          <div className="container mx-auto px-4 sm:px-6">
             <div className="max-w-4xl mx-auto text-center space-y-5">
               <div className="mx-auto w-20 h-20 rounded-2xl bg-card/80 backdrop-blur-sm border border-border/50 shadow-elegant flex items-center justify-center">
                 <Shield className="w-9 h-9 text-violet-500" />
@@ -92,7 +92,7 @@ const Compliance = () => {
         </section>
 
         <section className="pb-20 md:pb-28">
-          <div className="container mx-auto px-6">
+          <div className="container mx-auto px-4 sm:px-6">
             <div className="max-w-4xl mx-auto space-y-6">
               {sections.map(({ icon: Icon, title, intro, points }) => (
                 <article
