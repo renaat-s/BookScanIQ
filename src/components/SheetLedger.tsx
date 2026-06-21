@@ -42,6 +42,15 @@ const statusColor = (v: string) => {
   return "";
 };
 
+// Detect income/expense type cells for green/red styling
+const detectType = (val: string): "income" | "expense" | null => {
+  const s = (val ?? "").trim().toLowerCase();
+  if (!s) return null;
+  if (s === "income" || s.includes("↗") || s === "credit" || s === "revenue" || s === "in") return "income";
+  if (s === "expense" || s.includes("↘") || s === "debit" || s === "cost" || s === "out") return "expense";
+  return null;
+};
+
 const SheetLedger = () => {
   const [data, setData] = useState<SheetResp | null>(null);
   const [loading, setLoading] = useState(false);
