@@ -30,15 +30,15 @@ interface LogParams {
  */
 export async function logAuditEvent(params: LogParams): Promise<void> {
   try {
-    await supabase.from("audit_events").insert({
+    await supabase.from("audit_events").insert([{
       user_id: params.userId,
       event_type: params.eventType,
       message: params.message,
       reasoning: params.reasoning ?? null,
       invoice_id: params.invoiceId ?? null,
       scan_job_id: params.scanJobId ?? null,
-      metadata: params.metadata ?? {},
-    });
+      metadata: (params.metadata ?? {}) as any,
+    }]);
   } catch (err) {
     console.warn("[auditLog] failed to record event", err);
   }
