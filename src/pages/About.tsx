@@ -20,10 +20,10 @@ const About = () => {
       <main className="bg-gradient-subtle relative overflow-hidden">
         <CyberBackground />
         <section className="pt-16 pb-16 md:pt-24 md:pb-24 relative">
-          <div className="container mx-auto px-6 relative z-10">
+          <div className="container mx-auto px-4 sm:px-6 relative z-10">
             <div className="max-w-3xl mx-auto text-center">
               <h1
-                className="text-5xl md:text-6xl font-bold tracking-tight bg-gradient-to-r from-violet-600 via-purple-500 to-fuchsia-500 bg-clip-text text-transparent neon-cyber-text glitch-text"
+                className="text-3xl sm:text-4xl md:text-6xl font-bold tracking-tight bg-gradient-to-r from-violet-600 via-purple-500 to-fuchsia-500 bg-clip-text text-transparent neon-cyber-text glitch-text"
                 data-text="About Us"
               >
                 About Us
@@ -33,7 +33,7 @@ const About = () => {
         </section>
 
         <section className="pt-12 pb-20 md:pt-20 md:pb-28 relative">
-          <div className="container mx-auto px-6 relative z-10">
+          <div className="container mx-auto px-4 sm:px-6 relative z-10">
             <div className="max-w-4xl mx-auto">
               <TiltCard className="rounded-3xl">
                 <div className="glass-card cyber-border rounded-3xl shadow-elegant p-8 md:p-12 space-y-10">

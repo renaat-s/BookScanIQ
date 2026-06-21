@@ -54,10 +54,10 @@ const FAQ = () => {
       <main className="bg-background relative overflow-hidden">
         <CyberBackground />
         <section className="pt-16 pb-8 md:pt-24 md:pb-12 relative">
-          <div className="container mx-auto px-6 relative z-10">
+          <div className="container mx-auto px-4 sm:px-6 relative z-10">
             <div className="max-w-4xl mx-auto text-center">
               <h1
-                className="text-4xl md:text-6xl font-bold tracking-tight bg-gradient-to-r from-violet-600 via-purple-500 to-fuchsia-500 bg-clip-text text-transparent neon-cyber-text glitch-text"
+                className="text-3xl sm:text-4xl md:text-6xl font-bold tracking-tight bg-gradient-to-r from-violet-600 via-purple-500 to-fuchsia-500 bg-clip-text text-transparent neon-cyber-text glitch-text"
                 data-text="Frequently Asked Questions"
               >
                 Frequently Asked Questions
@@ -70,7 +70,7 @@ const FAQ = () => {
         </section>
 
         <section className="pt-8 pb-20 md:pt-12 md:pb-28 relative">
-          <div className="container mx-auto px-6 relative z-10">
+          <div className="container mx-auto px-4 sm:px-6 relative z-10">
             <div className="max-w-4xl mx-auto">
               <div className="glass-card cyber-border rounded-3xl shadow-elegant p-6 md:p-10">
                 <Accordion type="single" collapsible className="space-y-3">

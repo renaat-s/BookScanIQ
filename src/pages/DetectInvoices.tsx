@@ -238,7 +238,7 @@ const DetectInvoices = () => {
       </Helmet>
       <Header />
       
-      <main className="container mx-auto px-6 py-20">
+      <main className="container mx-auto px-4 sm:px-6 py-20">
         <div className="max-w-lg mx-auto">
           {/* Directory setup guard — blocks all feature steps until ready */}
           {user && guard.status !== 'ready' && guard.status !== 'loading' && (
