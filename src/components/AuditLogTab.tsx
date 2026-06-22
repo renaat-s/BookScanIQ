@@ -6,8 +6,14 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { useToast } from "@/hooks/use-toast";
+import {
   ScanLine, FileCheck2, AlertCircle, Plug, Settings as SettingsIcon,
-  Download, Loader2, ShieldCheck, Search, RefreshCw, Sparkles, Receipt,
+  Download, Loader2, ShieldCheck, Search, RefreshCw, Sparkles, Receipt, Trash2,
 } from "lucide-react";
 
 type FeedItem = {
