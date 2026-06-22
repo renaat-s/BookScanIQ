@@ -7,6 +7,7 @@ import {
   Loader2, RefreshCw, ExternalLink, AlertCircle, Search,
   FileSpreadsheet, ChevronLeft, ChevronRight,
 } from "lucide-react";
+import DriveLinkPreview, { isUrl, extractDriveId } from "./DriveLinkPreview";
 
 interface SheetTab {
   sheetId: number;
