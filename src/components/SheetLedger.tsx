@@ -209,7 +209,7 @@ const SheetLedger = () => {
                     className="hover:bg-muted/40 transition-colors"
                   >
                     <td className="px-3 py-2 text-center text-xs text-muted-foreground tabular-nums">
-                      {page * PAGE_SIZE + ri + 2}
+                      {page * PAGE_SIZE + ri + 1}
                     </td>
                     {header.map((_, ci) => {
                       const val = row[ci] ?? "";
