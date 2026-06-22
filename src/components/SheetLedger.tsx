@@ -84,6 +84,22 @@ const SheetLedger = () => {
   const header = data?.values?.[0] ?? [];
   const rows = useMemo(() => data?.values?.slice(1) ?? [], [data]);
 
+  // Precompute per-column heuristics once per header change (was O(rows × cols) per render).
+  const colMeta = useMemo(
+    () =>
+      header.map((h) => {
+        const name = (h ?? "").toLowerCase();
+        return {
+          looksMoneyByHeader: ["total", "amount", "balance", "tax", "subtotal", "due"].some((k) =>
+            name.includes(k),
+          ),
+          looksStatus: ["status", "state"].some((k) => name.includes(k)),
+          looksType: ["type", "direction", "flow"].some((k) => name.includes(k)),
+        };
+      }),
+    [header],
+  );
+
   const filtered = useMemo(() => {
     if (!query.trim()) return rows;
     const q = query.toLowerCase();
@@ -196,15 +212,10 @@ const SheetLedger = () => {
                     </td>
                     {header.map((_, ci) => {
                       const val = row[ci] ?? "";
-                      const headerName = (header[ci] ?? "").toLowerCase();
-                      const looksMoney =
-                        isMoney(val) ||
-                        ["total", "amount", "balance", "tax", "subtotal", "due"].some((k) =>
-                          headerName.includes(k),
-                        );
-                      const looksStatus = ["status", "state"].some((k) => headerName.includes(k));
-                      const looksType = ["type", "direction", "flow"].some((k) => headerName.includes(k));
-                      const txnType = looksType ? detectType(val) : null;
+                      const meta = colMeta[ci];
+                      const looksMoney = meta.looksMoneyByHeader || isMoney(val);
+                      const looksStatus = meta.looksStatus;
+                      const txnType = meta.looksType ? detectType(val) : null;
                       const chipCls = looksStatus ? statusColor(val) : "";
                       return (
                         <td
