@@ -43,9 +43,12 @@ const labelFor = (type: string) => type.replace(/_/g, " ");
 
 const AuditLogTab = () => {
   const { user } = useAuth();
+  const { toast } = useToast();
   const [loading, setLoading] = useState(true);
   const [items, setItems] = useState<FeedItem[]>([]);
   const [query, setQuery] = useState("");
+  const [clearing, setClearing] = useState(false);
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
     if (!user) return;
