@@ -6,8 +6,14 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { useToast } from "@/hooks/use-toast";
+import {
   ScanLine, FileCheck2, AlertCircle, Plug, Settings as SettingsIcon,
-  Download, Loader2, ShieldCheck, Search, RefreshCw, Sparkles, Receipt,
+  Download, Loader2, ShieldCheck, Search, RefreshCw, Sparkles, Receipt, Trash2,
 } from "lucide-react";
 
 type FeedItem = {
@@ -37,9 +43,12 @@ const labelFor = (type: string) => type.replace(/_/g, " ");
 
 const AuditLogTab = () => {
   const { user } = useAuth();
+  const { toast } = useToast();
   const [loading, setLoading] = useState(true);
   const [items, setItems] = useState<FeedItem[]>([]);
   const [query, setQuery] = useState("");
+  const [clearing, setClearing] = useState(false);
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
     if (!user) return;
@@ -117,7 +126,23 @@ const AuditLogTab = () => {
       setLoading(false);
     })();
     return () => { cancelled = true; };
-  }, [user]);
+  }, [user, reloadKey]);
+
+  const handleClear = async () => {
+    if (!user) return;
+    setClearing(true);
+    const { error } = await supabase
+      .from("audit_events")
+      .delete()
+      .eq("user_id", user.id);
+    setClearing(false);
+    if (error) {
+      toast({ title: "Couldn't clear log", description: error.message, variant: "destructive" });
+      return;
+    }
+    toast({ title: "Audit log cleared", description: "Past audit events were removed. Scans and invoices are kept." });
+    setReloadKey((k) => k + 1);
+  };
 
   const filtered = useMemo(() => {
     if (!query.trim()) return items;
@@ -141,17 +166,44 @@ const AuditLogTab = () => {
               Audit Log
             </CardTitle>
             <CardDescription>
-              Every action InvoiceIQ takes on your data, in plain English. Tamper-evident — entries can't be edited or deleted.
+              Every action InvoiceIQ takes on your data, in plain English. You can clear past entries below — scans and invoices are kept intact.
             </CardDescription>
           </div>
-          <div className="relative w-full sm:w-72">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <Input
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search events…"
-              className="pl-9"
-            />
+          <div className="flex items-center gap-2 w-full sm:w-auto">
+            <div className="relative w-full sm:w-72">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Input
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search events…"
+                className="pl-9"
+              />
+            </div>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={clearing || items.filter((i) => i.source === "audit").length === 0}
+                  className="shrink-0"
+                >
+                  {clearing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
+                  <span className="ml-2 hidden sm:inline">Clear log</span>
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Clear audit log?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This removes every recorded audit event for your account. Scan jobs and processed invoices stay intact — only the activity trail is wiped. This can't be undone.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleClear}>Clear log</AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </div>
         </div>
       </CardHeader>
