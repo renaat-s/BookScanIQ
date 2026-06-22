@@ -11,7 +11,6 @@ import { Loader2 } from "lucide-react";
 
 // Eagerly load the landing page
 import Index from "./pages/Index";
-import ScrollToTop from "./components/ScrollToTop";
 import FeedbackWidget from "./components/FeedbackWidget";
 
 // Lazy load all other routes
