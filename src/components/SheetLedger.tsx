@@ -243,6 +243,11 @@ const SheetLedger = () => {
                             >
                               {val}
                             </span>
+                          ) : isUrl(val) ? (
+                            <DriveLinkPreview
+                              url={val.trim()}
+                              label={extractDriveId(val) ? "Open document" : val.trim()}
+                            />
                           ) : (
                             <span className={looksMoney ? "text-foreground" : "text-foreground/90"}>
                               {val || <span className="text-muted-foreground">—</span>}
