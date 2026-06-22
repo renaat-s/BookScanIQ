@@ -166,17 +166,44 @@ const AuditLogTab = () => {
               Audit Log
             </CardTitle>
             <CardDescription>
-              Every action InvoiceIQ takes on your data, in plain English. Tamper-evident — entries can't be edited or deleted.
+              Every action InvoiceIQ takes on your data, in plain English. You can clear past entries below — scans and invoices are kept intact.
             </CardDescription>
           </div>
-          <div className="relative w-full sm:w-72">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <Input
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search events…"
-              className="pl-9"
-            />
+          <div className="flex items-center gap-2 w-full sm:w-auto">
+            <div className="relative w-full sm:w-72">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Input
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search events…"
+                className="pl-9"
+              />
+            </div>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={clearing || items.filter((i) => i.source === "audit").length === 0}
+                  className="shrink-0"
+                >
+                  {clearing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
+                  <span className="ml-2 hidden sm:inline">Clear log</span>
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Clear audit log?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This removes every recorded audit event for your account. Scan jobs and processed invoices stay intact — only the activity trail is wiped. This can't be undone.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleClear}>Clear log</AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </div>
         </div>
       </CardHeader>
