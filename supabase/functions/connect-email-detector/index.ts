@@ -165,34 +165,37 @@ Deno.serve(async (req) => {
 
     console.log(`Successfully initiated ${scanType} scan for email`);
 
-    // Parse n8n's synchronous response to extract scan metrics
+    // Parse n8n's synchronous response to extract scan metrics.
+    // IMPORTANT: G5.25 "Success Response ✅" returns a 200 with an empty body.
+    // Any 2xx from n8n means the workflow finished successfully, so we mark the
+    // job completed even when there is no JSON payload to count items from.
     let emailsProcessed = 0;
     let invoicesFound = 0;
-    let scanCompleted = false;
+    let scanCompleted = n8nResponse.ok; // 2xx => completed by default
 
-    try {
-      const n8nData = JSON.parse(responseText);
-      // n8n returns an array of email items, each with id/threadId/subject/etc.
-      if (Array.isArray(n8nData)) {
-        emailsProcessed = n8nData.length;
-        invoicesFound = n8nData.length; // Each returned item is a detected invoice email
-        scanCompleted = true;
-        console.log(`n8n returned ${emailsProcessed} items for ${scanType} scan`);
-      } else if (typeof n8nData === 'object' && n8nData !== null) {
-        // Handle wrapped response e.g. { items: [...] } or { count: N }
-        if (Array.isArray(n8nData.items)) {
-          emailsProcessed = n8nData.items.length;
-          invoicesFound = n8nData.items.length;
-          scanCompleted = true;
-        } else if (typeof n8nData.count === 'number') {
-          emailsProcessed = n8nData.count;
-          invoicesFound = n8nData.count;
-          scanCompleted = true;
+    const trimmed = responseText.trim();
+    if (trimmed.length > 0) {
+      try {
+        const n8nData = JSON.parse(trimmed);
+        if (Array.isArray(n8nData)) {
+          emailsProcessed = n8nData.length;
+          invoicesFound = n8nData.length;
+          console.log(`n8n returned ${emailsProcessed} items for ${scanType} scan`);
+        } else if (typeof n8nData === 'object' && n8nData !== null) {
+          if (Array.isArray(n8nData.items)) {
+            emailsProcessed = n8nData.items.length;
+            invoicesFound = n8nData.items.length;
+          } else if (typeof n8nData.count === 'number') {
+            emailsProcessed = n8nData.count;
+            invoicesFound = n8nData.count;
+          }
+          console.log(`n8n returned object response, parsed ${emailsProcessed} items`);
         }
-        console.log(`n8n returned object response, parsed ${emailsProcessed} items`);
+      } catch {
+        console.log('n8n response was not valid JSON; treating 2xx as completed with 0 metrics');
       }
-    } catch {
-      console.log('n8n response was not valid JSON, skipping metric extraction');
+    } else {
+      console.log('n8n response body was empty; treating 2xx as completed with 0 metrics');
     }
 
     // If we got metrics, write them directly to the scan_jobs table
