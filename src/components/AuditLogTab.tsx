@@ -126,7 +126,23 @@ const AuditLogTab = () => {
       setLoading(false);
     })();
     return () => { cancelled = true; };
-  }, [user]);
+  }, [user, reloadKey]);
+
+  const handleClear = async () => {
+    if (!user) return;
+    setClearing(true);
+    const { error } = await supabase
+      .from("audit_events")
+      .delete()
+      .eq("user_id", user.id);
+    setClearing(false);
+    if (error) {
+      toast({ title: "Couldn't clear log", description: error.message, variant: "destructive" });
+      return;
+    }
+    toast({ title: "Audit log cleared", description: "Past audit events were removed. Scans and invoices are kept." });
+    setReloadKey((k) => k + 1);
+  };
 
   const filtered = useMemo(() => {
     if (!query.trim()) return items;
