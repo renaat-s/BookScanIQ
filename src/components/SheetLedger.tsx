@@ -84,6 +84,22 @@ const SheetLedger = () => {
   const header = data?.values?.[0] ?? [];
   const rows = useMemo(() => data?.values?.slice(1) ?? [], [data]);
 
+  // Precompute per-column heuristics once per header change (was O(rows × cols) per render).
+  const colMeta = useMemo(
+    () =>
+      header.map((h) => {
+        const name = (h ?? "").toLowerCase();
+        return {
+          looksMoneyByHeader: ["total", "amount", "balance", "tax", "subtotal", "due"].some((k) =>
+            name.includes(k),
+          ),
+          looksStatus: ["status", "state"].some((k) => name.includes(k)),
+          looksType: ["type", "direction", "flow"].some((k) => name.includes(k)),
+        };
+      }),
+    [header],
+  );
+
   const filtered = useMemo(() => {
     if (!query.trim()) return rows;
     const q = query.toLowerCase();
