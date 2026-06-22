@@ -1,0 +1,139 @@
+import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
+import { ExternalLink, FileText, Loader2 } from "lucide-react";
+
+// Extracts a Google Drive file id from common URL shapes.
+export const extractDriveId = (url: string): string | null => {
+  if (!url) return null;
+  const patterns = [
+    /\/file\/d\/([a-zA-Z0-9_-]{10,})/,
+    /[?&]id=([a-zA-Z0-9_-]{10,})/,
+    /\/document\/d\/([a-zA-Z0-9_-]{10,})/,
+    /\/spreadsheets\/d\/([a-zA-Z0-9_-]{10,})/,
+    /\/presentation\/d\/([a-zA-Z0-9_-]{10,})/,
+  ];
+  for (const rx of patterns) {
+    const m = url.match(rx);
+    if (m) return m[1];
+  }
+  return null;
+};
+
+export const isUrl = (v: string): boolean => {
+  const s = (v ?? "").trim();
+  return /^https?:\/\/\S+$/i.test(s);
+};
+
+const CARD_W = 360;
+const CARD_H = 260;
+const OFFSET = 18;
+
+interface Props {
+  url: string;
+  label?: string;
+}
+
+const DriveLinkPreview = ({ url, label }: Props) => {
+  const [open, setOpen] = useState(false);
+  const [pos, setPos] = useState({ x: 0, y: 0 });
+  const [loaded, setLoaded] = useState(false);
+  const targetX = useRef(0);
+  const targetY = useRef(0);
+  const raf = useRef<number | null>(null);
+
+  const driveId = extractDriveId(url);
+  const previewUrl = driveId ? `https://drive.google.com/file/d/${driveId}/preview` : null;
+
+  // Smoothly trail the cursor.
+  useEffect(() => {
+    if (!open) return;
+    const onMove = (e: MouseEvent) => {
+      // Clamp so the card stays on screen.
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      let x = e.clientX + OFFSET;
+      let y = e.clientY + OFFSET;
+      if (x + CARD_W > vw - 8) x = e.clientX - CARD_W - OFFSET;
+      if (y + CARD_H > vh - 8) y = e.clientY - CARD_H - OFFSET;
+      targetX.current = Math.max(8, x);
+      targetY.current = Math.max(8, y);
+    };
+    const tick = () => {
+      setPos((p) => ({
+        x: p.x + (targetX.current - p.x) * 0.18,
+        y: p.y + (targetY.current - p.y) * 0.18,
+      }));
+      raf.current = requestAnimationFrame(tick);
+    };
+    window.addEventListener("mousemove", onMove);
+    raf.current = requestAnimationFrame(tick);
+    return () => {
+      window.removeEventListener("mousemove", onMove);
+      if (raf.current) cancelAnimationFrame(raf.current);
+    };
+  }, [open]);
+
+  const handleEnter = (e: React.MouseEvent) => {
+    targetX.current = e.clientX + OFFSET;
+    targetY.current = e.clientY + OFFSET;
+    setPos({ x: targetX.current, y: targetY.current });
+    setOpen(true);
+  };
+  const handleLeave = () => {
+    setOpen(false);
+    setLoaded(false);
+  };
+
+  const display = label || (driveId ? "Open document" : url);
+
+  return (
+    <>
+      <a
+        href={url}
+        target="_blank"
+        rel="noreferrer"
+        onMouseEnter={handleEnter}
+        onMouseLeave={handleLeave}
+        className="inline-flex items-center gap-1 text-primary hover:underline max-w-[200px] truncate align-middle"
+      >
+        <ExternalLink className="w-3 h-3 shrink-0" />
+        <span className="truncate">{display}</span>
+      </a>
+      {open && previewUrl && createPortal(
+        <div
+          style={{
+            position: "fixed",
+            left: pos.x,
+            top: pos.y,
+            width: CARD_W,
+            height: CARD_H,
+            pointerEvents: "none",
+            zIndex: 9999,
+          }}
+          className="rounded-xl border border-border/80 bg-popover shadow-2xl overflow-hidden animate-fade-in"
+        >
+          <div className="flex items-center gap-1.5 px-3 py-1.5 border-b border-border/60 bg-muted/60 text-[11px] text-muted-foreground">
+            <FileText className="w-3 h-3" />
+            <span className="truncate">Drive preview</span>
+          </div>
+          <div className="relative w-full" style={{ height: CARD_H - 28 }}>
+            {!loaded && (
+              <div className="absolute inset-0 flex items-center justify-center">
+                <Loader2 className="w-4 h-4 animate-spin text-primary" />
+              </div>
+            )}
+            <iframe
+              src={previewUrl}
+              title="Drive preview"
+              className="w-full h-full border-0"
+              onLoad={() => setLoaded(true)}
+            />
+          </div>
+        </div>,
+        document.body,
+      )}
+    </>
+  );
+};
+
+export default DriveLinkPreview;
