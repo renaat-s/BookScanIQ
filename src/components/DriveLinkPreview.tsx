@@ -37,18 +37,20 @@ const DriveLinkPreview = ({ url, label }: Props) => {
   const [open, setOpen] = useState(false);
   const [pos, setPos] = useState({ x: 0, y: 0 });
   const [loaded, setLoaded] = useState(false);
+  const [thumbFailed, setThumbFailed] = useState(false);
   const targetX = useRef(0);
   const targetY = useRef(0);
   const raf = useRef<number | null>(null);
 
   const driveId = extractDriveId(url);
-  const previewUrl = driveId ? `https://drive.google.com/file/d/${driveId}/preview` : null;
+  // Thumbnail matches Drive's own hover-preview rendering (works for HTML, images, docs).
+  const thumbUrl = driveId ? `https://drive.google.com/thumbnail?id=${driveId}&sz=w1200` : null;
+  const iframeUrl = driveId ? `https://drive.google.com/file/d/${driveId}/preview` : null;
 
   // Smoothly trail the cursor.
   useEffect(() => {
     if (!open) return;
     const onMove = (e: MouseEvent) => {
-      // Clamp so the card stays on screen.
       const vw = window.innerWidth;
       const vh = window.innerHeight;
       let x = e.clientX + OFFSET;
@@ -82,9 +84,11 @@ const DriveLinkPreview = ({ url, label }: Props) => {
   const handleLeave = () => {
     setOpen(false);
     setLoaded(false);
+    setThumbFailed(false);
   };
 
   const display = label || (driveId ? "Open document" : url);
+  const showIframe = thumbFailed && iframeUrl;
 
   return (
     <>
@@ -99,7 +103,7 @@ const DriveLinkPreview = ({ url, label }: Props) => {
         <ExternalLink className="w-3 h-3 shrink-0" />
         <span className="truncate">{display}</span>
       </a>
-      {open && previewUrl && createPortal(
+      {open && driveId && createPortal(
         <div
           style={{
             position: "fixed",
@@ -116,18 +120,31 @@ const DriveLinkPreview = ({ url, label }: Props) => {
             <FileText className="w-3 h-3" />
             <span className="truncate">Drive preview</span>
           </div>
-          <div className="relative w-full" style={{ height: CARD_H - 28 }}>
+          <div className="relative w-full bg-background" style={{ height: CARD_H - 28 }}>
             {!loaded && (
               <div className="absolute inset-0 flex items-center justify-center">
                 <Loader2 className="w-4 h-4 animate-spin text-primary" />
               </div>
             )}
-            <iframe
-              src={previewUrl}
-              title="Drive preview"
-              className="w-full h-full border-0"
-              onLoad={() => setLoaded(true)}
-            />
+            {showIframe ? (
+              <iframe
+                src={iframeUrl!}
+                title="Drive preview"
+                className="w-full h-full border-0"
+                onLoad={() => setLoaded(true)}
+              />
+            ) : (
+              <img
+                src={thumbUrl!}
+                alt="Drive preview"
+                className="w-full h-full object-contain"
+                onLoad={() => setLoaded(true)}
+                onError={() => {
+                  setThumbFailed(true);
+                  setLoaded(false);
+                }}
+              />
+            )}
           </div>
         </div>,
         document.body,
