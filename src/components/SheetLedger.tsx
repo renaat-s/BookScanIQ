@@ -212,15 +212,10 @@ const SheetLedger = () => {
                     </td>
                     {header.map((_, ci) => {
                       const val = row[ci] ?? "";
-                      const headerName = (header[ci] ?? "").toLowerCase();
-                      const looksMoney =
-                        isMoney(val) ||
-                        ["total", "amount", "balance", "tax", "subtotal", "due"].some((k) =>
-                          headerName.includes(k),
-                        );
-                      const looksStatus = ["status", "state"].some((k) => headerName.includes(k));
-                      const looksType = ["type", "direction", "flow"].some((k) => headerName.includes(k));
-                      const txnType = looksType ? detectType(val) : null;
+                      const meta = colMeta[ci];
+                      const looksMoney = meta.looksMoneyByHeader || isMoney(val);
+                      const looksStatus = meta.looksStatus;
+                      const txnType = meta.looksType ? detectType(val) : null;
                       const chipCls = looksStatus ? statusColor(val) : "";
                       return (
                         <td
