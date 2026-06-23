@@ -313,6 +313,39 @@ export type Database = {
         }
         Relationships: []
       }
+      vendor_logos: {
+        Row: {
+          created_at: string
+          domain: string | null
+          id: string
+          logo_url: string
+          updated_at: string
+          user_id: string
+          vendor_key: string
+          vendor_name: string
+        }
+        Insert: {
+          created_at?: string
+          domain?: string | null
+          id?: string
+          logo_url: string
+          updated_at?: string
+          user_id: string
+          vendor_key: string
+          vendor_name: string
+        }
+        Update: {
+          created_at?: string
+          domain?: string | null
+          id?: string
+          logo_url?: string
+          updated_at?: string
+          user_id?: string
+          vendor_key?: string
+          vendor_name?: string
+        }
+        Relationships: []
+      }
       waitlist: {
         Row: {
           created_at: string
