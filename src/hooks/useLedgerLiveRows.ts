@@ -149,7 +149,7 @@ export function useLedgerLiveRows() {
         const get = (i: number) => (i >= 0 ? (row[i] ?? "").toString().trim() : "");
 
         // Prefer hidden/cell-level URLs, then =HYPERLINK formulas, then visible URLs.
-        let link = linkIdx >= 0 ? (linkRow[linkIdx] || extractHyperlinkUrl(formulaRow[linkIdx]) || get(linkIdx)) : "";
+        let link = linkIdx >= 0 ? (linkRow[linkIdx] || extractHyperlinkUrl(formulaRow[linkIdx]) || get(linkIdx) || "") : "";
         if (!/^https?:\/\//i.test(link)) link = "";
         if (!link) link = linkRow.find((v) => typeof v === "string" && /^https?:\/\//i.test(v)) || "";
         if (!link) link = firstUrlFromRow(formulaRow);
