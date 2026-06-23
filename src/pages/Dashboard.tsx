@@ -451,7 +451,7 @@ const Dashboard = () => {
             {/* OVERVIEW TAB */}
             <TabsContent value="overview" className="space-y-6 m-0">
               {invoices.length === 0 ? (
-                <EmptyState onAction={() => navigate("/detect-invoices")} />
+                <EmptyState onDetect={() => navigate("/detect-invoices")} onCapture={() => navigate("/capture-invoices")} />
               ) : (
                 <>
                   <div className="grid lg:grid-cols-3 gap-4">
