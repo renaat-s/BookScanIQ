@@ -1,10 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Building2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Building2, Loader2, RefreshCw, AlertCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { useLedgerLiveRows } from "@/hooks/useLedgerLiveRows";
 
-export interface VendorEntry {
+interface VendorEntry {
   name: string;
   total: number;
   count: number;
@@ -25,7 +27,6 @@ const initialsOf = (name: string) =>
     .join("")
     .toUpperCase();
 
-// Try a handful of common domain guesses for a vendor.
 function candidateDomains(name: string): string[] {
   const cleaned = name
     .toLowerCase()
@@ -93,7 +94,7 @@ const VendorCard = ({
             <p className="font-semibold truncate">{vendor.name}</p>
           </div>
           <p className="text-xs text-muted-foreground">
-            {vendor.count} document{vendor.count === 1 ? "" : "s"}
+            {vendor.count} entr{vendor.count === 1 ? "y" : "ies"}
           </p>
         </div>
         <div className="text-right">
@@ -104,14 +105,21 @@ const VendorCard = ({
   );
 };
 
-const LatestRunVendors = ({
-  vendors,
-  userId,
-}: {
-  vendors: VendorEntry[];
-  userId: string | undefined;
-}) => {
+const LatestRunVendors = ({ userId }: { userId: string | undefined }) => {
+  const { entries, loading, error, reload } = useLedgerLiveRows();
   const [logos, setLogos] = useState<LogoMap>({});
+
+  const vendors = useMemo(() => {
+    const map = new Map<string, VendorEntry>();
+    entries.forEach((e) => {
+      const name = e.vendor || "Unknown vendor";
+      const cur = map.get(name) || { name, total: 0, count: 0 };
+      cur.total += e.totalNumeric;
+      cur.count += 1;
+      map.set(name, cur);
+    });
+    return Array.from(map.values()).sort((a, b) => b.total - a.total);
+  }, [entries]);
 
   // Load cached logos
   useEffect(() => {
@@ -131,20 +139,14 @@ const LatestRunVendors = ({
       });
       setLogos((prev) => ({ ...next, ...prev }));
     })();
-    return () => {
-      cancelled = true;
-    };
+    return () => { cancelled = true; };
   }, [userId, vendors]);
 
   // Resolve missing logos and cache them
   useEffect(() => {
     if (!userId) return;
-    const toResolve = vendors.filter((v) => {
-      const k = vendorKey(v.name);
-      return !logos[k]?.resolved;
-    });
+    const toResolve = vendors.filter((v) => !logos[vendorKey(v.name)]?.resolved);
     if (toResolve.length === 0) return;
-
     let cancelled = false;
     (async () => {
       for (const v of toResolve) {
@@ -154,71 +156,69 @@ const LatestRunVendors = ({
         let found: { url: string; domain: string } | null = null;
         for (const d of domains) {
           const url = await probeLogo(d);
-          if (url) {
-            found = { url, domain: d };
-            break;
-          }
+          if (url) { found = { url, domain: d }; break; }
         }
         if (cancelled) return;
-        setLogos((prev) => ({
-          ...prev,
-          [k]: { url: found?.url || null, resolved: true },
-        }));
+        setLogos((prev) => ({ ...prev, [k]: { url: found?.url || null, resolved: true } }));
         if (found) {
-          await supabase
-            .from("vendor_logos")
-            .upsert(
-              {
-                user_id: userId,
-                vendor_name: v.name,
-                vendor_key: k,
-                logo_url: found.url,
-                domain: found.domain,
-              },
-              { onConflict: "user_id,vendor_key" }
-            );
+          await supabase.from("vendor_logos").upsert(
+            {
+              user_id: userId,
+              vendor_name: v.name,
+              vendor_key: k,
+              logo_url: found.url,
+              domain: found.domain,
+            },
+            { onConflict: "user_id,vendor_key" }
+          );
         }
       }
     })();
-    return () => {
-      cancelled = true;
-    };
+    return () => { cancelled = true; };
   }, [userId, vendors, logos]);
-
-  const sorted = useMemo(
-    () => [...vendors].sort((a, b) => b.total - a.total),
-    [vendors]
-  );
 
   return (
     <Card className="border-border/60 shadow-card">
       <CardHeader>
-        <CardTitle className="text-base font-semibold flex items-center gap-2">
-          <Building2 className="w-4 h-4 text-primary" /> Latest Run Vendors
-          <Badge variant="secondary" className="ml-1">{sorted.length}</Badge>
-        </CardTitle>
-        <CardDescription className="text-xs">
-          Vendors from the most recent scan — logos auto-fetched and cached for next time.
-        </CardDescription>
+        <div className="flex items-center justify-between gap-2">
+          <div>
+            <CardTitle className="text-base font-semibold flex items-center gap-2">
+              <Building2 className="w-4 h-4 text-primary" /> Ledger Vendors
+              <Badge variant="secondary" className="ml-1">{vendors.length}</Badge>
+            </CardTitle>
+            <CardDescription className="text-xs">
+              Every vendor currently in your Live Workspace ledger — logos auto-fetched and cached for next time.
+            </CardDescription>
+          </div>
+          <Button variant="ghost" size="sm" className="gap-1.5" onClick={reload} disabled={loading}>
+            <RefreshCw className={`w-3.5 h-3.5 ${loading ? "animate-spin" : ""}`} />
+            Refresh
+          </Button>
+        </div>
       </CardHeader>
       <CardContent>
-        {sorted.length === 0 ? (
+        {error ? (
+          <div className="flex items-center gap-2 text-xs p-3 rounded-lg bg-destructive/10 text-destructive border border-destructive/20">
+            <AlertCircle className="w-4 h-4 shrink-0" /> {error}
+          </div>
+        ) : loading && vendors.length === 0 ? (
+          <div className="py-12 flex items-center justify-center">
+            <Loader2 className="w-5 h-5 animate-spin text-primary" />
+          </div>
+        ) : vendors.length === 0 ? (
           <p className="text-sm text-muted-foreground text-center py-8">
-            No vendors from a recent run yet.
+            No vendors in the ledger yet.
           </p>
         ) : (
           <div className="grid sm:grid-cols-2 gap-3">
-            {sorted.map((v, i) => {
-              const k = vendorKey(v.name);
-              return (
-                <VendorCard
-                  key={v.name}
-                  vendor={v}
-                  rank={i + 1}
-                  logoUrl={logos[k]?.url || null}
-                />
-              );
-            })}
+            {vendors.map((v, i) => (
+              <VendorCard
+                key={v.name}
+                vendor={v}
+                rank={i + 1}
+                logoUrl={logos[vendorKey(v.name)]?.url || null}
+              />
+            ))}
           </div>
         )}
       </CardContent>
