@@ -383,19 +383,10 @@ const Dashboard = () => {
                   <span className="holo-text">Welcome back, {firstName}.</span>
                 </h1>
               </div>
-              <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2 w-full lg:w-auto">
-                <Button onClick={handleRefresh} variant="outline" size="sm" className="bg-white/10 text-white border-white/30 hover:bg-white/20 hover:text-white">
+              <div className="flex w-full lg:w-auto">
+                <Button onClick={handleRefresh} variant="outline" size="sm" className="bg-white/10 text-white border-white/30 hover:bg-white/20 hover:text-white w-full sm:w-auto">
                   <RefreshCw className={`w-4 h-4 ${refreshing ? "animate-spin" : ""}`} />
                   Refresh
-                </Button>
-                <Button onClick={() => navigate("/capture-invoices")} variant="outline" size="sm" className="bg-white/10 text-white border-white/30 hover:bg-white/20 hover:text-white">
-                  <Upload className="w-4 h-4" /> Capture
-                </Button>
-                <Button onClick={() => navigate("/detect-invoices")} variant="outline" size="sm" className="bg-white/10 text-white border-white/30 hover:bg-white/20 hover:text-white">
-                  <ScanLine className="w-4 h-4" /> Detect
-                </Button>
-                <Button onClick={() => navigate("/file-invoices")} size="sm" className="bg-white text-primary hover:bg-white/90">
-                  <FileText className="w-4 h-4" /> File
                 </Button>
               </div>
             </div>
