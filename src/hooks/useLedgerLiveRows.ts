@@ -2,7 +2,8 @@ import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
 export interface LedgerEntry {
-  rowIndex: number;
+  entryNumber: number;
+  sheetRowNumber: number;
   vendor: string;
   total: string;
   totalNumeric: number;
@@ -27,12 +28,71 @@ function parseAmount(v: string): number {
   return isNaN(n) ? 0 : n;
 }
 
+const NORMALIZED_TRANSACTIONS_TAB = "transactions";
+
+function normalizeHeader(v: string): string {
+  return (v || "")
+    .toLowerCase()
+    .replace(/[_-]+/g, " ")
+    .replace(/[^a-z0-9 ]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
 function findCol(header: string[], keywords: string[]): number {
   for (let i = 0; i < header.length; i++) {
-    const h = (header[i] || "").toLowerCase();
+    const h = normalizeHeader(header[i] || "");
     if (keywords.some((k) => h.includes(k))) return i;
   }
   return -1;
+}
+
+function findHeaderRow(values: string[][]): number {
+  const maxRows = Math.min(values.length, 25);
+  let best = 0;
+  let bestScore = -1;
+
+  for (let i = 0; i < maxRows; i++) {
+    const row = values[i] ?? [];
+    const normalized = row.map((c) => normalizeHeader((c ?? "").toString()));
+    const score = [
+      normalized.some((h) => ["vendor", "merchant", "supplier", "payee", "description", "contact", "name"].some((k) => h.includes(k))),
+      normalized.some((h) => ["total", "amount", "gross", "value", "debit", "credit"].some((k) => h.includes(k))),
+      normalized.some((h) => ["link", "url", "drive", "document", "preview", "file", "receipt", "invoice"].some((k) => h.includes(k))),
+      normalized.some((h) => h === "date" || h.includes("date")),
+      normalized.some((h) => ["type", "direction", "flow", "income", "expense"].some((k) => h.includes(k))),
+    ].filter(Boolean).length;
+
+    if (score > bestScore) {
+      bestScore = score;
+      best = i;
+    }
+    if (score >= 3) break;
+  }
+
+  return best;
+}
+
+function extractHyperlinkUrl(value: string | undefined): string | null {
+  if (!value) return null;
+  const match = value.match(/^=HYPERLINK\(\s*"([^"]+)"/i) || value.match(/^=HYPERLINK\(\s*'([^']+)'/i);
+  return match?.[1] || null;
+}
+
+function firstUrlFromRow(row: string[]): string {
+  for (const cell of row) {
+    const value = (cell ?? "").toString().trim();
+    const hyperlink = extractHyperlinkUrl(value);
+    if (hyperlink) return hyperlink;
+    const url = value.match(/https?:\/\/[^\s"')]+/i)?.[0];
+    if (url) return url;
+  }
+  return "";
+}
+
+function isLikelyLinkHeader(h: string): boolean {
+  const normalized = normalizeHeader(h);
+  return ["link", "url", "drive", "document", "preview", "file", "receipt", "invoice"].some((k) => normalized.includes(k));
 }
 
 interface SheetResp {
@@ -40,6 +100,7 @@ interface SheetResp {
   tabs: { title: string }[];
   active: { title: string } | null;
   values: string[][];
+  formulaValues?: string[][];
 }
 
 /**
@@ -55,36 +116,40 @@ export function useLedgerLiveRows() {
     setLoading(true);
     setError(null);
     try {
-      // Try the Transactions tab first; fall back to whatever the function returns.
       const { data, error } = await supabase.functions.invoke("sheet-read", {
         body: { sheetName: "Transactions" },
       });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       const resp = data as SheetResp;
+      if (resp.active?.title && resp.active.title.toLowerCase() !== NORMALIZED_TRANSACTIONS_TAB) {
+        throw new Error("Transactions tab was not found in the Live Workspace ledger.");
+      }
       const values = resp.values ?? [];
       if (values.length < 2) {
         setEntries([]);
         return;
       }
-      const header = values[0].map((h) => (h ?? "").toString());
-      const vendorIdx = findCol(header, ["vendor", "merchant", "supplier", "payee"]);
-      const totalIdx = findCol(header, ["total", "amount", "gross"]);
+      const formulaValues = resp.formulaValues ?? [];
+      const headerRow = findHeaderRow(values);
+      const header = values[headerRow].map((h) => (h ?? "").toString());
+      const vendorIdx = findCol(header, ["vendor", "merchant", "supplier", "payee", "description", "contact", "name"]);
+      const totalIdx = findCol(header, ["total", "amount", "gross", "value", "debit", "credit"]);
       const typeIdx = findCol(header, ["type", "direction", "flow"]);
       const dateIdx = findCol(header, ["date"]);
-      const linkIdx = findCol(header, ["link", "url", "drive", "document"]);
+      const linkIdx = header.findIndex(isLikelyLinkHeader);
 
       const parsed: LedgerEntry[] = [];
-      for (let r = 1; r < values.length; r++) {
+      for (let r = headerRow + 1; r < values.length; r++) {
         const row = values[r] ?? [];
+        const formulaRow = formulaValues[r] ?? [];
         const get = (i: number) => (i >= 0 ? (row[i] ?? "").toString().trim() : "");
 
-        // If no explicit link column, try to find any URL cell in the row.
-        let link = linkIdx >= 0 ? get(linkIdx) : "";
-        if (!link) {
-          const urlCell = row.find((c) => typeof c === "string" && /^https?:\/\//i.test(c));
-          if (urlCell) link = urlCell.trim();
-        }
+        // Prefer hidden URLs from =HYPERLINK formulas, then visible URLs.
+        let link = linkIdx >= 0 ? (extractHyperlinkUrl(formulaRow[linkIdx]) || get(linkIdx)) : "";
+        if (!/^https?:\/\//i.test(link)) link = "";
+        if (!link) link = firstUrlFromRow(formulaRow);
+        if (!link) link = firstUrlFromRow(row);
 
         const vendor = get(vendorIdx);
         const total = get(totalIdx);
@@ -92,7 +157,8 @@ export function useLedgerLiveRows() {
         if (!vendor && !total && !link) continue;
 
         parsed.push({
-          rowIndex: r,
+          entryNumber: parsed.length + 1,
+          sheetRowNumber: r + 1,
           vendor: vendor || "Unknown vendor",
           total,
           totalNumeric: parseAmount(total),
