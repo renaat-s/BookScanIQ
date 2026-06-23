@@ -762,7 +762,7 @@ const LegendDot = ({ color, label }: { color: string; label: string }) => (
   </div>
 );
 
-const EmptyState = ({ onAction }: { onAction: () => void }) => (
+const EmptyState = ({ onDetect, onCapture }: { onDetect: () => void; onCapture: () => void }) => (
   <Card className="border-dashed border-2 border-border/60">
     <CardContent className="py-16 text-center space-y-4">
       <div className="w-16 h-16 rounded-2xl bg-gradient-primary mx-auto flex items-center justify-center shadow-elegant">
@@ -771,13 +771,19 @@ const EmptyState = ({ onAction }: { onAction: () => void }) => (
       <div>
         <h3 className="text-xl font-semibold">Your workspace is ready</h3>
         <p className="text-sm text-muted-foreground mt-1 max-w-md mx-auto">
-          Sync your inbox and we'll start pulling invoices into your dashboard automatically.
+          Sync your inbox to detect invoices automatically, or capture a single document right now.
         </p>
       </div>
-      <Button onClick={onAction} className="gap-2">
-        <ScanLine className="w-4 h-4" />
-        Detect invoices in my inbox
-      </Button>
+      <div className="flex flex-col sm:flex-row gap-2 justify-center">
+        <Button onClick={onDetect} className="gap-2">
+          <ScanLine className="w-4 h-4" />
+          Detect invoices in my inbox
+        </Button>
+        <Button onClick={onCapture} variant="outline" className="gap-2">
+          <Upload className="w-4 h-4" />
+          Capture an invoice
+        </Button>
+      </div>
     </CardContent>
   </Card>
 );
