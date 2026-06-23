@@ -34,6 +34,8 @@ import {
   ArrowUpRight, ArrowDownRight, Clock, Building2, Filter, Plug,
 } from "lucide-react";
 import WorkspacesTab from "@/components/WorkspacesTab";
+import LatestRunDocuments from "@/components/LatestRunDocuments";
+import LatestRunVendors from "@/components/LatestRunVendors";
 import AuditLogTab from "@/components/AuditLogTab";
 import SavingsWidget from "@/components/SavingsWidget";
 import TipsCard from "@/components/TipsCard";
@@ -295,6 +297,27 @@ const Dashboard = () => {
   const recent = useMemo(() => invoices.slice(0, 5), [invoices]);
   const lastSyncAt = invoices[0]?.created_at || null;
 
+  // "Latest run" = invoices created within 2h of the most-recent invoice's
+  // created_at. Captures a single scan batch without needing scan_job joins.
+  const latestRun = useMemo(() => {
+    if (invoices.length === 0) return [];
+    const newest = new Date(invoices[0].created_at).getTime();
+    const cutoff = newest - 2 * 60 * 60 * 1000;
+    return invoices.filter((i) => new Date(i.created_at).getTime() >= cutoff);
+  }, [invoices]);
+
+  const latestRunVendors = useMemo(() => {
+    const map = new Map<string, { name: string; total: number; count: number }>();
+    latestRun.forEach((i) => {
+      const name = i.invoice_vendor || "Unknown";
+      const cur = map.get(name) || { name, total: 0, count: 0 };
+      cur.total += parseAmount(i.invoice_total);
+      cur.count += 1;
+      map.set(name, cur);
+    });
+    return Array.from(map.values());
+  }, [latestRun]);
+
   const pieColors = [
     "hsl(var(--primary))",
     "hsl(var(--accent))",
@@ -438,6 +461,8 @@ const Dashboard = () => {
               <TabsList className="bg-muted/60 backdrop-blur w-full sm:w-auto overflow-x-auto">
                 <TabsTrigger value="overview" className="gap-1.5 flex-1 sm:flex-none"><Activity className="w-4 h-4" /><span className="hidden xs:inline sm:inline">Overview</span></TabsTrigger>
                 <TabsTrigger value="workspaces" className="gap-1.5 flex-1 sm:flex-none"><Plug className="w-4 h-4" /><span className="hidden xs:inline sm:inline">Workspaces</span></TabsTrigger>
+                <TabsTrigger value="documents" className="gap-1.5 flex-1 sm:flex-none"><FileText className="w-4 h-4" /><span className="hidden xs:inline sm:inline">Documents</span></TabsTrigger>
+                <TabsTrigger value="vendors" className="gap-1.5 flex-1 sm:flex-none"><Building2 className="w-4 h-4" /><span className="hidden xs:inline sm:inline">Vendors</span></TabsTrigger>
                 <TabsTrigger value="audit" className="gap-1.5 flex-1 sm:flex-none"><ShieldCheck className="w-4 h-4" /><span className="hidden xs:inline sm:inline">Audit Log</span></TabsTrigger>
               </TabsList>
               <div className="flex gap-2">
@@ -630,6 +655,18 @@ const Dashboard = () => {
             <TabsContent value="workspaces" className="m-0">
               <WorkspacesTab />
             </TabsContent>
+
+            {/* DOCUMENTS TAB — latest run previews */}
+            <TabsContent value="documents" className="m-0">
+              <LatestRunDocuments invoices={latestRun} />
+            </TabsContent>
+
+            {/* VENDORS TAB — latest run vendors with logos */}
+            <TabsContent value="vendors" className="m-0">
+              <LatestRunVendors vendors={latestRunVendors} userId={user?.id} />
+            </TabsContent>
+
+
 
 
             {/* AUDIT LOG TAB */}
