@@ -101,6 +101,7 @@ interface SheetResp {
   active: { title: string } | null;
   values: string[][];
   formulaValues?: string[][];
+  cellLinks?: (string | null)[][];
 }
 
 /**
@@ -131,6 +132,7 @@ export function useLedgerLiveRows() {
         return;
       }
       const formulaValues = resp.formulaValues ?? [];
+      const cellLinks = resp.cellLinks ?? [];
       const headerRow = findHeaderRow(values);
       const header = values[headerRow].map((h) => (h ?? "").toString());
       const vendorIdx = findCol(header, ["vendor", "merchant", "supplier", "payee", "description", "contact", "name"]);
@@ -143,11 +145,13 @@ export function useLedgerLiveRows() {
       for (let r = headerRow + 1; r < values.length; r++) {
         const row = values[r] ?? [];
         const formulaRow = formulaValues[r] ?? [];
+        const linkRow = cellLinks[r] ?? [];
         const get = (i: number) => (i >= 0 ? (row[i] ?? "").toString().trim() : "");
 
-        // Prefer hidden URLs from =HYPERLINK formulas, then visible URLs.
-        let link = linkIdx >= 0 ? (extractHyperlinkUrl(formulaRow[linkIdx]) || get(linkIdx)) : "";
+        // Prefer hidden/cell-level URLs, then =HYPERLINK formulas, then visible URLs.
+        let link = linkIdx >= 0 ? (linkRow[linkIdx] || extractHyperlinkUrl(formulaRow[linkIdx]) || get(linkIdx)) : "";
         if (!/^https?:\/\//i.test(link)) link = "";
+        if (!link) link = linkRow.find((v) => typeof v === "string" && /^https?:\/\//i.test(v)) || "";
         if (!link) link = firstUrlFromRow(formulaRow);
         if (!link) link = firstUrlFromRow(row);
 
