@@ -123,7 +123,7 @@ export function useLedgerLiveRows() {
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       const resp = data as SheetResp;
-      if (resp.active?.title && resp.active.title.toLowerCase() !== NORMALIZED_TRANSACTIONS_TAB) {
+      if (resp.active?.title && resp.active.title.trim().toLowerCase() !== NORMALIZED_TRANSACTIONS_TAB) {
         throw new Error("Transactions tab was not found in the Live Workspace ledger.");
       }
       const values = resp.values ?? [];
