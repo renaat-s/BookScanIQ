@@ -656,6 +656,18 @@ const Dashboard = () => {
               <WorkspacesTab />
             </TabsContent>
 
+            {/* DOCUMENTS TAB — latest run previews */}
+            <TabsContent value="documents" className="m-0">
+              <LatestRunDocuments invoices={latestRun} />
+            </TabsContent>
+
+            {/* VENDORS TAB — latest run vendors with logos */}
+            <TabsContent value="vendors" className="m-0">
+              <LatestRunVendors vendors={latestRunVendors} userId={user?.id} />
+            </TabsContent>
+
+
+
 
             {/* AUDIT LOG TAB */}
             <TabsContent value="audit" className="m-0">
