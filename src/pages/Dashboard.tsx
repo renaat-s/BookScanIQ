@@ -383,19 +383,10 @@ const Dashboard = () => {
                   <span className="holo-text">Welcome back, {firstName}.</span>
                 </h1>
               </div>
-              <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2 w-full lg:w-auto">
-                <Button onClick={handleRefresh} variant="outline" size="sm" className="bg-white/10 text-white border-white/30 hover:bg-white/20 hover:text-white">
+              <div className="flex w-full lg:w-auto">
+                <Button onClick={handleRefresh} variant="outline" size="sm" className="bg-white/10 text-white border-white/30 hover:bg-white/20 hover:text-white w-full sm:w-auto">
                   <RefreshCw className={`w-4 h-4 ${refreshing ? "animate-spin" : ""}`} />
                   Refresh
-                </Button>
-                <Button onClick={() => navigate("/capture-invoices")} variant="outline" size="sm" className="bg-white/10 text-white border-white/30 hover:bg-white/20 hover:text-white">
-                  <Upload className="w-4 h-4" /> Capture
-                </Button>
-                <Button onClick={() => navigate("/detect-invoices")} variant="outline" size="sm" className="bg-white/10 text-white border-white/30 hover:bg-white/20 hover:text-white">
-                  <ScanLine className="w-4 h-4" /> Detect
-                </Button>
-                <Button onClick={() => navigate("/file-invoices")} size="sm" className="bg-white text-primary hover:bg-white/90">
-                  <FileText className="w-4 h-4" /> File
                 </Button>
               </div>
             </div>
@@ -447,8 +438,6 @@ const Dashboard = () => {
               <TabsList className="bg-muted/60 backdrop-blur w-full sm:w-auto overflow-x-auto">
                 <TabsTrigger value="overview" className="gap-1.5 flex-1 sm:flex-none"><Activity className="w-4 h-4" /><span className="hidden xs:inline sm:inline">Overview</span></TabsTrigger>
                 <TabsTrigger value="workspaces" className="gap-1.5 flex-1 sm:flex-none"><Plug className="w-4 h-4" /><span className="hidden xs:inline sm:inline">Workspaces</span></TabsTrigger>
-                <TabsTrigger value="documents" className="gap-1.5 flex-1 sm:flex-none"><FileText className="w-4 h-4" /><span className="hidden xs:inline sm:inline">Documents</span></TabsTrigger>
-                <TabsTrigger value="vendors" className="gap-1.5 flex-1 sm:flex-none"><Building2 className="w-4 h-4" /><span className="hidden xs:inline sm:inline">Vendors</span></TabsTrigger>
                 <TabsTrigger value="audit" className="gap-1.5 flex-1 sm:flex-none"><ShieldCheck className="w-4 h-4" /><span className="hidden xs:inline sm:inline">Audit Log</span></TabsTrigger>
               </TabsList>
               <div className="flex gap-2">
@@ -462,7 +451,7 @@ const Dashboard = () => {
             {/* OVERVIEW TAB */}
             <TabsContent value="overview" className="space-y-6 m-0">
               {invoices.length === 0 ? (
-                <EmptyState onAction={() => navigate("/detect-invoices")} />
+                <EmptyState onDetect={() => navigate("/detect-invoices")} onCapture={() => navigate("/capture-invoices")} />
               ) : (
                 <>
                   <div className="grid lg:grid-cols-3 gap-4">
@@ -642,150 +631,6 @@ const Dashboard = () => {
               <WorkspacesTab />
             </TabsContent>
 
-            {/* DOCUMENTS TAB */}
-            <TabsContent value="documents" className="space-y-4 m-0">
-              <Card className="border-border/60 shadow-card">
-                <CardHeader>
-                  <div className="flex flex-col md:flex-row md:items-center gap-3 md:justify-between">
-                    <div>
-                      <CardTitle className="text-base font-semibold flex items-center gap-2">
-                        <FileText className="w-4 h-4 text-primary" />
-                        All Documents
-                        <Badge variant="secondary" className="ml-1">{filtered.length}</Badge>
-                      </CardTitle>
-                      <CardDescription className="text-xs">Search, filter and inspect every synced invoice.</CardDescription>
-                    </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:flex lg:flex-row gap-2 w-full lg:w-auto">
-                      <div className="relative col-span-full sm:col-span-2 lg:col-span-1">
-                        <Search className="absolute left-2 top-2.5 w-4 h-4 text-muted-foreground" />
-                        <Input
-                          placeholder="Search vendor, number, category…"
-                          className="pl-8 w-full lg:w-64"
-                          value={search}
-                          onChange={(e) => setSearch(e.target.value)}
-                        />
-                      </div>
-                      <Select value={typeFilter} onValueChange={setTypeFilter}>
-                        <SelectTrigger className="w-full lg:w-32"><Filter className="w-3.5 h-3.5 mr-1" /><SelectValue placeholder="Type" /></SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="all">All types</SelectItem>
-                          <SelectItem value="Income">Income</SelectItem>
-                          <SelectItem value="Expense">Expense</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-                        <SelectTrigger className="w-full lg:w-40"><SelectValue placeholder="Category" /></SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="all">All categories</SelectItem>
-                          {categories.map((c) => (
-                            <SelectItem key={c} value={c}>{c}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <Button variant="outline" size="icon" className="hidden lg:inline-flex" onClick={() => setDensity(density === "comfortable" ? "compact" : "comfortable")} title="Toggle density">
-                        <ArrowUpDown className="w-4 h-4" />
-                      </Button>
-                    </div>
-
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  {filtered.length === 0 ? (
-                    <div className="text-center py-12 text-muted-foreground">
-                      <FileText className="w-10 h-10 mx-auto mb-3 opacity-50" />
-                      <p>No documents match your filters.</p>
-                    </div>
-                  ) : (
-                    <div className="overflow-x-auto rounded-lg border border-border/60">
-                      <Table>
-                        <TableHeader className="bg-muted/40">
-                          <TableRow>
-                            <SortableHead label="Vendor" k="invoice_vendor" sortKey={sortKey} sortDir={sortDir} onClick={toggleSort} />
-                            <SortableHead label="Date" k="invoice_date" sortKey={sortKey} sortDir={sortDir} onClick={toggleSort} />
-                            <TableHead>Number</TableHead>
-                            <TableHead>Type</TableHead>
-                            <TableHead>Category</TableHead>
-                            <SortableHead label="Total" k="invoice_total" sortKey={sortKey} sortDir={sortDir} onClick={toggleSort} className="text-right" />
-                            <TableHead className="text-right">Open</TableHead>
-                          </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                          {filtered.map((inv) => (
-                            <TableRow
-                              key={inv.id}
-                              className={`cursor-pointer hover:bg-muted/40 transition-colors ${density === "compact" ? "[&>td]:py-1.5" : ""}`}
-                              onClick={() => setSelected(inv)}
-                            >
-                              <TableCell className="font-medium">{inv.invoice_vendor || "—"}</TableCell>
-                              <TableCell className="text-muted-foreground tabular-nums">{inv.invoice_date || "—"}</TableCell>
-                              <TableCell className="text-muted-foreground">{inv.invoice_number || "—"}</TableCell>
-                              <TableCell>
-                                {inv.invoice_type ? (
-                                  <Badge variant={inv.invoice_type.toLowerCase() === "income" ? "default" : "secondary"}>
-                                    {inv.invoice_type}
-                                  </Badge>
-                                ) : "—"}
-                              </TableCell>
-                              <TableCell>
-                                {inv.invoice_category ? <Badge variant="outline">{inv.invoice_category}</Badge> : "—"}
-                              </TableCell>
-                              <TableCell className="text-right font-semibold tabular-nums">
-                                {inv.invoice_total ? formatMoneyFull(parseAmount(inv.invoice_total)) : "—"}
-                              </TableCell>
-                              <TableCell className="text-right" onClick={(e) => e.stopPropagation()}>
-                                {inv.web_view_link && (
-                                  <a href={inv.web_view_link} target="_blank" rel="noopener noreferrer">
-                                    <Button variant="ghost" size="sm" className="gap-1.5">
-                                      <ExternalLink className="w-4 h-4" />
-                                    </Button>
-                                  </a>
-                                )}
-                              </TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            {/* VENDORS TAB */}
-            <TabsContent value="vendors" className="m-0">
-              <Card className="border-border/60 shadow-card">
-                <CardHeader>
-                  <CardTitle className="text-base font-semibold flex items-center gap-2">
-                    <Building2 className="w-4 h-4 text-primary" /> Vendor Leaderboard
-                  </CardTitle>
-                  <CardDescription className="text-xs">All vendors ranked by spend / income volume.</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  {topVendors.length === 0 ? (
-                    <p className="text-sm text-muted-foreground text-center py-8">No vendors yet.</p>
-                  ) : (
-                    <div className="grid sm:grid-cols-2 gap-3">
-                      {topVendors.map((v, i) => (
-                        <div key={v.name} className="p-4 rounded-xl border border-border/60 bg-gradient-subtle hover:shadow-elegant transition-all hover-scale">
-                          <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-lg bg-gradient-primary text-white flex items-center justify-center font-bold">
-                              {i + 1}
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <p className="font-semibold truncate">{v.name}</p>
-                              <p className="text-xs text-muted-foreground">{v.count} document{v.count === 1 ? "" : "s"}</p>
-                            </div>
-                            <div className="text-right">
-                              <p className="text-lg font-bold tabular-nums">{formatMoney(v.total)}</p>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            </TabsContent>
 
             {/* AUDIT LOG TAB */}
             <TabsContent value="audit" className="m-0">
@@ -917,7 +762,7 @@ const LegendDot = ({ color, label }: { color: string; label: string }) => (
   </div>
 );
 
-const EmptyState = ({ onAction }: { onAction: () => void }) => (
+const EmptyState = ({ onDetect, onCapture }: { onDetect: () => void; onCapture: () => void }) => (
   <Card className="border-dashed border-2 border-border/60">
     <CardContent className="py-16 text-center space-y-4">
       <div className="w-16 h-16 rounded-2xl bg-gradient-primary mx-auto flex items-center justify-center shadow-elegant">
@@ -926,13 +771,19 @@ const EmptyState = ({ onAction }: { onAction: () => void }) => (
       <div>
         <h3 className="text-xl font-semibold">Your workspace is ready</h3>
         <p className="text-sm text-muted-foreground mt-1 max-w-md mx-auto">
-          Sync your inbox and we'll start pulling invoices into your dashboard automatically.
+          Sync your inbox to detect invoices automatically, or capture a single document right now.
         </p>
       </div>
-      <Button onClick={onAction} className="gap-2">
-        <ScanLine className="w-4 h-4" />
-        Detect invoices in my inbox
-      </Button>
+      <div className="flex flex-col sm:flex-row gap-2 justify-center">
+        <Button onClick={onDetect} className="gap-2">
+          <ScanLine className="w-4 h-4" />
+          Detect invoices in my inbox
+        </Button>
+        <Button onClick={onCapture} variant="outline" className="gap-2">
+          <Upload className="w-4 h-4" />
+          Capture an invoice
+        </Button>
+      </div>
     </CardContent>
   </Card>
 );
