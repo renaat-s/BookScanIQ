@@ -111,20 +111,37 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Read values from the active tab
+    // Read values from the active tab. We fetch the same tab twice:
+    // - FORMATTED_VALUE is what users see in the sheet.
+    // - FORMULA preserves =HYPERLINK("https://drive...", "Open document") URLs.
+    // Without FORMULA, document-link cells can arrive as display text only, so
+    // the Documents/Vendors dashboard tabs cannot build Drive previews.
     const range = `'${activeTab.title.replace(/'/g, "''")}'`;
-    const valUrl = new URL(
-      `https://sheets.googleapis.com/v4/spreadsheets/${encodeURIComponent(creds.user_spreadsheet_id)}/values/${encodeURIComponent(range)}`,
-    );
-    valUrl.searchParams.set("valueRenderOption", "FORMATTED_VALUE");
-    valUrl.searchParams.set("dateTimeRenderOption", "FORMATTED_STRING");
+    const makeValuesUrl = (valueRenderOption: "FORMATTED_VALUE" | "FORMULA") => {
+      const url = new URL(
+        `https://sheets.googleapis.com/v4/spreadsheets/${encodeURIComponent(creds.user_spreadsheet_id)}/values/${encodeURIComponent(range)}`,
+      );
+      url.searchParams.set("valueRenderOption", valueRenderOption);
+      url.searchParams.set("dateTimeRenderOption", "FORMATTED_STRING");
+      return url;
+    };
 
-    const valRes = await fetch(valUrl, { headers });
+    const [valRes, formulaRes] = await Promise.all([
+      fetch(makeValuesUrl("FORMATTED_VALUE"), { headers }),
+      fetch(makeValuesUrl("FORMULA"), { headers }),
+    ]);
     if (!valRes.ok) {
       const t = await valRes.text();
       return json({ error: `Sheets values error: ${t}` }, 502);
     }
     const valData = await valRes.json();
+    let formulaValues: string[][] = [];
+    if (formulaRes.ok) {
+      const formulaData = await formulaRes.json();
+      formulaValues = formulaData.values ?? [];
+    } else {
+      console.error("Sheets formula values error", await formulaRes.text());
+    }
 
     return json({
       spreadsheet: {
@@ -135,6 +152,7 @@ Deno.serve(async (req) => {
       tabs,
       active: activeTab,
       values: valData.values ?? [],
+      formulaValues,
     });
   } catch (e) {
     console.error("sheet-read error", e);
