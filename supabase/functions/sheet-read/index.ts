@@ -126,7 +126,7 @@ Deno.serve(async (req) => {
     const gridRange = `${range}!A1:ZZ10000`;
     const makeValuesUrl = (valueRenderOption: "FORMATTED_VALUE" | "FORMULA") => {
       const url = new URL(
-        `https://sheets.googleapis.com/v4/spreadsheets/${encodeURIComponent(creds.user_spreadsheet_id)}/values/${encodeURIComponent(range)}`,
+        `https://sheets.googleapis.com/v4/spreadsheets/${encodeURIComponent(creds.user_spreadsheet_id)}/values/${gridRange}`,
       );
       url.searchParams.set("valueRenderOption", valueRenderOption);
       url.searchParams.set("dateTimeRenderOption", "FORMATTED_STRING");
@@ -195,6 +195,13 @@ Deno.serve(async (req) => {
       values: valData.values ?? [],
       formulaValues,
       cellLinks,
+      diagnostics: {
+        requestedSheetName: sheetName ?? null,
+        activeTitle: activeTab.title,
+        valueRows: (valData.values ?? []).length,
+        formulaRows: formulaValues.length,
+        gridRows: cellLinks.length,
+      },
     });
   } catch (e) {
     console.error("sheet-read error", e);
