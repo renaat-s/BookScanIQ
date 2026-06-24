@@ -1,16 +1,22 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
+import { lazy, Suspense } from "react";
 import logoImage from "@/assets/InvoiceIQ_Logo.png";
 import nanocloneLogo from "@/assets/nanoclone-logo.png";
-import HeaderParticles from "@/components/HeaderParticles";
+import LazyVisible from "@/components/LazyVisible";
+const HeaderParticles = lazy(() => import("@/components/HeaderParticles"));
 
 const Footer = () => {
   const { pathname } = useLocation();
   const showCTA = pathname === "/";
   return (
     <footer className="relative bg-gradient-primary text-white overflow-hidden">
-      <HeaderParticles />
+      <LazyVisible className="absolute inset-0 pointer-events-none">
+        <Suspense fallback={null}>
+          <HeaderParticles />
+        </Suspense>
+      </LazyVisible>
       <div className="absolute inset-0 hero-grid-overlay opacity-30 pointer-events-none" aria-hidden="true" />
       <div className={`container mx-auto px-4 sm:px-6 relative z-10 ${showCTA ? "py-16" : "py-8"}`}>
         {showCTA && (
