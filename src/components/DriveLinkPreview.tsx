@@ -42,13 +42,17 @@ const DriveLinkPreview = ({ url, label }: Props) => {
   const [loaded, setLoaded] = useState(false);
   const [thumbFailed, setThumbFailed] = useState(false);
   const [modalLoaded, setModalLoaded] = useState(false);
+  const [modalMode, setModalMode] = useState<"thumb" | "iframe">("thumb");
+  const [modalThumbFailed, setModalThumbFailed] = useState(false);
   const targetX = useRef(0);
   const targetY = useRef(0);
   const raf = useRef<number | null>(null);
 
   const driveId = extractDriveId(url);
   const thumbUrl = driveId ? `https://drive.google.com/thumbnail?id=${driveId}&sz=w1200` : null;
+  const modalThumbUrl = driveId ? `https://drive.google.com/thumbnail?id=${driveId}&sz=w2400` : null;
   const iframeUrl = driveId ? `https://drive.google.com/file/d/${driveId}/preview` : null;
+
 
   // Smoothly trail the cursor for hover preview.
   useEffect(() => {
