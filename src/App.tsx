@@ -97,6 +97,7 @@ const App = () => (
               <Route path="*" element={<NotFound />} />
             </Routes>
             </Suspense>
+            <IdleWarmup />
             <FeedbackWidget />
             </BrowserRouter>
           </TooltipProvider>
