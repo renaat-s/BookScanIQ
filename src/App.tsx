@@ -48,6 +48,22 @@ const PageLoader = () => (
   </div>
 );
 
+const IdleWarmup = () => {
+  useEffect(() => {
+    const warm = () => {
+      ["/dashboard", "/pricing", "/about", "/faq", "/settings"].forEach(prefetchRoute);
+    };
+    const w = window as Window & { requestIdleCallback?: (cb: () => void) => number };
+    const id = w.requestIdleCallback ? w.requestIdleCallback(warm) : window.setTimeout(warm, 1500);
+    return () => {
+      const wc = window as Window & { cancelIdleCallback?: (id: number) => void };
+      if (wc.cancelIdleCallback) wc.cancelIdleCallback(id as number);
+      else window.clearTimeout(id as number);
+    };
+  }, []);
+  return null;
+};
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <HelmetProvider>
