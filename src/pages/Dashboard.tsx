@@ -34,8 +34,6 @@ import {
   ArrowUpRight, ArrowDownRight, Clock, Building2, Filter, Plug,
 } from "lucide-react";
 import WorkspacesTab from "@/components/WorkspacesTab";
-import LatestRunDocuments from "@/components/LatestRunDocuments";
-import LatestRunVendors from "@/components/LatestRunVendors";
 import AuditLogTab from "@/components/AuditLogTab";
 import SavingsWidget from "@/components/SavingsWidget";
 import TipsCard from "@/components/TipsCard";
