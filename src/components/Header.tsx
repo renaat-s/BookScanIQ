@@ -25,6 +25,7 @@ import {
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import ThemeToggle from "@/components/ThemeToggle";
 import { toast } from "sonner";
+import { prefetchHandlers, prefetchRoute } from "@/lib/route-prefetch";
 
 
 const Header = () => {
@@ -79,6 +80,7 @@ const Header = () => {
             {user && (
               <Link
                 to="/dashboard"
+                {...prefetchHandlers("/dashboard")}
                 className={`group relative inline-flex items-center gap-2 px-5 py-2 rounded-md font-mono text-xs uppercase tracking-[0.22em] border transition-all
                   ${location.pathname === '/dashboard'
                     ? 'border-primary/70 text-primary bg-primary/10 shadow-[0_0_18px_hsl(var(--primary)/0.35)]'
@@ -124,26 +126,26 @@ const Header = () => {
                   align="end"
                   className="w-56 bg-background/95 backdrop-blur-xl border border-primary/30 shadow-[0_0_30px_hsl(var(--primary)/0.2)]"
                 >
-                  <DropdownMenuItem onClick={() => navigate('/about')} className="font-mono text-xs uppercase tracking-wider">
+                  <DropdownMenuItem onClick={() => navigate('/about')} onMouseEnter={() => prefetchRoute('/about')} className="font-mono text-xs uppercase tracking-wider">
                     <Info className="h-4 w-4 mr-2" /> About Us
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => navigate('/about-invoiceiq')} className="font-mono text-xs uppercase tracking-wider">
+                  <DropdownMenuItem onClick={() => navigate('/about-invoiceiq')} onMouseEnter={() => prefetchRoute('/about-invoiceiq')} className="font-mono text-xs uppercase tracking-wider">
                     <Info className="h-4 w-4 mr-2" /> The Solution
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => navigate('/faq')} className="font-mono text-xs uppercase tracking-wider">
+                  <DropdownMenuItem onClick={() => navigate('/faq')} onMouseEnter={() => prefetchRoute('/faq')} className="font-mono text-xs uppercase tracking-wider">
                     <HelpCircle className="h-4 w-4 mr-2" /> FAQ
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => navigate('/pricing')} className="font-mono text-xs uppercase tracking-wider">
+                  <DropdownMenuItem onClick={() => navigate('/pricing')} onMouseEnter={() => prefetchRoute('/pricing')} className="font-mono text-xs uppercase tracking-wider">
                     <Tag className="h-4 w-4 mr-2" /> Pricing
                   </DropdownMenuItem>
 
                   {user ? (
                     <>
                       <DropdownMenuSeparator />
-                      <DropdownMenuItem onClick={() => navigate('/dashboard')} className="font-mono text-xs uppercase tracking-wider">
+                      <DropdownMenuItem onClick={() => navigate('/dashboard')} onMouseEnter={() => prefetchRoute('/dashboard')} className="font-mono text-xs uppercase tracking-wider">
                         <LayoutDashboard className="h-4 w-4 mr-2" /> Dashboard
                       </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => navigate('/settings')} className="font-mono text-xs uppercase tracking-wider">
+                      <DropdownMenuItem onClick={() => navigate('/settings')} onMouseEnter={() => prefetchRoute('/settings')} className="font-mono text-xs uppercase tracking-wider">
                         <Settings className="h-4 w-4 mr-2" /> Settings
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
@@ -180,20 +182,20 @@ const Header = () => {
             <SheetContent side="right" className="w-72 bg-background/95 backdrop-blur-xl border-l border-primary/30">
               <div className="flex flex-col gap-1 mt-8 font-mono text-xs uppercase tracking-[0.2em]">
                 {user && (
-                  <button onClick={() => navigate('/dashboard')} className="px-3 py-3 rounded-md hover:bg-primary/10 hover:text-primary text-left transition-smooth flex items-center gap-2 border border-primary/30 mb-2">
+                  <button onClick={() => navigate('/dashboard')} {...prefetchHandlers('/dashboard')} className="px-3 py-3 rounded-md hover:bg-primary/10 hover:text-primary text-left transition-smooth flex items-center gap-2 border border-primary/30 mb-2">
                     <Terminal className="h-4 w-4" /> Dashboard
                   </button>
                 )}
-                <Link to="/about" className="px-3 py-3 rounded-md hover:bg-primary/10 hover:text-primary transition-smooth flex items-center gap-2">
+                <Link to="/about" {...prefetchHandlers('/about')} className="px-3 py-3 rounded-md hover:bg-primary/10 hover:text-primary transition-smooth flex items-center gap-2">
                   <Info className="h-4 w-4" /> About Us
                 </Link>
-                <Link to="/about-invoiceiq" className="px-3 py-3 rounded-md hover:bg-primary/10 hover:text-primary transition-smooth flex items-center gap-2">
+                <Link to="/about-invoiceiq" {...prefetchHandlers('/about-invoiceiq')} className="px-3 py-3 rounded-md hover:bg-primary/10 hover:text-primary transition-smooth flex items-center gap-2">
                   <Info className="h-4 w-4" /> The Solution
                 </Link>
-                <Link to="/faq" className="px-3 py-3 rounded-md hover:bg-primary/10 hover:text-primary transition-smooth flex items-center gap-2">
+                <Link to="/faq" {...prefetchHandlers('/faq')} className="px-3 py-3 rounded-md hover:bg-primary/10 hover:text-primary transition-smooth flex items-center gap-2">
                   <HelpCircle className="h-4 w-4" /> FAQ
                 </Link>
-                <Link to="/pricing" className="px-3 py-3 rounded-md hover:bg-primary/10 hover:text-primary transition-smooth flex items-center gap-2">
+                <Link to="/pricing" {...prefetchHandlers('/pricing')} className="px-3 py-3 rounded-md hover:bg-primary/10 hover:text-primary transition-smooth flex items-center gap-2">
                   <Tag className="h-4 w-4" /> Pricing
                 </Link>
                 <div className="flex items-center justify-between px-3 py-2 mt-2">
