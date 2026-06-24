@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { ExternalLink, FileText, Loader2 } from "lucide-react";
+import { ExternalLink, FileText, Loader2, X, Maximize2 } from "lucide-react";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 // Extracts a Google Drive file id from common URL shapes.
 export const extractDriveId = (url: string): string | null => {
@@ -34,22 +36,23 @@ interface Props {
 }
 
 const DriveLinkPreview = ({ url, label }: Props) => {
-  const [open, setOpen] = useState(false);
+  const [hoverOpen, setHoverOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
   const [pos, setPos] = useState({ x: 0, y: 0 });
   const [loaded, setLoaded] = useState(false);
   const [thumbFailed, setThumbFailed] = useState(false);
+  const [modalLoaded, setModalLoaded] = useState(false);
   const targetX = useRef(0);
   const targetY = useRef(0);
   const raf = useRef<number | null>(null);
 
   const driveId = extractDriveId(url);
-  // Thumbnail matches Drive's own hover-preview rendering (works for HTML, images, docs).
   const thumbUrl = driveId ? `https://drive.google.com/thumbnail?id=${driveId}&sz=w1200` : null;
   const iframeUrl = driveId ? `https://drive.google.com/file/d/${driveId}/preview` : null;
 
-  // Smoothly trail the cursor.
+  // Smoothly trail the cursor for hover preview.
   useEffect(() => {
-    if (!open) return;
+    if (!hoverOpen) return;
     const onMove = (e: MouseEvent) => {
       const vw = window.innerWidth;
       const vh = window.innerHeight;
@@ -73,18 +76,25 @@ const DriveLinkPreview = ({ url, label }: Props) => {
       window.removeEventListener("mousemove", onMove);
       if (raf.current) cancelAnimationFrame(raf.current);
     };
-  }, [open]);
+  }, [hoverOpen]);
 
   const handleEnter = (e: React.MouseEvent) => {
     targetX.current = e.clientX + OFFSET;
     targetY.current = e.clientY + OFFSET;
     setPos({ x: targetX.current, y: targetY.current });
-    setOpen(true);
+    setHoverOpen(true);
   };
   const handleLeave = () => {
-    setOpen(false);
+    setHoverOpen(false);
     setLoaded(false);
     setThumbFailed(false);
+  };
+
+  const handleClick = (e: React.MouseEvent) => {
+    if (!driveId) return; // fall through to normal link for non-drive urls
+    e.preventDefault();
+    setHoverOpen(false);
+    setModalOpen(true);
   };
 
   const display = label || (driveId ? "Open document" : url);
@@ -94,16 +104,19 @@ const DriveLinkPreview = ({ url, label }: Props) => {
     <>
       <a
         href={url}
-        target="_blank"
+        target={driveId ? undefined : "_blank"}
         rel="noreferrer"
+        onClick={handleClick}
         onMouseEnter={handleEnter}
         onMouseLeave={handleLeave}
-        className="inline-flex items-center gap-1 text-primary hover:underline max-w-[200px] truncate align-middle"
+        className="inline-flex items-center gap-1 text-primary hover:underline max-w-[200px] truncate align-middle cursor-pointer"
       >
         <ExternalLink className="w-3 h-3 shrink-0" />
         <span className="truncate">{display}</span>
       </a>
-      {open && driveId && createPortal(
+
+      {/* Cursor-trailing hover preview */}
+      {hoverOpen && driveId && createPortal(
         <div
           style={{
             position: "fixed",
@@ -118,7 +131,7 @@ const DriveLinkPreview = ({ url, label }: Props) => {
         >
           <div className="flex items-center gap-1.5 px-3 py-1.5 border-b border-border/60 bg-muted/60 text-[11px] text-muted-foreground">
             <FileText className="w-3 h-3" />
-            <span className="truncate">Drive preview</span>
+            <span className="truncate">Drive preview · click to open</span>
           </div>
           <div className="relative w-full bg-background" style={{ height: CARD_H - 28 }}>
             {!loaded && (
@@ -148,6 +161,64 @@ const DriveLinkPreview = ({ url, label }: Props) => {
           </div>
         </div>,
         document.body,
+      )}
+
+      {/* In-app document modal */}
+      {driveId && (
+        <Dialog
+          open={modalOpen}
+          onOpenChange={(o) => {
+            setModalOpen(o);
+            if (!o) setModalLoaded(false);
+          }}
+        >
+          <DialogContent
+            className="max-w-5xl w-[95vw] h-[88vh] p-0 overflow-hidden gap-0 border-border/70"
+          >
+            <div className="flex items-center justify-between px-4 py-2.5 border-b border-border/60 bg-muted/40">
+              <div className="flex items-center gap-2 min-w-0">
+                <FileText className="w-4 h-4 text-primary shrink-0" />
+                <span className="text-sm font-medium truncate">
+                  {label || "Document preview"}
+                </span>
+                <span className="text-[11px] text-muted-foreground hidden sm:inline">
+                  · Rendered inside InvoiceIQ
+                </span>
+              </div>
+              <div className="flex items-center gap-1">
+                <a href={url} target="_blank" rel="noreferrer">
+                  <Button variant="ghost" size="sm" className="gap-1.5 h-8">
+                    <Maximize2 className="w-3.5 h-3.5" />
+                    <span className="hidden sm:inline">Open in Drive</span>
+                  </Button>
+                </a>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 w-8 p-0"
+                  onClick={() => setModalOpen(false)}
+                  aria-label="Close"
+                >
+                  <X className="w-4 h-4" />
+                </Button>
+              </div>
+            </div>
+            <div className="relative flex-1 bg-background" style={{ height: "calc(88vh - 49px)" }}>
+              {!modalLoaded && (
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <Loader2 className="w-6 h-6 animate-spin text-primary" />
+                </div>
+              )}
+              <iframe
+                src={iframeUrl!}
+                title="Document preview"
+                className="w-full h-full border-0"
+                allow="autoplay"
+                onLoad={() => setModalLoaded(true)}
+              />
+            </div>
+          </DialogContent>
+        </Dialog>
       )}
     </>
   );
