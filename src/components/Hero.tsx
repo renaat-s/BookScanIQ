@@ -6,9 +6,10 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
+import { lazy, Suspense } from "react";
 
 import logoImage from "@/assets/InvoiceIQ_Logo.png";
-import ParticleField from "./ParticleField";
+const ParticleField = lazy(() => import("./ParticleField"));
 import TiltCard from "./TiltCard";
 
 const SUBHEAD = "Stop wasting hours on manual invoice processing. InvoiceIQ's AI agent extracts, validates, and processes invoices with 99% accuracy, saving you time and eliminating costly errors.";
