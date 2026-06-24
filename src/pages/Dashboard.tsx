@@ -28,14 +28,12 @@ import {
   PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RTooltip,
 } from "recharts";
 import {
-  ArrowUpDown, ExternalLink, FileText, Loader2, Search,
+  ArrowUpDown, ExternalLink, Loader2, Search,
   TrendingUp, TrendingDown, Receipt, Wallet, Sparkles,
   Download, ScanLine, Upload, RefreshCw, Activity,
   ArrowUpRight, ArrowDownRight, Clock, Building2, Filter, Plug,
 } from "lucide-react";
 import WorkspacesTab from "@/components/WorkspacesTab";
-import LatestRunDocuments from "@/components/LatestRunDocuments";
-import LatestRunVendors from "@/components/LatestRunVendors";
 import AuditLogTab from "@/components/AuditLogTab";
 import SavingsWidget from "@/components/SavingsWidget";
 import TipsCard from "@/components/TipsCard";
@@ -461,8 +459,6 @@ const Dashboard = () => {
               <TabsList className="bg-muted/60 backdrop-blur w-full sm:w-auto overflow-x-auto">
                 <TabsTrigger value="overview" className="gap-1.5 flex-1 sm:flex-none"><Activity className="w-4 h-4" /><span className="hidden xs:inline sm:inline">Overview</span></TabsTrigger>
                 <TabsTrigger value="workspaces" className="gap-1.5 flex-1 sm:flex-none"><Plug className="w-4 h-4" /><span className="hidden xs:inline sm:inline">Workspaces</span></TabsTrigger>
-                <TabsTrigger value="documents" className="gap-1.5 flex-1 sm:flex-none"><FileText className="w-4 h-4" /><span className="hidden xs:inline sm:inline">Documents</span></TabsTrigger>
-                <TabsTrigger value="vendors" className="gap-1.5 flex-1 sm:flex-none"><Building2 className="w-4 h-4" /><span className="hidden xs:inline sm:inline">Vendors</span></TabsTrigger>
                 <TabsTrigger value="audit" className="gap-1.5 flex-1 sm:flex-none"><ShieldCheck className="w-4 h-4" /><span className="hidden xs:inline sm:inline">Audit Log</span></TabsTrigger>
               </TabsList>
               <div className="flex gap-2">
@@ -656,15 +652,6 @@ const Dashboard = () => {
               <WorkspacesTab />
             </TabsContent>
 
-            {/* DOCUMENTS TAB — live previews from the Transactions ledger */}
-            <TabsContent value="documents" className="m-0">
-              <LatestRunDocuments />
-            </TabsContent>
-
-            {/* VENDORS TAB — vendors from the live Transactions ledger with logos */}
-            <TabsContent value="vendors" className="m-0">
-              <LatestRunVendors userId={user?.id} />
-            </TabsContent>
 
 
 
