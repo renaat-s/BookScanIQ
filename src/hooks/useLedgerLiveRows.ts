@@ -14,6 +14,14 @@ export interface LedgerEntry {
   raw: Record<string, string>;
 }
 
+export interface LedgerSource {
+  tabTitle: string | null;
+  rowCount: number;
+  parsedCount: number;
+  documentLinkCount: number;
+  fallbackUsed: boolean;
+}
+
 const DRIVE_ID_RX = /[-\w]{25,}/;
 
 function extractDriveId(url: string | null): string | null {
@@ -27,8 +35,6 @@ function parseAmount(v: string): number {
   const n = parseFloat(v.replace(/[^0-9.-]/g, ""));
   return isNaN(n) ? 0 : n;
 }
-
-const NORMALIZED_TRANSACTIONS_TAB = "transactions";
 
 function normalizeHeader(v: string): string {
   return (v || "")
@@ -104,82 +110,127 @@ interface SheetResp {
   cellLinks?: (string | null)[][];
 }
 
+interface ParsedSheet {
+  entries: LedgerEntry[];
+  source: LedgerSource;
+}
+
+function parseSheet(resp: SheetResp, fallbackUsed = false): ParsedSheet {
+  const values = resp.values ?? [];
+  const sourceBase = {
+    tabTitle: resp.active?.title ?? null,
+    rowCount: Math.max(0, values.length - 1),
+    fallbackUsed,
+  };
+
+  if (values.length < 2) {
+    return {
+      entries: [],
+      source: { ...sourceBase, parsedCount: 0, documentLinkCount: 0 },
+    };
+  }
+
+  const formulaValues = resp.formulaValues ?? [];
+  const cellLinks = resp.cellLinks ?? [];
+  const headerRow = findHeaderRow(values);
+  const header = values[headerRow].map((h) => (h ?? "").toString());
+  const vendorIdx = findCol(header, ["vendor", "merchant", "supplier", "payee", "description", "contact", "name"]);
+  const totalIdx = findCol(header, ["total", "amount", "gross", "value", "debit", "credit"]);
+  const typeIdx = findCol(header, ["type", "direction", "flow"]);
+  const dateIdx = findCol(header, ["date"]);
+  const linkIdx = header.findIndex(isLikelyLinkHeader);
+
+  const parsed: LedgerEntry[] = [];
+  for (let r = headerRow + 1; r < values.length; r++) {
+    const row = values[r] ?? [];
+    const formulaRow = formulaValues[r] ?? [];
+    const linkRow = cellLinks[r] ?? [];
+    const get = (i: number) => (i >= 0 ? (row[i] ?? "").toString().trim() : "");
+
+    // Prefer hidden/cell-level URLs, then =HYPERLINK formulas, then visible URLs.
+    let link = linkIdx >= 0 ? (linkRow[linkIdx] || extractHyperlinkUrl(formulaRow[linkIdx]) || get(linkIdx) || "") : "";
+    if (!/^https?:\/\//i.test(link)) link = "";
+    if (!link) link = linkRow.find((v) => typeof v === "string" && /^https?:\/\//i.test(v)) || "";
+    if (!link) link = firstUrlFromRow(formulaRow);
+    if (!link) link = firstUrlFromRow(row);
+
+    const vendor = get(vendorIdx);
+    const total = get(totalIdx);
+    // Skip totally empty rows.
+    if (!vendor && !total && !link) continue;
+
+    parsed.push({
+      entryNumber: parsed.length + 1,
+      sheetRowNumber: r + 1,
+      vendor: vendor || "Unknown vendor",
+      total,
+      totalNumeric: parseAmount(total),
+      type: get(typeIdx),
+      date: get(dateIdx),
+      link: link || null,
+      driveId: extractDriveId(link || null),
+      raw: header.reduce<Record<string, string>>((acc, h, i) => {
+        acc[h || `col_${i}`] = (row[i] ?? "").toString();
+        return acc;
+      }, {}),
+    });
+  }
+
+  return {
+    entries: parsed,
+    source: {
+      ...sourceBase,
+      rowCount: Math.max(0, values.length - headerRow - 1),
+      parsedCount: parsed.length,
+      documentLinkCount: parsed.filter((e) => e.link || e.driveId).length,
+    },
+  };
+}
+
 /**
- * Reads the current rows from the user's Live Workspace ledger (Transactions tab)
- * and normalises them into a friendly shape for the Documents/Vendors tabs.
+ * Reads the current rows from the user's Live Workspace ledger and normalises
+ * them into a friendly shape for the Documents/Vendors tabs.
  */
 export function useLedgerLiveRows() {
   const [entries, setEntries] = useState<LedgerEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [source, setSource] = useState<LedgerSource | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
-      const { data, error } = await supabase.functions.invoke("sheet-read", {
-        body: { sheetName: "Transactions" },
-      });
-      if (error) throw error;
-      if (data?.error) throw new Error(data.error);
-      const resp = data as SheetResp;
-      if (resp.active?.title && resp.active.title.trim().toLowerCase() !== NORMALIZED_TRANSACTIONS_TAB) {
-        throw new Error("Transactions tab was not found in the Live Workspace ledger.");
+      const readSheet = async (body: Record<string, string>) => {
+        const { data, error } = await supabase.functions.invoke("sheet-read", { body });
+        if (error) throw error;
+        if (data?.error) throw new Error(data.error);
+        return data as SheetResp;
+      };
+
+      const primaryResp = await readSheet({ sheetName: "Transactions" });
+      let result = parseSheet(primaryResp);
+
+      // Deep-audit finding: the visible Live Workspace ledger uses the default
+      // sheet when no tab is selected, while this hook used to hard-code the
+      // Transactions tab. If a workspace has rows in the default ledger tab but
+      // an empty/renamed Transactions tab, Documents/Vendors looked empty even
+      // though the Ledger sub-tab showed data. Fall back to the same default tab
+      // only when the Transactions attempt produced no parseable entries.
+      if (result.entries.length === 0) {
+        const fallbackResp = await readSheet({});
+        const fallback = parseSheet(fallbackResp, true);
+        if (fallback.entries.length > result.entries.length) {
+          result = fallback;
+        }
       }
-      const values = resp.values ?? [];
-      if (values.length < 2) {
-        setEntries([]);
-        return;
-      }
-      const formulaValues = resp.formulaValues ?? [];
-      const cellLinks = resp.cellLinks ?? [];
-      const headerRow = findHeaderRow(values);
-      const header = values[headerRow].map((h) => (h ?? "").toString());
-      const vendorIdx = findCol(header, ["vendor", "merchant", "supplier", "payee", "description", "contact", "name"]);
-      const totalIdx = findCol(header, ["total", "amount", "gross", "value", "debit", "credit"]);
-      const typeIdx = findCol(header, ["type", "direction", "flow"]);
-      const dateIdx = findCol(header, ["date"]);
-      const linkIdx = header.findIndex(isLikelyLinkHeader);
 
-      const parsed: LedgerEntry[] = [];
-      for (let r = headerRow + 1; r < values.length; r++) {
-        const row = values[r] ?? [];
-        const formulaRow = formulaValues[r] ?? [];
-        const linkRow = cellLinks[r] ?? [];
-        const get = (i: number) => (i >= 0 ? (row[i] ?? "").toString().trim() : "");
-
-        // Prefer hidden/cell-level URLs, then =HYPERLINK formulas, then visible URLs.
-        let link = linkIdx >= 0 ? (linkRow[linkIdx] || extractHyperlinkUrl(formulaRow[linkIdx]) || get(linkIdx) || "") : "";
-        if (!/^https?:\/\//i.test(link)) link = "";
-        if (!link) link = linkRow.find((v) => typeof v === "string" && /^https?:\/\//i.test(v)) || "";
-        if (!link) link = firstUrlFromRow(formulaRow);
-        if (!link) link = firstUrlFromRow(row);
-
-        const vendor = get(vendorIdx);
-        const total = get(totalIdx);
-        // Skip totally empty rows
-        if (!vendor && !total && !link) continue;
-
-        parsed.push({
-          entryNumber: parsed.length + 1,
-          sheetRowNumber: r + 1,
-          vendor: vendor || "Unknown vendor",
-          total,
-          totalNumeric: parseAmount(total),
-          type: get(typeIdx),
-          date: get(dateIdx),
-          link: link || null,
-          driveId: extractDriveId(link || null),
-          raw: header.reduce<Record<string, string>>((acc, h, i) => {
-            acc[h || `col_${i}`] = (row[i] ?? "").toString();
-            return acc;
-          }, {}),
-        });
-      }
-      setEntries(parsed);
+      setEntries(result.entries);
+      setSource(result.source);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Failed to load ledger");
       setEntries([]);
+      setSource(null);
     } finally {
       setLoading(false);
     }
@@ -189,5 +240,5 @@ export function useLedgerLiveRows() {
     load();
   }, [load]);
 
-  return { entries, loading, error, reload: load };
+  return { entries, loading, error, reload: load, source };
 }
