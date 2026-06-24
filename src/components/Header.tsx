@@ -80,6 +80,7 @@ const Header = () => {
             {user && (
               <Link
                 to="/dashboard"
+                {...prefetchHandlers("/dashboard")}
                 className={`group relative inline-flex items-center gap-2 px-5 py-2 rounded-md font-mono text-xs uppercase tracking-[0.22em] border transition-all
                   ${location.pathname === '/dashboard'
                     ? 'border-primary/70 text-primary bg-primary/10 shadow-[0_0_18px_hsl(var(--primary)/0.35)]'
