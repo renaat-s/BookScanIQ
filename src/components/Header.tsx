@@ -25,6 +25,7 @@ import {
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import ThemeToggle from "@/components/ThemeToggle";
 import { toast } from "sonner";
+import { prefetchHandlers, prefetchRoute } from "@/lib/route-prefetch";
 
 
 const Header = () => {
