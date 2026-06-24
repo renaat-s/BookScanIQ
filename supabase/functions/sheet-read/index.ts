@@ -76,11 +76,13 @@ Deno.serve(async (req) => {
     const accessToken = await exchangeRefreshToken(creds.google_refresh_token);
     const headers = { Authorization: `Bearer ${accessToken}` };
 
-    // Get spreadsheet metadata (title + sheet tabs)
     const metaUrl = new URL(
       `https://sheets.googleapis.com/v4/spreadsheets/${encodeURIComponent(creds.user_spreadsheet_id)}`,
     );
-    metaUrl.searchParams.set("fields", "spreadsheetId,properties.title,spreadsheetUrl,sheets.properties(sheetId,title,index,gridProperties)");
+    metaUrl.searchParams.set(
+      "fields",
+      "spreadsheetId,properties.title,spreadsheetUrl,sheets.properties(sheetId,title,index,gridProperties)",
+    );
 
     const metaRes = await fetch(metaUrl, { headers });
     if (!metaRes.ok) {
@@ -117,72 +119,19 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Read values from the active tab. We fetch the same tab twice:
-    // - FORMATTED_VALUE is what users see in the sheet.
-    // - FORMULA preserves =HYPERLINK("https://drive...", "Open document") URLs.
-    // Without FORMULA, document-link cells can arrive as display text only, so
-    // the Documents/Vendors dashboard tabs cannot build Drive previews.
-    const range = `'${activeTab.title.replace(/'/g, "''")}'`;
-    const gridRange = `${range}!A1:ZZ10000`;
-    const makeValuesUrl = (valueRenderOption: "FORMATTED_VALUE" | "FORMULA") => {
-      const url = new URL(
-        `https://sheets.googleapis.com/v4/spreadsheets/${encodeURIComponent(creds.user_spreadsheet_id)}/values/${gridRange}`,
-      );
-      url.searchParams.set("valueRenderOption", valueRenderOption);
-      url.searchParams.set("dateTimeRenderOption", "FORMATTED_STRING");
-      return url;
-    };
-
-    const gridUrl = new URL(
-      `https://sheets.googleapis.com/v4/spreadsheets/${encodeURIComponent(creds.user_spreadsheet_id)}`,
+    const range = `'${activeTab.title.replace(/'/g, "''")}'!A1:ZZ10000`;
+    const valuesUrl = new URL(
+      `https://sheets.googleapis.com/v4/spreadsheets/${encodeURIComponent(creds.user_spreadsheet_id)}/values/${range}`,
     );
-    gridUrl.searchParams.set("includeGridData", "true");
-    gridUrl.searchParams.append("ranges", gridRange);
-    gridUrl.searchParams.set(
-      "fields",
-      "sheets(data(rowData(values(formattedValue,userEnteredValue,effectiveValue,hyperlink,textFormatRuns(startIndex,format(link(uri)))))))",
-    );
+    valuesUrl.searchParams.set("valueRenderOption", "FORMATTED_VALUE");
+    valuesUrl.searchParams.set("dateTimeRenderOption", "FORMATTED_STRING");
 
-    const [valRes, formulaRes, gridRes] = await Promise.all([
-      fetch(makeValuesUrl("FORMATTED_VALUE"), { headers }),
-      fetch(makeValuesUrl("FORMULA"), { headers }),
-      fetch(gridUrl, { headers }),
-    ]);
+    const valRes = await fetch(valuesUrl, { headers });
     if (!valRes.ok) {
       const t = await valRes.text();
       return json({ error: `Sheets values error: ${t}` }, 502);
     }
     const valData = await valRes.json();
-    let formulaValues: string[][] = [];
-    if (formulaRes.ok) {
-      const formulaData = await formulaRes.json();
-      formulaValues = formulaData.values ?? [];
-    } else {
-      console.error("Sheets formula values error", await formulaRes.text());
-    }
-    let cellLinks: (string | null)[][] = [];
-    if (gridRes.ok) {
-      const gridData = await gridRes.json();
-      const rows = gridData.sheets?.[0]?.data?.[0]?.rowData ?? [];
-      cellLinks = rows.map((row: any) =>
-        (row.values ?? []).map((cell: any) => {
-          const formula = cell.userEnteredValue?.formulaValue;
-          const formulaLink = typeof formula === "string"
-            ? formula.match(/^=HYPERLINK\(\s*"([^"]+)"/i)?.[1] ||
-              formula.match(/^=HYPERLINK\(\s*'([^']+)'/i)?.[1]
-            : null;
-          if (formulaLink) return formulaLink;
-          if (cell.hyperlink) return cell.hyperlink;
-          const richTextLink = (cell.textFormatRuns ?? [])
-            .map((run: any) => run.format?.link?.uri)
-            .find(Boolean);
-          if (richTextLink) return richTextLink;
-          return null;
-        }),
-      );
-    } else {
-      console.error("Sheets grid links error", await gridRes.text());
-    }
 
     return json({
       spreadsheet: {
@@ -193,15 +142,6 @@ Deno.serve(async (req) => {
       tabs,
       active: activeTab,
       values: valData.values ?? [],
-      formulaValues,
-      cellLinks,
-      diagnostics: {
-        requestedSheetName: sheetName ?? null,
-        activeTitle: activeTab.title,
-        valueRows: (valData.values ?? []).length,
-        formulaRows: formulaValues.length,
-        gridRows: cellLinks.length,
-      },
     });
   } catch (e) {
     console.error("sheet-read error", e);
