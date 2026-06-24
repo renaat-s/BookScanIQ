@@ -45,10 +45,12 @@ import {
   RefreshCw,
   Trash2,
   ShieldOff,
+  Brain,
 } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { Switch } from '@/components/ui/switch';
 import { Moon, Sun } from 'lucide-react';
+import { useLowCogMode } from '@/contexts/LowCogModeContext';
 
 const AppearanceToggleRow = () => {
   const { theme, setTheme } = useTheme();
