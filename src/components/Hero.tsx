@@ -118,8 +118,10 @@ const Hero = () => {
 
   return (
     <section className="relative min-h-screen flex items-center bg-gradient-subtle overflow-hidden">
-      {/* 3D particle background */}
-      <ParticleField />
+      {/* 3D particle background (lazy — never blocks first paint) */}
+      <Suspense fallback={null}>
+        <ParticleField />
+      </Suspense>
       {/* Subtle scanline / grid overlay */}
       <div className="absolute inset-0 pointer-events-none hero-grid-overlay opacity-60" aria-hidden="true" />
 
