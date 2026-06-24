@@ -182,20 +182,20 @@ const Header = () => {
             <SheetContent side="right" className="w-72 bg-background/95 backdrop-blur-xl border-l border-primary/30">
               <div className="flex flex-col gap-1 mt-8 font-mono text-xs uppercase tracking-[0.2em]">
                 {user && (
-                  <button onClick={() => navigate('/dashboard')} className="px-3 py-3 rounded-md hover:bg-primary/10 hover:text-primary text-left transition-smooth flex items-center gap-2 border border-primary/30 mb-2">
+                  <button onClick={() => navigate('/dashboard')} {...prefetchHandlers('/dashboard')} className="px-3 py-3 rounded-md hover:bg-primary/10 hover:text-primary text-left transition-smooth flex items-center gap-2 border border-primary/30 mb-2">
                     <Terminal className="h-4 w-4" /> Dashboard
                   </button>
                 )}
-                <Link to="/about" className="px-3 py-3 rounded-md hover:bg-primary/10 hover:text-primary transition-smooth flex items-center gap-2">
+                <Link to="/about" {...prefetchHandlers('/about')} className="px-3 py-3 rounded-md hover:bg-primary/10 hover:text-primary transition-smooth flex items-center gap-2">
                   <Info className="h-4 w-4" /> About Us
                 </Link>
-                <Link to="/about-invoiceiq" className="px-3 py-3 rounded-md hover:bg-primary/10 hover:text-primary transition-smooth flex items-center gap-2">
+                <Link to="/about-invoiceiq" {...prefetchHandlers('/about-invoiceiq')} className="px-3 py-3 rounded-md hover:bg-primary/10 hover:text-primary transition-smooth flex items-center gap-2">
                   <Info className="h-4 w-4" /> The Solution
                 </Link>
-                <Link to="/faq" className="px-3 py-3 rounded-md hover:bg-primary/10 hover:text-primary transition-smooth flex items-center gap-2">
+                <Link to="/faq" {...prefetchHandlers('/faq')} className="px-3 py-3 rounded-md hover:bg-primary/10 hover:text-primary transition-smooth flex items-center gap-2">
                   <HelpCircle className="h-4 w-4" /> FAQ
                 </Link>
-                <Link to="/pricing" className="px-3 py-3 rounded-md hover:bg-primary/10 hover:text-primary transition-smooth flex items-center gap-2">
+                <Link to="/pricing" {...prefetchHandlers('/pricing')} className="px-3 py-3 rounded-md hover:bg-primary/10 hover:text-primary transition-smooth flex items-center gap-2">
                   <Tag className="h-4 w-4" /> Pricing
                 </Link>
                 <div className="flex items-center justify-between px-3 py-2 mt-2">
