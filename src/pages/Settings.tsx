@@ -485,6 +485,23 @@ const Settings = () => {
               </CardContent>
             </Card>
 
+            {/* Neurodivergent Mode */}
+            <Card className="bg-card/80 backdrop-blur-sm border border-border/50 rounded-3xl shadow-elegant">
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <Brain className="h-5 w-5 text-primary" /> Neurodivergent Mode
+                </CardTitle>
+                <CardDescription>
+                  A low cognitive load interface for ADHD, Autism, and Dyslexia. Independent of light/night mode.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <LowCogToggleRow />
+              </CardContent>
+            </Card>
+
+
+
 
             {/* Xero Settings */}
             <Card className="bg-card/80 backdrop-blur-sm border border-border/50 rounded-3xl shadow-elegant hover:shadow-lg hover:border-violet-500/30 transition-all duration-300">
