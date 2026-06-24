@@ -652,15 +652,6 @@ const Dashboard = () => {
               <WorkspacesTab />
             </TabsContent>
 
-            {/* DOCUMENTS TAB — live previews from the Transactions ledger */}
-            <TabsContent value="documents" className="m-0">
-              <LatestRunDocuments />
-            </TabsContent>
-
-            {/* VENDORS TAB — vendors from the live Transactions ledger with logos */}
-            <TabsContent value="vendors" className="m-0">
-              <LatestRunVendors userId={user?.id} />
-            </TabsContent>
 
 
 
