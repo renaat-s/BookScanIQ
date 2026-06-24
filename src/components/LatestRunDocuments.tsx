@@ -63,7 +63,7 @@ const ThumbCard = ({ entry }: { entry: LedgerEntry }) => {
 };
 
 const LatestRunDocuments = () => {
-  const { entries, loading, error, reload } = useLedgerLiveRows();
+  const { entries, loading, error, reload, source } = useLedgerLiveRows();
   const items = useMemo(() => entries.filter((e) => e.driveId || e.link), [entries]);
 
   return (
@@ -99,7 +99,11 @@ const LatestRunDocuments = () => {
           <div className="text-center py-12 text-muted-foreground">
             <FileText className="w-10 h-10 mx-auto mb-3 opacity-50" />
             <p className="text-sm">No ledger entries with document links yet.</p>
-            <p className="text-xs mt-1">Run a scan to populate your Live Workspace.</p>
+            <p className="text-xs mt-1">
+              {source?.parsedCount
+                ? `${source.parsedCount} ledger entr${source.parsedCount === 1 ? "y was" : "ies were"} found in ${source.tabTitle || "the ledger"}, but none included document links.`
+                : "Run a scan to populate your Live Workspace."}
+            </p>
           </div>
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
