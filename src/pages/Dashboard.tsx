@@ -28,7 +28,7 @@ import {
   PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RTooltip,
 } from "recharts";
 import {
-  ArrowUpDown, ExternalLink, FileText, Loader2, Search,
+  ArrowUpDown, ExternalLink, Loader2, Search,
   TrendingUp, TrendingDown, Receipt, Wallet, Sparkles,
   Download, ScanLine, Upload, RefreshCw, Activity,
   ArrowUpRight, ArrowDownRight, Clock, Building2, Filter, Plug,
