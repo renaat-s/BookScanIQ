@@ -83,6 +83,7 @@ const App = () => (
             <FeedbackWidget />
             </BrowserRouter>
           </TooltipProvider>
+          </LowCogModeProvider>
         </AuthProvider>
       </ThemeProvider>
     </HelmetProvider>
