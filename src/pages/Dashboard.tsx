@@ -477,6 +477,14 @@ const Dashboard = () => {
                 <EmptyState onDetect={() => navigate("/detect-invoices")} onCapture={() => navigate("/capture-invoices")} />
               ) : (
                 <>
+                  {lowCog && (
+                    <TrafficLightStatus
+                      docsThisMonth={stats.countThis}
+                      net={liveStats ? liveStats.net : stats.net}
+                      workspaceReady={guard.status === "ready"}
+                      lastSyncAt={lastSyncAt}
+                    />
+                  )}
                   <div className="grid lg:grid-cols-3 gap-4">
                     <div className="lg:col-span-2">
                       <SavingsWidget documentsThisMonth={stats.countThis} />
