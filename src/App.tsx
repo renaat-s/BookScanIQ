@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { LowCogModeProvider } from "@/contexts/LowCogModeContext";
 import { ThemeProvider } from "next-themes";
 import { Loader2 } from "lucide-react";
 
@@ -51,6 +52,7 @@ const App = () => (
     <HelmetProvider>
       <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} storageKey="invoiceiq-theme">
         <AuthProvider>
+          <LowCogModeProvider>
           <TooltipProvider>
             <Toaster />
             <Sonner />
