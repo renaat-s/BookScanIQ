@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Menu, LogOut, Trash2, LogIn, ChevronDown, Settings, LayoutDashboard, Info, HelpCircle, Tag, Terminal } from "lucide-react";
+import { Menu, LogOut, Trash2, LogIn, ChevronDown, Settings, LayoutDashboard, Info, HelpCircle, Tag, Terminal, Brain } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import logoImage from "@/assets/InvoiceIQ_Logo.png";
 import { useAuth } from "@/contexts/AuthContext";
+import { useLowCogMode } from "@/contexts/LowCogModeContext";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -30,6 +31,7 @@ const Header = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, signInWithGoogle, signOut, deleteAccount, loading } = useAuth();
+  const { lowCog, toggleLowCog } = useLowCogMode();
   const [deleting, setDeleting] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
@@ -91,6 +93,16 @@ const Header = () => {
 
           {/* RIGHT: Theme + Menu */}
           <div className="hidden md:flex items-center space-x-2">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => toggleLowCog()}
+              aria-label={lowCog ? "Disable Neurodivergent Mode" : "Enable Neurodivergent Mode"}
+              title={lowCog ? "Neurodivergent Mode: ON" : "Neurodivergent Mode: OFF"}
+              className={`border ${lowCog ? "border-primary/70 text-primary bg-primary/10" : "border-primary/20 text-foreground/80 hover:text-primary hover:bg-primary/10"}`}
+            >
+              <Brain className="h-5 w-5" />
+            </Button>
             <ThemeToggle className="text-foreground/80 hover:text-primary hover:bg-primary/10" />
             {loading ? (
               <Button variant="ghost" className="text-foreground/70" disabled>
