@@ -38,7 +38,8 @@ import AuditLogTab from "@/components/AuditLogTab";
 import SavingsWidget from "@/components/SavingsWidget";
 import TipsCard from "@/components/TipsCard";
 import { useDirectoryGuard } from "@/hooks/useDirectoryGuard";
-import { ShieldCheck } from "lucide-react";
+import { useLowCogMode } from "@/contexts/LowCogModeContext";
+import { ShieldCheck, CheckCircle2, AlertCircle, XCircle } from "lucide-react";
 
 interface Invoice {
   id: string;
@@ -98,6 +99,7 @@ const Dashboard = () => {
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const guard = useDirectoryGuard();
+  const { lowCog } = useLowCogMode();
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
