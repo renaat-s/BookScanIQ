@@ -567,3 +567,58 @@ All colors MUST be HSL.
     );
   }
 }
+
+/* ============================================================
+   NEURODIVERGENT (LOW COGNITIVE LOAD) MODE
+   Toggled via `.low-cog` on <html>. Designed for users with
+   ADHD / Autism / Dyslexia: dyslexia-friendly typography,
+   larger tap targets, more whitespace, calmer motion.
+   ============================================================ */
+.low-cog {
+  /* Dyslexia-friendly body type. Headings keep their cyber feel
+     but become slightly looser and easier to scan. */
+  font-family: 'Atkinson Hyperlegible', system-ui, -apple-system, sans-serif;
+  font-size: 17px;
+  line-height: 1.65;
+  letter-spacing: 0.01em;
+}
+
+.low-cog body {
+  font-family: 'Atkinson Hyperlegible', system-ui, -apple-system, sans-serif;
+}
+
+.low-cog p,
+.low-cog li,
+.low-cog label,
+.low-cog span,
+.low-cog div {
+  letter-spacing: 0.01em;
+}
+
+/* Bigger, calmer headings. */
+.low-cog h1 { font-size: clamp(1.875rem, 4vw, 2.75rem); line-height: 1.2; }
+.low-cog h2 { font-size: clamp(1.5rem, 3vw, 2rem); line-height: 1.25; }
+.low-cog h3 { font-size: clamp(1.25rem, 2.5vw, 1.5rem); line-height: 1.3; }
+
+/* More generous tap targets and spacing on interactive elements. */
+.low-cog button,
+.low-cog [role="button"],
+.low-cog a.btn,
+.low-cog .btn {
+  min-height: 44px;
+  font-size: 0.975rem;
+}
+
+/* Soften animation for users who find motion taxing. */
+.low-cog *,
+.low-cog *::before,
+.low-cog *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 120ms !important;
+}
+
+/* Traffic-light status pills used across the simplified dashboard. */
+.low-cog .lc-status-green  { background: hsl(var(--success) / 0.15);     color: hsl(var(--success));     border-color: hsl(var(--success) / 0.4); }
+.low-cog .lc-status-yellow { background: hsl(45 95% 50% / 0.15);          color: hsl(38 92% 35%);         border-color: hsl(45 95% 50% / 0.5); }
+.low-cog .lc-status-red    { background: hsl(var(--destructive) / 0.15); color: hsl(var(--destructive)); border-color: hsl(var(--destructive) / 0.4); }

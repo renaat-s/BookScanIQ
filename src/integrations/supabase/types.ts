@@ -168,6 +168,7 @@ export type Database = {
           email: string | null
           full_name: string | null
           id: string
+          low_cognitive_mode: boolean
           minutes_per_doc: number
           n8n_webhook_connected: boolean | null
           updated_at: string
@@ -180,6 +181,7 @@ export type Database = {
           email?: string | null
           full_name?: string | null
           id?: string
+          low_cognitive_mode?: boolean
           minutes_per_doc?: number
           n8n_webhook_connected?: boolean | null
           updated_at?: string
@@ -192,6 +194,7 @@ export type Database = {
           email?: string | null
           full_name?: string | null
           id?: string
+          low_cognitive_mode?: boolean
           minutes_per_doc?: number
           n8n_webhook_connected?: boolean | null
           updated_at?: string

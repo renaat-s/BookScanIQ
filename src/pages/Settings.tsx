@@ -45,10 +45,12 @@ import {
   RefreshCw,
   Trash2,
   ShieldOff,
+  Brain,
 } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { Switch } from '@/components/ui/switch';
 import { Moon, Sun } from 'lucide-react';
+import { useLowCogMode } from '@/contexts/LowCogModeContext';
 
 const AppearanceToggleRow = () => {
   const { theme, setTheme } = useTheme();
@@ -65,6 +67,26 @@ const AppearanceToggleRow = () => {
         </div>
       </div>
       <Switch checked={isDark} onCheckedChange={(c) => setTheme(c ? 'dark' : 'light')} aria-label="Toggle night mode" />
+    </div>
+  );
+};
+
+const LowCogToggleRow = () => {
+  const { lowCog, setLowCog } = useLowCogMode();
+  return (
+    <div className="flex items-center justify-between gap-4">
+      <div className="flex items-start gap-3">
+        <Brain className="h-5 w-5 text-primary mt-0.5 shrink-0" />
+        <div>
+          <p className="font-medium">Neurodivergent Mode (Low Cognitive Load)</p>
+          <p className="text-sm text-muted-foreground">
+            Built for entrepreneurs with ADHD, Autism, or Dyslexia. Dyslexia-friendly type,
+            larger spacing, calmer motion, and traffic-light status indicators (Green = Done,
+            Yellow = Action Needed, Red = Blocked) so you can read your books in seconds.
+          </p>
+        </div>
+      </div>
+      <Switch checked={lowCog} onCheckedChange={(c) => setLowCog(!!c)} aria-label="Toggle Neurodivergent Mode" />
     </div>
   );
 };
@@ -462,6 +484,23 @@ const Settings = () => {
                 <AppearanceToggleRow />
               </CardContent>
             </Card>
+
+            {/* Neurodivergent Mode */}
+            <Card className="bg-card/80 backdrop-blur-sm border border-border/50 rounded-3xl shadow-elegant">
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <Brain className="h-5 w-5 text-primary" /> Neurodivergent Mode
+                </CardTitle>
+                <CardDescription>
+                  A low cognitive load interface for ADHD, Autism, and Dyslexia. Independent of light/night mode.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <LowCogToggleRow />
+              </CardContent>
+            </Card>
+
+
 
 
             {/* Xero Settings */}
