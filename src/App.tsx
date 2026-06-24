@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect } from "react";
+import { lazy, Suspense } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -9,7 +9,6 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { LowCogModeProvider } from "@/contexts/LowCogModeContext";
 import { ThemeProvider } from "next-themes";
 import { Loader2 } from "lucide-react";
-import { prefetchRoute } from "@/lib/route-prefetch";
 
 // Eagerly load the landing page
 import Index from "./pages/Index";
@@ -48,22 +47,6 @@ const PageLoader = () => (
   </div>
 );
 
-const IdleWarmup = () => {
-  useEffect(() => {
-    const warm = () => {
-      ["/dashboard", "/pricing", "/about", "/faq", "/settings"].forEach(prefetchRoute);
-    };
-    const w = window as Window & { requestIdleCallback?: (cb: () => void) => number };
-    const id = w.requestIdleCallback ? w.requestIdleCallback(warm) : window.setTimeout(warm, 1500);
-    return () => {
-      const wc = window as Window & { cancelIdleCallback?: (id: number) => void };
-      if (wc.cancelIdleCallback) wc.cancelIdleCallback(id as number);
-      else window.clearTimeout(id as number);
-    };
-  }, []);
-  return null;
-};
-
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <HelmetProvider>
@@ -97,7 +80,6 @@ const App = () => (
               <Route path="*" element={<NotFound />} />
             </Routes>
             </Suspense>
-            <IdleWarmup />
             <FeedbackWidget />
             </BrowserRouter>
           </TooltipProvider>

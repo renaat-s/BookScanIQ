@@ -6,10 +6,9 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
-import { lazy, Suspense } from "react";
 
 import logoImage from "@/assets/InvoiceIQ_Logo.png";
-const ParticleField = lazy(() => import("./ParticleField"));
+import ParticleField from "./ParticleField";
 import TiltCard from "./TiltCard";
 
 const SUBHEAD = "Stop wasting hours on manual invoice processing. InvoiceIQ's AI agent extracts, validates, and processes invoices with 99% accuracy, saving you time and eliminating costly errors.";
@@ -118,10 +117,8 @@ const Hero = () => {
 
   return (
     <section className="relative min-h-screen flex items-center bg-gradient-subtle overflow-hidden">
-      {/* 3D particle background (lazy — never blocks first paint) */}
-      <Suspense fallback={null}>
-        <ParticleField />
-      </Suspense>
+      {/* 3D particle background */}
+      <ParticleField />
       {/* Subtle scanline / grid overlay */}
       <div className="absolute inset-0 pointer-events-none hero-grid-overlay opacity-60" aria-hidden="true" />
 
