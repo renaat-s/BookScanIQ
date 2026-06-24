@@ -847,4 +847,80 @@ const SortableHead = ({
   </TableHead>
 );
 
+/**
+ * Traffic-light status grid shown in Neurodivergent Mode.
+ * One glance: Green = Done, Yellow = Action Needed, Red = Blocked.
+ * Replaces dense charts/tables with three big plain-language status cards.
+ */
+const TrafficLightStatus = ({
+  docsThisMonth, net, workspaceReady, lastSyncAt,
+}: {
+  docsThisMonth: number;
+  net: number;
+  workspaceReady: boolean;
+  lastSyncAt: string | null;
+}) => {
+  const workspace = workspaceReady
+    ? { tone: "green" as const, title: "Workspace connected", body: "Your books are syncing. Nothing to do." }
+    : { tone: "red" as const, title: "Workspace not connected", body: "Connect Google Drive and Sheets to start." };
+
+  const syncMs = lastSyncAt ? Date.now() - new Date(lastSyncAt).getTime() : Infinity;
+  const sync = syncMs < 24 * 60 * 60 * 1000
+    ? { tone: "green" as const, title: "Synced recently", body: `Last sync ${relativeTime(lastSyncAt)}.` }
+    : syncMs < 7 * 24 * 60 * 60 * 1000
+      ? { tone: "yellow" as const, title: "Sync is a few days old", body: "Run a refresh when you have a minute." }
+      : { tone: "red" as const, title: "Sync looks stale", body: "It's been over a week. Run a scan today." };
+
+  const cashflow = net >= 0
+    ? { tone: "green" as const, title: "You're in the green", body: "Income is covering expenses this period." }
+    : { tone: "red" as const, title: "Spending outpaces income", body: "Review expenses or revisit your invoicing." };
+
+  const activity = docsThisMonth > 0
+    ? { tone: "green" as const, title: `${docsThisMonth} document${docsThisMonth === 1 ? "" : "s"} this month`, body: "Bookkeeping is moving." }
+    : { tone: "yellow" as const, title: "No documents yet this month", body: "Capture or detect invoices to stay current." };
+
+  const tiles = [
+    { icon: <Plug className="w-6 h-6" />, ...workspace },
+    { icon: <RefreshCw className="w-6 h-6" />, ...sync },
+    { icon: <Wallet className="w-6 h-6" />, ...cashflow },
+    { icon: <Receipt className="w-6 h-6" />, ...activity },
+  ];
+
+  const toneClass = (t: "green" | "yellow" | "red") =>
+    t === "green" ? "lc-status-green" : t === "yellow" ? "lc-status-yellow" : "lc-status-red";
+
+  const ToneIcon = ({ t }: { t: "green" | "yellow" | "red" }) =>
+    t === "green" ? <CheckCircle2 className="w-7 h-7" />
+      : t === "yellow" ? <AlertCircle className="w-7 h-7" />
+      : <XCircle className="w-7 h-7" />;
+
+  return (
+    <Card className="border-border/60 shadow-card">
+      <CardHeader>
+        <CardTitle className="text-lg">Status at a glance</CardTitle>
+        <CardDescription>Green = Done · Yellow = Action Needed · Red = Blocked</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {tiles.map((tile, i) => (
+            <div
+              key={i}
+              className={`flex items-start gap-4 p-5 rounded-2xl border-2 ${toneClass(tile.tone)}`}
+            >
+              <div className="shrink-0"><ToneIcon t={tile.tone} /></div>
+              <div className="min-w-0">
+                <div className="flex items-center gap-2">
+                  <span className="opacity-80">{tile.icon}</span>
+                  <p className="font-semibold leading-tight">{tile.title}</p>
+                </div>
+                <p className="text-sm mt-1 opacity-90">{tile.body}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
+
 export default Dashboard;
