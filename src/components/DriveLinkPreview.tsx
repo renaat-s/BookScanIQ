@@ -173,7 +173,11 @@ const DriveLinkPreview = ({ url, label }: Props) => {
           open={modalOpen}
           onOpenChange={(o) => {
             setModalOpen(o);
-            if (!o) setModalLoaded(false);
+            if (!o) {
+              setModalLoaded(false);
+              setModalMode("thumb");
+              setModalThumbFailed(false);
+            }
           }}
         >
           <DialogContent
@@ -190,6 +194,18 @@ const DriveLinkPreview = ({ url, label }: Props) => {
                 </span>
               </div>
               <div className="flex items-center gap-1">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 text-xs"
+                  onClick={() => {
+                    setModalLoaded(false);
+                    setModalMode((m) => (m === "thumb" ? "iframe" : "thumb"));
+                  }}
+                  title="Switch render mode"
+                >
+                  {modalMode === "thumb" ? "Interactive view" : "Image view"}
+                </Button>
                 <a href={url} target="_blank" rel="noreferrer">
                   <Button variant="ghost" size="sm" className="gap-1.5 h-8">
                     <Maximize2 className="w-3.5 h-3.5" />
@@ -207,23 +223,40 @@ const DriveLinkPreview = ({ url, label }: Props) => {
                 </Button>
               </div>
             </div>
-            <div className="relative flex-1 bg-background" style={{ height: "calc(88vh - 49px)" }}>
+            <div className="relative flex-1 bg-background overflow-auto" style={{ height: "calc(88vh - 49px)" }}>
               {!modalLoaded && (
-                <div className="absolute inset-0 flex items-center justify-center">
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                   <Loader2 className="w-6 h-6 animate-spin text-primary" />
                 </div>
               )}
-              <iframe
-                src={iframeUrl!}
-                title="Document preview"
-                className="w-full h-full border-0"
-                allow="autoplay"
-                onLoad={() => setModalLoaded(true)}
-              />
+              {modalMode === "thumb" && !modalThumbFailed ? (
+                <div className="w-full h-full flex items-start justify-center p-4 bg-muted/20">
+                  <img
+                    src={modalThumbUrl!}
+                    alt={label || "Document preview"}
+                    className="max-w-full h-auto object-contain rounded-md shadow-lg bg-background"
+                    onLoad={() => setModalLoaded(true)}
+                    onError={() => {
+                      setModalThumbFailed(true);
+                      setModalLoaded(false);
+                      setModalMode("iframe");
+                    }}
+                  />
+                </div>
+              ) : (
+                <iframe
+                  src={iframeUrl!}
+                  title="Document preview"
+                  className="w-full h-full border-0"
+                  allow="autoplay"
+                  onLoad={() => setModalLoaded(true)}
+                />
+              )}
             </div>
           </DialogContent>
         </Dialog>
       )}
+
     </>
   );
 };
