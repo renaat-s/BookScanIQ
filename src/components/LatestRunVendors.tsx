@@ -106,7 +106,7 @@ const VendorCard = ({
 };
 
 const LatestRunVendors = ({ userId }: { userId: string | undefined }) => {
-  const { entries, loading, error, reload } = useLedgerLiveRows();
+  const { entries, loading, error, reload, source } = useLedgerLiveRows();
   const [logos, setLogos] = useState<LogoMap>({});
 
   const vendors = useMemo(() => {
@@ -207,7 +207,9 @@ const LatestRunVendors = ({ userId }: { userId: string | undefined }) => {
           </div>
         ) : vendors.length === 0 ? (
           <p className="text-sm text-muted-foreground text-center py-8">
-            No vendors in the ledger yet.
+            {source?.rowCount
+              ? `${source.rowCount} ledger row${source.rowCount === 1 ? " was" : "s were"} found in ${source.tabTitle || "the ledger"}, but no vendor column could be parsed.`
+              : "No vendors in the ledger yet."}
           </p>
         ) : (
           <div className="grid sm:grid-cols-2 gap-3">
