@@ -71,6 +71,26 @@ const AppearanceToggleRow = () => {
   );
 };
 
+const LowCogToggleRow = () => {
+  const { lowCog, setLowCog } = useLowCogMode();
+  return (
+    <div className="flex items-center justify-between gap-4">
+      <div className="flex items-start gap-3">
+        <Brain className="h-5 w-5 text-primary mt-0.5 shrink-0" />
+        <div>
+          <p className="font-medium">Neurodivergent Mode (Low Cognitive Load)</p>
+          <p className="text-sm text-muted-foreground">
+            Built for entrepreneurs with ADHD, Autism, or Dyslexia. Dyslexia-friendly type,
+            larger spacing, calmer motion, and traffic-light status indicators (Green = Done,
+            Yellow = Action Needed, Red = Blocked) so you can read your books in seconds.
+          </p>
+        </div>
+      </div>
+      <Switch checked={lowCog} onCheckedChange={(c) => setLowCog(!!c)} aria-label="Toggle Neurodivergent Mode" />
+    </div>
+  );
+};
+
 interface QbAccount {
   id: string;
   name: string;
