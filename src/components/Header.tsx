@@ -200,6 +200,18 @@ const Header = () => {
                   <span className="text-muted-foreground">Theme</span>
                   <ThemeToggle variant="outline" />
                 </div>
+                <div className="flex items-center justify-between px-3 py-2">
+                  <span className="text-muted-foreground flex items-center gap-2"><Brain className="h-4 w-4" /> Neurodivergent Mode</span>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => toggleLowCog()}
+                    aria-pressed={lowCog}
+                    className={lowCog ? "border-primary text-primary" : ""}
+                  >
+                    {lowCog ? "On" : "Off"}
+                  </Button>
+                </div>
                 <div className="h-px bg-primary/20 my-2" />
                 {user ? (
                   <>
