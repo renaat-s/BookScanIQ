@@ -126,26 +126,26 @@ const Header = () => {
                   align="end"
                   className="w-56 bg-background/95 backdrop-blur-xl border border-primary/30 shadow-[0_0_30px_hsl(var(--primary)/0.2)]"
                 >
-                  <DropdownMenuItem onClick={() => navigate('/about')} className="font-mono text-xs uppercase tracking-wider">
+                  <DropdownMenuItem onClick={() => navigate('/about')} onMouseEnter={() => prefetchRoute('/about')} className="font-mono text-xs uppercase tracking-wider">
                     <Info className="h-4 w-4 mr-2" /> About Us
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => navigate('/about-invoiceiq')} className="font-mono text-xs uppercase tracking-wider">
+                  <DropdownMenuItem onClick={() => navigate('/about-invoiceiq')} onMouseEnter={() => prefetchRoute('/about-invoiceiq')} className="font-mono text-xs uppercase tracking-wider">
                     <Info className="h-4 w-4 mr-2" /> The Solution
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => navigate('/faq')} className="font-mono text-xs uppercase tracking-wider">
+                  <DropdownMenuItem onClick={() => navigate('/faq')} onMouseEnter={() => prefetchRoute('/faq')} className="font-mono text-xs uppercase tracking-wider">
                     <HelpCircle className="h-4 w-4 mr-2" /> FAQ
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => navigate('/pricing')} className="font-mono text-xs uppercase tracking-wider">
+                  <DropdownMenuItem onClick={() => navigate('/pricing')} onMouseEnter={() => prefetchRoute('/pricing')} className="font-mono text-xs uppercase tracking-wider">
                     <Tag className="h-4 w-4 mr-2" /> Pricing
                   </DropdownMenuItem>
 
                   {user ? (
                     <>
                       <DropdownMenuSeparator />
-                      <DropdownMenuItem onClick={() => navigate('/dashboard')} className="font-mono text-xs uppercase tracking-wider">
+                      <DropdownMenuItem onClick={() => navigate('/dashboard')} onMouseEnter={() => prefetchRoute('/dashboard')} className="font-mono text-xs uppercase tracking-wider">
                         <LayoutDashboard className="h-4 w-4 mr-2" /> Dashboard
                       </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => navigate('/settings')} className="font-mono text-xs uppercase tracking-wider">
+                      <DropdownMenuItem onClick={() => navigate('/settings')} onMouseEnter={() => prefetchRoute('/settings')} className="font-mono text-xs uppercase tracking-wider">
                         <Settings className="h-4 w-4 mr-2" /> Settings
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
