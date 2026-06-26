@@ -207,13 +207,13 @@ const DocumentCapture = () => {
                     <input
                       ref={fileInputRef}
                       type="file"
-                      accept="image/*"
+                      accept="image/*,application/pdf,.pdf,.heic,.heif"
                       onChange={handleFileSelect}
                       className="hidden"
                     />
 
                     <p className="text-sm text-muted-foreground text-center">
-                      Supported formats: JPG, PNG, HEIC (max 10MB)
+                      Supported formats: PDF, JPG, PNG, HEIC (max 10MB)
                     </p>
                   </div>
                 ) : (
