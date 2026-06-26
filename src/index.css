@@ -147,6 +147,22 @@ All colors MUST be HSL.
     @apply border-border;
   }
 
+  /* ===== Sticky-footer fix =====
+     When a page's content is shorter than the viewport (e.g. the small
+     "Starting Backlog Scan…" card on DetectInvoices, or any short
+     state-card on edge features), the footer would float up and leave
+     a wide white gap below it. This rule turns any min-h-screen wrapper
+     that contains a <footer> into a flex column, and stretches its
+     <main> so the footer always sits at the bottom of the viewport.
+     Uses :has() — supported in all modern evergreen browsers. */
+  .min-h-screen:has(> footer) {
+    display: flex;
+    flex-direction: column;
+  }
+  .min-h-screen:has(> footer) > main {
+    flex: 1 0 auto;
+  }
+
   html {
     font-family: 'Rajdhani', ui-sans-serif, system-ui, sans-serif;
   }
