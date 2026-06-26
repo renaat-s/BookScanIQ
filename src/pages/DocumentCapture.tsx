@@ -155,18 +155,25 @@ const DocumentCapture = () => {
               <CardContent className="space-y-6">
                 {!selectedImage ? (
                   <div className="space-y-4">
-                    {/* Camera Capture - Mobile Optimized */}
-                    <Button
-                      variant="hero"
-                      size="lg"
-                      className="w-full h-32"
-                      onClick={() => cameraInputRef.current?.click()}
-                    >
-                      <div className="flex flex-col items-center gap-2">
-                        <Camera size={32} />
-                        <span className="text-lg">Take Photo</span>
-                      </div>
-                    </Button>
+                    {/* Camera Capture - Coming Soon */}
+                    <div className="relative">
+                      <span className="absolute -top-2 -right-2 z-10 bg-primary text-primary-foreground text-[10px] font-semibold px-2 py-1 rounded-full shadow-md uppercase tracking-wide">
+                        Coming Soon
+                      </span>
+                      <Button
+                        variant="hero"
+                        size="lg"
+                        className="w-full h-32 opacity-60 cursor-not-allowed"
+                        disabled
+                        aria-disabled="true"
+                        title="Take Photo is coming soon"
+                      >
+                        <div className="flex flex-col items-center gap-2">
+                          <Camera size={32} />
+                          <span className="text-lg">Take Photo</span>
+                        </div>
+                      </Button>
+                    </div>
                     <input
                       ref={cameraInputRef}
                       type="file"
