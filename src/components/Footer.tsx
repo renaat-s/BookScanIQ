@@ -21,14 +21,6 @@ const Footer = () => {
           <p className="text-xl text-white/90 max-w-2xl mx-auto">
             Join thousands of businesses saving time and money with InvoiceIQ's AI-powered automation.
           </p>
-          <Button 
-            variant="secondary" 
-            size="lg" 
-            className="bg-white text-brand-primary hover:bg-white/90 shadow-elegant neon-glow-box"
-          >
-            Start Your Free Trial
-            <ArrowRight className="w-5 h-5 ml-2" />
-          </Button>
         </div>
         )}
 
