@@ -207,24 +207,39 @@ const DocumentCapture = () => {
                     <input
                       ref={fileInputRef}
                       type="file"
-                      accept="image/*"
+                      accept="image/*,application/pdf,.pdf,.heic,.heif"
                       onChange={handleFileSelect}
                       className="hidden"
                     />
 
                     <p className="text-sm text-muted-foreground text-center">
-                      Supported formats: JPG, PNG, HEIC (max 10MB)
+                      Supported formats: PDF, JPG, PNG, HEIC (max 10MB)
                     </p>
                   </div>
                 ) : (
                   <div className="space-y-4">
                     {/* Image Preview */}
                     <div className="relative bg-muted rounded-lg overflow-hidden">
-                      <img
-                        src={selectedImage}
-                        alt="Invoice preview"
-                        className="w-full h-auto max-h-96 object-contain"
-                      />
+                      {file?.type === "application/pdf" ? (
+                        <object
+                          data={selectedImage ?? undefined}
+                          type="application/pdf"
+                          className="w-full h-96"
+                          aria-label="PDF preview"
+                        >
+                          <div className="flex flex-col items-center justify-center h-96 gap-2 p-6 text-center">
+                            <Upload size={32} className="text-muted-foreground" />
+                            <p className="text-sm text-muted-foreground">PDF ready to upload</p>
+                            <p className="text-xs text-muted-foreground">{file?.name}</p>
+                          </div>
+                        </object>
+                      ) : (
+                        <img
+                          src={selectedImage}
+                          alt="Invoice preview"
+                          className="w-full h-auto max-h-96 object-contain"
+                        />
+                      )}
                       <Button
                         variant="destructive"
                         size="icon"
