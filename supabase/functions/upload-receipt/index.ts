@@ -6,9 +6,9 @@ const corsHeaders = {
 };
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
-const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/heic", "image/heif", "image/webp", "image/gif"];
+const ALLOWED_TYPES = ["application/pdf", "image/jpeg", "image/png", "image/heic", "image/heif", "image/webp", "image/gif"];
 
-// Magic bytes for image file detection
+// Magic bytes for file detection
 const IMAGE_SIGNATURES: { [key: string]: number[] } = {
   jpeg: [0xFF, 0xD8, 0xFF],
   png: [0x89, 0x50, 0x4E, 0x47],
@@ -16,7 +16,7 @@ const IMAGE_SIGNATURES: { [key: string]: number[] } = {
   webp: [0x52, 0x49, 0x46, 0x46], // RIFF header for WebP
 };
 
-function isValidImageSignature(bytes: Uint8Array): boolean {
+function isValidFileSignature(bytes: Uint8Array): boolean {
   for (const [, signature] of Object.entries(IMAGE_SIGNATURES)) {
     if (signature.every((byte, i) => bytes[i] === byte)) {
       return true;
@@ -26,6 +26,8 @@ function isValidImageSignature(bytes: Uint8Array): boolean {
   if (bytes[4] === 0x66 && bytes[5] === 0x74 && bytes[6] === 0x79 && bytes[7] === 0x70) {
     return true;
   }
+  // PDF: starts with %PDF = 0x25 0x50 0x44 0x46
+  if (bytes[0] === 0x25 && bytes[1] === 0x50 && bytes[2] === 0x44 && bytes[3] === 0x46) return true;
   return false;
 }
 
@@ -104,7 +106,7 @@ Deno.serve(async (req) => {
     if (!ALLOWED_TYPES.includes(file.type)) {
       console.error("Invalid file type:", file.type);
       return new Response(
-        JSON.stringify({ error: "Invalid file type. Only images are allowed (JPEG, PNG, HEIC, HEIF, WebP, GIF)" }),
+        JSON.stringify({ error: "Invalid file type. Only PDFs and images are allowed (PDF, JPEG, PNG, HEIC, HEIF, WebP, GIF)" }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
@@ -113,10 +115,10 @@ Deno.serve(async (req) => {
     const buffer = await file.arrayBuffer();
     const bytes = new Uint8Array(buffer).slice(0, 12);
     
-    if (!isValidImageSignature(bytes)) {
-      console.error("File content does not match image signature");
+    if (!isValidFileSignature(bytes)) {
+      console.error("File content does not match a valid file signature");
       return new Response(
-        JSON.stringify({ error: "Invalid file content. File does not appear to be a valid image" }),
+        JSON.stringify({ error: "Invalid file content. File does not appear to be a valid PDF or image" }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
