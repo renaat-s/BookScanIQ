@@ -115,8 +115,8 @@ Deno.serve(async (req) => {
     const buffer = await file.arrayBuffer();
     const bytes = new Uint8Array(buffer).slice(0, 12);
     
-    if (!isValidImageSignature(bytes)) {
-      console.error("File content does not match image signature");
+    if (!isValidFileSignature(bytes)) {
+      console.error("File content does not match a valid file signature");
       return new Response(
         JSON.stringify({ error: "Invalid file content. File does not appear to be a valid image" }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
