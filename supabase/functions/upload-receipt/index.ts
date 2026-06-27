@@ -142,8 +142,10 @@ Deno.serve(async (req) => {
     n8nFormData.append("timestamp", timestamp);
     n8nFormData.append("userId", user.id);
 
+    const n8nSecret = Deno.env.get("N8N_WEBHOOK_SECRET") ?? "";
     const webhookResponse = await fetch(N8N_WEBHOOK_URL, {
       method: "POST",
+      headers: n8nSecret ? { "x-workflow-secret": n8nSecret } : {},
       body: n8nFormData,
     });
 
