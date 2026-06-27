@@ -106,7 +106,7 @@ Deno.serve(async (req) => {
     if (!ALLOWED_TYPES.includes(file.type)) {
       console.error("Invalid file type:", file.type);
       return new Response(
-        JSON.stringify({ error: "Invalid file type. Only images are allowed (JPEG, PNG, HEIC, HEIF, WebP, GIF)" }),
+        JSON.stringify({ error: "Invalid file type. Only PDFs and images are allowed (PDF, JPEG, PNG, HEIC, HEIF, WebP, GIF)" }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
