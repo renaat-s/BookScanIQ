@@ -118,7 +118,7 @@ Deno.serve(async (req) => {
     if (!isValidFileSignature(bytes)) {
       console.error("File content does not match a valid file signature");
       return new Response(
-        JSON.stringify({ error: "Invalid file content. File does not appear to be a valid image" }),
+        JSON.stringify({ error: "Invalid file content. File does not appear to be a valid PDF or image" }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
