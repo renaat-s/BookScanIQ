@@ -68,7 +68,9 @@ const DetectInvoices = () => {
   useEffect(() => {
     if (!loading && !hasInitialized) {
       if (user) {
-        setStep('confirm');
+        // Skip the redundant email confirmation — the signed-in Google email
+        // is inherently the inbox that will be scanned.
+        setStep('select-scan');
       } else {
         setStep('auth');
       }
