@@ -10,11 +10,20 @@ const corsHeaders = {
 const json = (b: unknown, s = 200) =>
   new Response(JSON.stringify(b), { status: s, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
+// Count any real financial-document file routed into the InvoiceIQ directory.
+// Covers PDFs plus all common receipt/invoice image formats. Folders and Google
+// Workspace docs (Docs/Sheets/Slides) are excluded — only actual uploaded files.
 const COUNTED_MIMES = new Set([
   "application/pdf",
   "image/png",
+  "image/jpeg",
+  "image/jpg",
+  "image/webp",
   "image/heic",
   "image/heif",
+  "image/tiff",
+  "image/bmp",
+  "image/gif",
 ]);
 const FOLDER_MIME = "application/vnd.google-apps.folder";
 
