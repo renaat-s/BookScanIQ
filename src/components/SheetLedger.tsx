@@ -102,6 +102,33 @@ const SheetLedger = () => {
     [header],
   );
 
+  // Detect the column that signals "Uncategorized" routing from the n8n backend.
+  // Backend writes monthFolder = null (empty cell) or a literal "Uncategorized" tag
+  // for entries with no valid date or low DPI (<100).
+  const uncatColIdx = useMemo(() => {
+    const idx = header.findIndex((h) => {
+      const n = (h ?? "").toLowerCase().trim();
+      return n === "folder" || n === "monthfolder" || n === "month folder" ||
+        n === "month_folder" || n === "category folder" || n === "uncategorized";
+    });
+    return idx;
+  }, [header]);
+
+  const isUncategorizedRow = useCallback(
+    (row: string[]) => {
+      // Any cell literally saying "uncategorized"
+      if (row.some((c) => (c ?? "").trim().toLowerCase() === "uncategorized")) return true;
+      // Folder column present but empty => monthFolder was null
+      if (uncatColIdx >= 0) {
+        const v = (row[uncatColIdx] ?? "").trim();
+        if (!v) return true;
+        if (v.toLowerCase().includes("uncategorized")) return true;
+      }
+      return false;
+    },
+    [uncatColIdx],
+  );
+
   const filtered = useMemo(() => {
     if (!query.trim()) return rows;
     const q = query.toLowerCase();
