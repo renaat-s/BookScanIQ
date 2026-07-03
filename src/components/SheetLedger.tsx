@@ -231,13 +231,32 @@ const SheetLedger = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-border/60">
-                {pageRows.map((row, ri) => (
+                {pageRows.map((row, ri) => {
+                  const uncat = isUncategorizedRow(row);
+                  return (
                   <tr
                     key={ri}
-                    className="hover:bg-muted/40 transition-colors"
+                    className={
+                      uncat
+                        ? "bg-gradient-to-r from-orange-500/20 via-orange-400/10 to-amber-500/20 hover:from-orange-500/30 hover:via-orange-400/20 hover:to-amber-500/30 transition-colors"
+                        : "hover:bg-muted/40 transition-colors"
+                    }
                   >
                     <td className="px-3 py-2 text-center text-xs text-muted-foreground tabular-nums">
-                      {page * PAGE_SIZE + ri + 1}
+                      {uncat ? (
+                        <TooltipProvider delayDuration={100}>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <span className="cursor-help text-base" aria-label="Uncategorized entry warning">⚠️</span>
+                            </TooltipTrigger>
+                            <TooltipContent side="right" className="max-w-xs text-xs">
+                              This entry either had no purchase date or came from an email with a low DPI threshold. The data may be unreliable and was routed to the Uncategorized Folder for review.
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      ) : (
+                        page * PAGE_SIZE + ri + 1
+                      )}
                     </td>
                     {header.map((_, ci) => {
                       const val = row[ci] ?? "";
