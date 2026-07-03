@@ -88,18 +88,31 @@ function parseNum(v: unknown): number {
 function parseDate(v: unknown): Date | null {
   if (v == null || v === "") return null;
   const s = String(v).trim();
-  // Try ISO / common formats
-  const d = new Date(s);
-  if (!isNaN(d.getTime())) return d;
-  // Try DD/MM/YYYY or MM/DD/YYYY
-  const m = s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2,4})$/);
-  if (m) {
-    let [_, a, b, y] = m;
-    if (y.length === 2) y = `20${y}`;
-    // assume MM/DD/YYYY first
-    const d1 = new Date(`${y}-${a.padStart(2, "0")}-${b.padStart(2, "0")}`);
-    if (!isNaN(d1.getTime())) return d1;
+  if (!s) return null;
+
+  // ISO / RFC / long-form ("Jul 3, 2026", "3 Jul 2026", etc.)
+  const iso = new Date(s);
+  if (!isNaN(iso.getTime()) && /[a-zA-Z]/.test(s) || /^\d{4}-\d{1,2}-\d{1,2}/.test(s)) {
+    if (!isNaN(iso.getTime())) return iso;
   }
+
+  // Numeric DD/MM/YYYY, MM/DD/YYYY, DD-MM-YYYY, etc.
+  const m = s.match(/^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{2,4})$/);
+  if (m) {
+    let [, a, b, y] = m;
+    if (y.length === 2) y = `20${y}`;
+    const na = parseInt(a, 10);
+    const nb = parseInt(b, 10);
+    // Disambiguate: >12 means it must be the day.
+    const dayFirst = na > 12 || (nb <= 12 && na <= 12); // prefer DD/MM when ambiguous
+    const day = dayFirst ? na : nb;
+    const mon = dayFirst ? nb : na;
+    const d = new Date(Date.UTC(parseInt(y, 10), mon - 1, day));
+    if (!isNaN(d.getTime()) && d.getUTCMonth() === mon - 1) return d;
+  }
+
+  // Last-ditch: let Date parse whatever it can
+  if (!isNaN(iso.getTime())) return iso;
   return null;
 }
 
@@ -137,6 +150,9 @@ async function fetchSheetTotals(accessToken: string, spreadsheetId: string) {
     }
   }
   if (headerIdx < 0) return { income: 0, expense: 0 };
+  // Current-month totals require a real date column — otherwise we'd sum the
+  // full ledger history and mislabel it as "this month".
+  if (dateCol < 0) return { income: 0, expense: 0 };
 
   const now = new Date();
   const y = now.getUTCFullYear();
@@ -150,16 +166,13 @@ async function fetchSheetTotals(accessToken: string, spreadsheetId: string) {
     const amt = parseNum(r[amountCol]);
     if (!amt) continue;
 
-    // Detect arrow symbols and keywords
     const isIncome = typeRaw.includes("income") || typeRaw.includes("↗");
     const isExpense = typeRaw.includes("expense") || typeRaw.includes("↘");
     if (!isIncome && !isExpense) continue;
 
-    // Month filter via date column when available
-    if (dateCol >= 0) {
-      const d = parseDate(r[dateCol]);
-      if (!d) continue;
-      if (d.getUTCFullYear() !== y || d.getUTCMonth() !== m) continue;
+    const d = parseDate(r[dateCol]);
+    if (!d) continue;
+    if (d.getUTCFullYear() !== y || d.getUTCMonth() !== m) continue;
     }
 
     if (isIncome) income += Math.abs(amt);
