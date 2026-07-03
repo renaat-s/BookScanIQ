@@ -162,6 +162,12 @@ async function fetchSheetTotals(accessToken: string, spreadsheetId: string) {
   for (let i = headerIdx + 1; i < rows.length; i++) {
     const r = rows[i];
     if (!r || !r.length) continue;
+
+    // Skip "Uncategorized" rows entirely — their data is unreliable (no valid
+    // date or low-DPI source) and must not pollute Income/Expense/Net totals.
+    // The document itself is still counted in Total Documents via Drive.
+    if (r.some((c) => (c ?? "").toString().trim().toLowerCase() === "uncategorized")) continue;
+
     const typeRaw = (r[typeCol] || "").toString().toLowerCase();
     const amt = parseNum(r[amountCol]);
     if (!amt) continue;
@@ -173,7 +179,6 @@ async function fetchSheetTotals(accessToken: string, spreadsheetId: string) {
     const d = parseDate(r[dateCol]);
     if (!d) continue;
     if (d.getUTCFullYear() !== y || d.getUTCMonth() !== m) continue;
-    }
 
     if (isIncome) income += Math.abs(amt);
     else expense += Math.abs(amt);
