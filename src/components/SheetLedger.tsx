@@ -304,7 +304,8 @@ const SheetLedger = () => {
                       );
                     })}
                   </tr>
-                ))}
+                  );
+                })}
               </tbody>
             </table>
           </div>
