@@ -8,6 +8,7 @@ import {
   FileSpreadsheet, ChevronLeft, ChevronRight,
 } from "lucide-react";
 import DriveLinkPreview, { isUrl, extractDriveId } from "./DriveLinkPreview";
+import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
 
 interface SheetTab {
   sheetId: number;
