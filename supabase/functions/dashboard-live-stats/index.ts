@@ -150,6 +150,9 @@ async function fetchSheetTotals(accessToken: string, spreadsheetId: string) {
     }
   }
   if (headerIdx < 0) return { income: 0, expense: 0 };
+  // Current-month totals require a real date column — otherwise we'd sum the
+  // full ledger history and mislabel it as "this month".
+  if (dateCol < 0) return { income: 0, expense: 0 };
 
   const now = new Date();
   const y = now.getUTCFullYear();
@@ -163,16 +166,13 @@ async function fetchSheetTotals(accessToken: string, spreadsheetId: string) {
     const amt = parseNum(r[amountCol]);
     if (!amt) continue;
 
-    // Detect arrow symbols and keywords
     const isIncome = typeRaw.includes("income") || typeRaw.includes("↗");
     const isExpense = typeRaw.includes("expense") || typeRaw.includes("↘");
     if (!isIncome && !isExpense) continue;
 
-    // Month filter via date column when available
-    if (dateCol >= 0) {
-      const d = parseDate(r[dateCol]);
-      if (!d) continue;
-      if (d.getUTCFullYear() !== y || d.getUTCMonth() !== m) continue;
+    const d = parseDate(r[dateCol]);
+    if (!d) continue;
+    if (d.getUTCFullYear() !== y || d.getUTCMonth() !== m) continue;
     }
 
     if (isIncome) income += Math.abs(amt);
