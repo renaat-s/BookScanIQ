@@ -102,31 +102,16 @@ const SheetLedger = () => {
     [header],
   );
 
-  // Detect the column that signals "Uncategorized" routing from the n8n backend.
-  // Backend writes monthFolder = null (empty cell) or a literal "Uncategorized" tag
-  // for entries with no valid date or low DPI (<100).
-  const uncatColIdx = useMemo(() => {
-    const idx = header.findIndex((h) => {
-      const n = (h ?? "").toLowerCase().trim();
-      return n === "folder" || n === "monthfolder" || n === "month folder" ||
-        n === "month_folder" || n === "category folder" || n === "uncategorized";
-    });
-    return idx;
-  }, [header]);
-
+  // Detect "Uncategorized" routing from the n8n backend.
+  // Backend writes the literal tag "Uncategorized" into the folder cell for entries
+  // with no valid date or low DPI (<100). Normal entries get a real month/year folder.
+  // We ONLY treat a row as uncategorized when a cell literally says "uncategorized"
+  // (case-insensitive). An empty folder cell is NOT enough — some normal rows may
+  // have blank folder metadata and must not be flagged.
   const isUncategorizedRow = useCallback(
-    (row: string[]) => {
-      // Any cell literally saying "uncategorized"
-      if (row.some((c) => (c ?? "").trim().toLowerCase() === "uncategorized")) return true;
-      // Folder column present but empty => monthFolder was null
-      if (uncatColIdx >= 0) {
-        const v = (row[uncatColIdx] ?? "").trim();
-        if (!v) return true;
-        if (v.toLowerCase().includes("uncategorized")) return true;
-      }
-      return false;
-    },
-    [uncatColIdx],
+    (row: string[]) =>
+      row.some((c) => (c ?? "").trim().toLowerCase() === "uncategorized"),
+    [],
   );
 
   const filtered = useMemo(() => {
