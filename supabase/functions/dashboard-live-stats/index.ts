@@ -15,6 +15,8 @@ const json = (b: unknown, s = 200) =>
 // Workspace docs (Docs/Sheets/Slides) are excluded — only actual uploaded files.
 const COUNTED_MIMES = new Set([
   "application/pdf",
+  "text/html",
+  "application/xhtml+xml",
   "image/png",
   "image/jpeg",
   "image/jpg",
