@@ -3,8 +3,13 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { toast } from "@/hooks/use-toast";
+import {
   Folder, FileText, FileImage, FileSpreadsheet, File as FileIcon,
-  ChevronRight, ArrowLeft, ExternalLink, Loader2, RefreshCw, AlertCircle, X,
+  ChevronRight, ArrowLeft, ExternalLink, Loader2, RefreshCw, AlertCircle, X, Trash2,
 } from "lucide-react";
 
 interface DriveFile {
@@ -48,6 +53,8 @@ const DriveBrowser = ({ rootFolderId }: { rootFolderId: string }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [preview, setPreview] = useState<DriveFile | null>(null);
+  const [toDelete, setToDelete] = useState<DriveFile | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   const currentId = stack[stack.length - 1].id;
 
@@ -77,6 +84,29 @@ const DriveBrowser = ({ rootFolderId }: { rootFolderId: string }) => {
   };
   const goTo = (i: number) => setStack((s) => s.slice(0, i + 1));
   const goUp = () => stack.length > 1 && setStack((s) => s.slice(0, -1));
+
+  const handleDelete = async () => {
+    if (!toDelete) return;
+    setDeleting(true);
+    try {
+      const { data: resp, error } = await supabase.functions.invoke("drive-delete", {
+        body: { fileId: toDelete.id },
+      });
+      if (error) throw error;
+      if (resp?.error) throw new Error(resp.error);
+      toast({ title: "Deleted", description: `"${toDelete.name}" moved to Drive Trash.` });
+      setToDelete(null);
+      await load(currentId);
+    } catch (e) {
+      toast({
+        title: "Delete failed",
+        description: e instanceof Error ? e.message : "Unknown error",
+        variant: "destructive",
+      });
+    } finally {
+      setDeleting(false);
+    }
+  };
 
   return (
     <div className="space-y-3">
@@ -147,10 +177,10 @@ const DriveBrowser = ({ rootFolderId }: { rootFolderId: string }) => {
             {data.files.map((f) => {
               const folder = isFolder(f.mimeType);
               return (
-                <li key={f.id}>
+                <li key={f.id} className="group flex items-center hover:bg-muted/50 transition-colors">
                   <button
                     onClick={() => (folder ? openFolder(f) : setPreview(f))}
-                    className="w-full flex items-center gap-3 px-4 py-2.5 text-left hover:bg-muted/50 transition-colors"
+                    className="flex-1 flex items-center gap-3 px-4 py-2.5 text-left min-w-0"
                   >
                     <span className="shrink-0">{iconFor(f.mimeType)}</span>
                     <span className="flex-1 min-w-0">
@@ -163,6 +193,18 @@ const DriveBrowser = ({ rootFolderId }: { rootFolderId: string }) => {
                     </span>
                     {folder && <ChevronRight className="w-4 h-4 text-muted-foreground shrink-0" />}
                   </button>
+                  {!folder && (
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="mr-2 h-8 w-8 opacity-0 group-hover:opacity-100 focus:opacity-100 text-muted-foreground hover:text-destructive"
+                      onClick={(e) => { e.stopPropagation(); setToDelete(f); }}
+                      aria-label={`Delete ${f.name}`}
+                      title="Delete file"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  )}
                 </li>
               );
             })}
@@ -171,7 +213,7 @@ const DriveBrowser = ({ rootFolderId }: { rootFolderId: string }) => {
       </div>
 
       <p className="text-xs text-muted-foreground">
-        Click a folder to open it · Click a file to preview it here · Use the breadcrumbs to go back.
+        Click a folder to open it · Click a file to preview it · Hover a file to delete it · Refresh to update totals.
       </p>
 
       {/* In-app file preview overlay */}
@@ -197,6 +239,13 @@ const DriveBrowser = ({ rootFolderId }: { rootFolderId: string }) => {
                     </Button>
                   </a>
                 )}
+                <Button
+                  variant="ghost" size="sm"
+                  className="gap-1.5 text-destructive hover:text-destructive"
+                  onClick={() => { setToDelete(preview); setPreview(null); }}
+                >
+                  <Trash2 className="w-3.5 h-3.5" /> Delete
+                </Button>
                 <Button variant="ghost" size="icon" onClick={() => setPreview(null)}>
                   <X className="w-4 h-4" />
                 </Button>
@@ -213,6 +262,31 @@ const DriveBrowser = ({ rootFolderId }: { rootFolderId: string }) => {
           </div>
         </div>
       )}
+
+      <AlertDialog open={!!toDelete} onOpenChange={(o) => !o && !deleting && setToDelete(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete this document?</AlertDialogTitle>
+            <AlertDialogDescription>
+              "{toDelete?.name}" will be moved to your Google Drive Trash and removed from the
+              InvoiceIQ directory. The Total Documents count will update on the next refresh.
+              You can restore it from Drive's Trash within 30 days.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={deleting}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={(e) => { e.preventDefault(); handleDelete(); }}
+              disabled={deleting}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {deleting ? (
+                <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Deleting…</>
+              ) : "Delete"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
