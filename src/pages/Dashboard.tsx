@@ -334,27 +334,42 @@ const Dashboard = () => {
     else { setSortKey(k); setSortDir("desc"); }
   };
 
-  const exportCsv = () => {
-    const headers = ["Vendor", "Date", "Number", "Type", "Category", "Total", "Link"];
-    const rows = filtered.map((i) => [
-      i.invoice_vendor || "",
-      i.invoice_date || "",
-      i.invoice_number || "",
-      i.invoice_type || "",
-      i.invoice_category || "",
-      i.invoice_total || "",
-      i.web_view_link || "",
-    ]);
-    const csv = [headers, ...rows]
-      .map((r) => r.map((c) => `"${String(c).replace(/"/g, '""')}"`).join(","))
-      .join("\n");
-    const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `invoiceiq-export-${new Date().toISOString().slice(0, 10)}.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
+  const exportCsv = async () => {
+    // Export the live Google Sheets Transaction Ledger as-is so the CSV
+    // mirrors the workspace columns exactly: Date, Type, Amount, Vendor,
+    // Invoice Number, Link, Folder (whatever the sheet header actually is).
+    try {
+      const { data, error } = await supabase.functions.invoke("sheet-read", {
+        body: {},
+      });
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+
+      const values: string[][] = Array.isArray(data?.values) ? data.values : [];
+      if (values.length === 0) {
+        toast.error("Ledger is empty — nothing to export.");
+        return;
+      }
+
+      const csv = values
+        .map((r) =>
+          (r ?? [])
+            .map((c) => `"${String(c ?? "").replace(/"/g, '""')}"`)
+            .join(","),
+        )
+        .join("\n");
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `invoiceiq-ledger-${new Date().toISOString().slice(0, 10)}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (e) {
+      toast.error(
+        e instanceof Error ? e.message : "Failed to export ledger CSV.",
+      );
+    }
   };
 
   if (authLoading || loading) {
