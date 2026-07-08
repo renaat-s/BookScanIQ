@@ -518,7 +518,7 @@ const Dashboard = () => {
               </TabsList>
               <div className="flex gap-2">
                 <Button variant="outline" size="sm" onClick={exportCsv} className="gap-1.5 w-full sm:w-auto">
-                  <Download className="w-4 h-4" /> Export CSV
+                  <Download className="w-4 h-4" /> Export Excel
                 </Button>
               </div>
             </div>
