@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
