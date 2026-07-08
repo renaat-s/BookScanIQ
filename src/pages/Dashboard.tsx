@@ -336,9 +336,10 @@ const Dashboard = () => {
   };
 
   const exportCsv = async () => {
-    // Export the live Google Sheets Transaction Ledger as-is so the CSV
-    // mirrors the workspace columns exactly: Date, Type, Amount, Vendor,
-    // Invoice Number, Link, Folder (whatever the sheet header actually is).
+    // Export the live Google Sheets Transaction Ledger as a real .xlsx so the
+    // file mirrors the workspace columns exactly (Date, Type, Amount, Vendor,
+    // Invoice Number, Link, Folder) with a shaded header, proper column widths
+    // (no ###### date collapse), and UTF-8 arrows / currency symbols intact.
     try {
       const { data, error } = await supabase.functions.invoke("sheet-read", {
         body: {},
@@ -352,23 +353,59 @@ const Dashboard = () => {
         return;
       }
 
-      const csv = values
-        .map((r) =>
-          (r ?? [])
-            .map((c) => `"${String(c ?? "").replace(/"/g, '""')}"`)
-            .join(","),
-        )
-        .join("\n");
-      const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `invoiceiq-ledger-${new Date().toISOString().slice(0, 10)}.csv`;
-      a.click();
-      URL.revokeObjectURL(url);
+      const XLSX = await import("xlsx-js-style");
+      const ws = XLSX.utils.aoa_to_sheet(values);
+
+      const header = values[0] ?? [];
+      const rows = values.slice(1);
+
+      // Header row: black fill, white bold text, centered.
+      for (let c = 0; c < header.length; c++) {
+        const addr = XLSX.utils.encode_cell({ r: 0, c });
+        const cell = (ws as any)[addr];
+        if (!cell) continue;
+        cell.s = {
+          font: { bold: true, color: { rgb: "FFFFFFFF" }, sz: 12 },
+          fill: { patternType: "solid", fgColor: { rgb: "FF000000" } },
+          alignment: { horizontal: "center", vertical: "center" },
+          border: {
+            top: { style: "thin", color: { rgb: "FF000000" } },
+            bottom: { style: "thin", color: { rgb: "FF000000" } },
+            left: { style: "thin", color: { rgb: "FF000000" } },
+            right: { style: "thin", color: { rgb: "FF000000" } },
+          },
+        };
+      }
+
+      // Center all body cells for readability.
+      for (let r = 1; r <= rows.length; r++) {
+        for (let c = 0; c < header.length; c++) {
+          const addr = XLSX.utils.encode_cell({ r, c });
+          const cell = (ws as any)[addr];
+          if (!cell) continue;
+          cell.s = { ...(cell.s || {}), alignment: { horizontal: "center", vertical: "center" } };
+        }
+      }
+
+      // Auto-size columns based on the longest value per column (min 12, max 40).
+      (ws as any)["!cols"] = header.map((_, c) => {
+        let max = String(header[c] ?? "").length;
+        for (const r of rows) {
+          const v = String(r?.[c] ?? "");
+          if (v.length > max) max = v.length;
+        }
+        return { wch: Math.min(40, Math.max(12, max + 2)) };
+      });
+
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Ledger");
+      XLSX.writeFile(
+        wb,
+        `invoiceiq-ledger-${new Date().toISOString().slice(0, 10)}.xlsx`,
+      );
     } catch (e) {
       toast.error(
-        e instanceof Error ? e.message : "Failed to export ledger CSV.",
+        e instanceof Error ? e.message : "Failed to export ledger.",
       );
     }
   };
@@ -481,7 +518,7 @@ const Dashboard = () => {
               </TabsList>
               <div className="flex gap-2">
                 <Button variant="outline" size="sm" onClick={exportCsv} className="gap-1.5 w-full sm:w-auto">
-                  <Download className="w-4 h-4" /> Export CSV
+                  <Download className="w-4 h-4" /> Export Excel
                 </Button>
               </div>
             </div>
