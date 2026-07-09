@@ -161,7 +161,7 @@ const DocumentCapture = () => {
                         Coming Soon
                       </span>
                       <Button
-                        variant="hero"
+                        variant="hero-secondary"
                         size="lg"
                         className="w-full h-32 opacity-60 cursor-not-allowed"
                         disabled
@@ -194,7 +194,7 @@ const DocumentCapture = () => {
 
                     {/* File Upload - Desktop Optimized */}
                     <Button
-                      variant="outline"
+                      variant="hero-secondary"
                       size="lg"
                       className="w-full h-32"
                       onClick={() => fileInputRef.current?.click()}
