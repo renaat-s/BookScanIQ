@@ -107,6 +107,7 @@ const Pricing = () => {
         <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
           {PLANS.map((plan, index) => {
             const current = isCurrentPlan(index);
+            const showCurrentMarker = current && !(plan.name === "Enterprise" && subscription.isDeveloper);
             return (
               <Card
                 key={index}
@@ -118,7 +119,7 @@ const Pricing = () => {
                     : "shadow-elegant"
                 } hover:shadow-glow transition-smooth`}
               >
-                {current && plan.name !== "Enterprise" && (
+                {showCurrentMarker && (
                   <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
                     <div className="bg-brand-accent text-white px-4 py-1 rounded-full text-sm font-medium">
                       Your Plan
