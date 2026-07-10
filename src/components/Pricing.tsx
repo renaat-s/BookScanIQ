@@ -118,7 +118,7 @@ const Pricing = () => {
                     : "shadow-elegant"
                 } hover:shadow-glow transition-smooth`}
               >
-                {current && (
+                {current && plan.name !== "Enterprise" && (
                   <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
                     <div className="bg-brand-accent text-white px-4 py-1 rounded-full text-sm font-medium">
                       Your Plan
