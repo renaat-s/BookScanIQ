@@ -443,18 +443,12 @@ const Dashboard = () => {
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5 sm:gap-6 animate-fade-in">
               <div className="space-y-2 sm:space-y-3 min-w-0">
                 <div className="flex flex-wrap items-center gap-2">
-                  <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-white/10 border border-white/25 backdrop-blur-sm text-white/90 text-[10px] sm:text-xs">
-                    <span className="relative flex w-1.5 h-1.5">
-                      <span className="absolute inline-flex w-full h-full rounded-full bg-emerald-300 animate-ping opacity-75" />
-                      <span className="relative inline-flex w-1.5 h-1.5 rounded-full bg-emerald-300" />
-                    </span>
-                    <span className="data-line !text-white/80 !text-[10px]">SYS://LIVE</span>
-                  </div>
                   <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/10 border border-white/20 text-white/85 text-[10px] sm:text-xs">
                     <Clock className="w-3 h-3" />
                     Sync · {relativeTime(lastSyncAt)}
                   </div>
                 </div>
+
                 <h1 className="heading-cyber text-2xl sm:text-3xl md:text-4xl font-bold text-white tracking-tight break-words">
                   <span className="holo-text">Welcome back, {firstName}.</span>
                 </h1>
