@@ -121,7 +121,7 @@ const SavingsWidget = ({ documentsThisMonth }: Props) => {
             ) : isDev ? (
               <>Developer account · plan cost $0</>
             ) : (
-              <>No active plan — savings shown vs. $0 cost</>
+              <>No active plan, savings shown vs. $0 cost</>
             )}
           </div>
           {!editing ? (

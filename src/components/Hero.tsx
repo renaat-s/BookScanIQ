@@ -101,7 +101,7 @@ const Hero = () => {
 
       if (data?.success) {
         setDirectoryInstalled(true);
-        toast.success("Workspace synced — you're all set!");
+        toast.success("Workspace synced, you're all set!");
       } else {
         throw new Error(data?.error || "Sync failed");
       }
@@ -140,19 +140,14 @@ const Hero = () => {
         <div className="flex flex-col items-center gap-8 sm:gap-12 max-w-5xl mx-auto w-full">
           <div className="space-y-6 sm:space-y-8 text-center flex flex-col items-center w-full">
             <div className="space-y-4 flex flex-col items-center">
-              <div className="inline-flex items-center px-3 py-1.5 sm:px-4 sm:py-2 bg-brand-primary/10 border border-brand-primary/20 rounded-full text-xs sm:text-sm text-brand-primary font-medium">
-                <Zap className="w-4 h-4 mr-2" />
-                AI-Powered Invoice Automation
-              </div>
-
               <h1
                 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight glitch-text neon-glow-text break-words"
-                data-text="InvoiceIQ — AI-Powered Automated Bookkeeping & Invoice Processing"
+                data-text="Automated Bookkeeping & Invoice Processing"
               >
-                InvoiceIQ — AI-Powered{" "}
                 <span className="text-gradient">Automated Bookkeeping</span>{" "}
                 &amp; Invoice Processing
               </h1>
+
 
               <p className="text-base sm:text-lg md:text-xl text-foreground/80 leading-[1.7] tracking-[-0.005em] font-light max-w-2xl mx-auto px-2">
                 {SUBHEAD.split("").map((ch, i) => (
@@ -192,7 +187,7 @@ const Hero = () => {
                           : "Sync My Workspace"}
                   </Button>
                   <p className="text-sm text-muted-foreground max-w-md text-center">
-                    Securely sync InvoiceIQ with your Google workspace to unlock all features. We only access what we create — your other files stay private.
+                    Securely sync InvoiceIQ with your Google workspace to unlock all features. We only access what we create, your other files stay private.
                   </p>
                 </div>
               ) : (
@@ -200,8 +195,8 @@ const Hero = () => {
                   <div className="flex items-center gap-2 text-sm text-brand-accent font-medium">
                     <CheckCircle className="w-4 h-4" />
                     {setupComplete
-                      ? "Workspace synced — your bookkeeping is connected and ready!"
-                      : "Workspace synced — finalizing connection…"}
+                      ? "Workspace synced, your bookkeeping is connected and ready!"
+                      : "Workspace synced, finalizing connection…"}
                   </div>
 
                   {spreadsheetId && (
@@ -223,7 +218,7 @@ const Hero = () => {
                     </Button>
                   </Link>
                   <p className="text-sm text-muted-foreground max-w-md text-center">
-                    Detect, file, and review every invoice from your personal portal — your full bookkeeping workspace in one place.
+                    Detect, file, and review every invoice from your personal portal, your full bookkeeping workspace in one place.
                   </p>
                 </div>
               )}

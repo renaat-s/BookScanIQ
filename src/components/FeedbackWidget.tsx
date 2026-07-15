@@ -70,7 +70,7 @@ const FeedbackWidget = () => {
           <SheetHeader>
             <SheetTitle>{PROMPT}</SheetTitle>
             <SheetDescription>
-              One sentence is enough. Goes straight to the founder — no support queue.
+              One sentence is enough. Goes straight to the founder, no support queue.
             </SheetDescription>
           </SheetHeader>
 

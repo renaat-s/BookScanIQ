@@ -11,7 +11,7 @@ const Index = () => {
     applicationCategory: "BusinessApplication",
     operatingSystem: "Web",
     description:
-      "InvoiceIQ — Automate your bookkeeping. AI-powered invoice processing with Google Drive, Xero, and QuickBooks integration.",
+      "InvoiceIQ, Automate your bookkeeping. AI-powered invoice processing with Google Drive, Xero, and QuickBooks integration.",
     url: "https://invoice-iq.com/",
     offers: {
       "@type": "Offer",
@@ -26,7 +26,7 @@ const Index = () => {
         <title>InvoiceIQ - Automated Bookkeeping & AI Invoice Processing</title>
         <meta
           name="description"
-          content="InvoiceIQ — Automate your bookkeeping. AI-powered invoice processing with Google Drive, Xero, and QuickBooks integration."
+          content="InvoiceIQ, Automate your bookkeeping. AI-powered invoice processing with Google Drive, Xero, and QuickBooks integration."
         />
         <meta
           name="keywords"

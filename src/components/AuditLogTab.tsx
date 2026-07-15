@@ -102,7 +102,7 @@ const AuditLogTab = () => {
             t === "scan_failed" ? "Scan failed"
             : t === "scan_completed" ? "Scan completed"
             : "Scan started",
-          detail: `Job ${String(s.id).slice(0, 8)} — status: ${s.status}`,
+          detail: `Job ${String(s.id).slice(0, 8)}, status: ${s.status}`,
           source: "scan",
         });
       });
@@ -166,7 +166,7 @@ const AuditLogTab = () => {
               Audit Log
             </CardTitle>
             <CardDescription>
-              Every action InvoiceIQ takes on your data, in plain English. You can clear past entries below — scans and invoices are kept intact.
+              Every action InvoiceIQ takes on your data, in plain English. You can clear past entries below, scans and invoices are kept intact.
             </CardDescription>
           </div>
           <div className="flex items-center gap-2 w-full sm:w-auto">
@@ -195,7 +195,7 @@ const AuditLogTab = () => {
                 <AlertDialogHeader>
                   <AlertDialogTitle>Clear audit log?</AlertDialogTitle>
                   <AlertDialogDescription>
-                    This removes every recorded audit event for your account. Scan jobs and processed invoices stay intact — only the activity trail is wiped. This can't be undone.
+                    This removes every recorded audit event for your account. Scan jobs and processed invoices stay intact, only the activity trail is wiped. This can't be undone.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>

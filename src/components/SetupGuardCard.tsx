@@ -42,7 +42,7 @@ const SetupGuardCard = ({ status, spreadsheetId, onTriggerSetup }: SetupGuardCar
           <CardDescription className="text-base">
             {status === 'initializing'
               ? 'Connecting to your Google Drive and preparing your bookkeeping workspace. This usually takes a few seconds.'
-              : 'Almost there — finishing up the connection to your Google workspace.'}
+              : 'Almost there, finishing up the connection to your Google workspace.'}
           </CardDescription>
         </CardHeader>
       </Card>
@@ -72,7 +72,7 @@ const SetupGuardCard = ({ status, spreadsheetId, onTriggerSetup }: SetupGuardCar
           Sync My Workspace
         </Button>
         <p className="text-sm text-muted-foreground text-center">
-          We'll create a private bookkeeping workspace in your own Google account. You stay in control — InvoiceIQ only accesses what it creates.
+          We'll create a private bookkeeping workspace in your own Google account. You stay in control, InvoiceIQ only accesses what it creates.
         </p>
       </CardContent>
     </Card>

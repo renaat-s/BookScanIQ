@@ -106,7 +106,7 @@ const SheetLedger = () => {
   // Backend writes the literal tag "Uncategorized" into the folder cell for entries
   // with no valid date or low DPI (<100). Normal entries get a real month/year folder.
   // We ONLY treat a row as uncategorized when a cell literally says "uncategorized"
-  // (case-insensitive). An empty folder cell is NOT enough — some normal rows may
+  // (case-insensitive). An empty folder cell is NOT enough, some normal rows may
   // have blank folder metadata and must not be flagged.
   const isUncategorizedRow = useCallback(
     (row: string[]) =>
@@ -282,7 +282,7 @@ const SheetLedger = () => {
                             />
                           ) : (
                             <span className={looksMoney ? "text-foreground" : "text-foreground/90"}>
-                              {val || <span className="text-muted-foreground">—</span>}
+                              {val || <span className="text-muted-foreground">-</span>}
                             </span>
                           )}
                         </td>

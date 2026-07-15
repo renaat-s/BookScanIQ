@@ -14,19 +14,19 @@ const TIPS: { title: string; body: string }[] = [
   },
   {
     title: "Run a Backlog Scan once a quarter",
-    body: "A 12-week Backlog Scan catches anything that slipped through — perfect for end-of-quarter cleanups before sending to your accountant.",
+    body: "A 12-week Backlog Scan catches anything that slipped through, perfect for end-of-quarter cleanups before sending to your accountant.",
   },
   {
     title: "Adjust your 'minutes per document'",
-    body: "Set how long bookkeeping really takes you per receipt — the Savings widget then shows your true ROI, not an industry average.",
+    body: "Set how long bookkeeping really takes you per receipt, the Savings widget then shows your true ROI, not an industry average.",
   },
   {
     title: "Connect Xero or QuickBooks once",
-    body: "After connecting, every newly-filed invoice posts as a draft transaction — no copy-paste, no double entry.",
+    body: "After connecting, every newly-filed invoice posts as a draft transaction, no copy-paste, no double entry.",
   },
   {
     title: "Check the Audit Log when something looks off",
-    body: "The Audit Log shows when each invoice was scanned, parsed and filed — including the AI's reasoning. Trust, but verify.",
+    body: "The Audit Log shows when each invoice was scanned, parsed and filed, including the AI's reasoning. Trust, but verify.",
   },
   {
     title: "Folder names are your categories",

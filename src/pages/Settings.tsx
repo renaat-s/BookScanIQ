@@ -858,7 +858,7 @@ const Settings = () => {
                     Permanently deletes your InvoiceIQ profile, stored Google/Xero/QuickBooks tokens, scan history, and invoice metadata from our servers. This action is irreversible.
                   </p>
                   <p className="text-sm text-muted-foreground mt-2">
-                    <strong>Note:</strong> Files already saved into your own Google Drive and entries written into your own Google Sheets will <strong>not</strong> be deleted — they belong to you and remain in your Google account.
+                    <strong>Note:</strong> Files already saved into your own Google Drive and entries written into your own Google Sheets will <strong>not</strong> be deleted, they belong to you and remain in your Google account.
                   </p>
                 </div>
                 <AlertDialog>

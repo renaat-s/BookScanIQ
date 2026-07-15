@@ -13,7 +13,7 @@ import CyberBackground from "@/components/CyberBackground";
 const faqs = [
   {
     question: "Do I need a technical team to use this?",
-    answer: "Not at all! InvoiceIQ is designed for non-technical users. Simply create your account, link your Email and our AI will handle the rest. No coding, no complex setup—just straightforward automation that works out of the box."
+    answer: "Not at all! InvoiceIQ is designed for non-technical users. Simply create your account, link your Email and our AI will handle the rest. No coding, no complex setup, just straightforward automation that works out of the box."
   },
   {
     question: "What happens if the InvoiceIQ can't identify my invoice's expenditure type?",
@@ -63,7 +63,7 @@ const FAQ = () => {
                 Frequently Asked Questions
               </h1>
               <p className="mt-6 text-lg text-muted-foreground font-light tracking-[-0.005em]">
-                Everything you need to know about InvoiceIQ — answered with clarity.
+                Everything you need to know about InvoiceIQ, answered with clarity.
               </p>
             </div>
           </div>

@@ -22,8 +22,8 @@ const sections = [
     intro: "InvoiceIQ is fully GDPR compliant. We respect your privacy and give you complete control over your data.",
     points: [
       "Right to access your data at any time",
-      "Right to deletion — we permanently delete your data upon request",
-      "Data portability — export all your data in standard formats",
+      "Right to deletion, we permanently delete your data upon request",
+      "Data portability, export all your data in standard formats",
       "Transparent data processing practices",
       "Data Processing Agreements available for enterprise customers",
     ],

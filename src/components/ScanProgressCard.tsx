@@ -71,7 +71,7 @@ export const ScanProgressCard = ({ jobId, onComplete, onBack }: ScanProgressCard
       setJob(prev => prev ? {
         ...prev,
         status: 'failed' as const,
-        error_message: 'The scan timed out — no emails were scanned within 60 seconds. Please check your inbox connection and try again.',
+        error_message: 'The scan timed out, no emails were scanned within 60 seconds. Please check your inbox connection and try again.',
         completed_at: new Date().toISOString(),
       } : null);
 
@@ -80,7 +80,7 @@ export const ScanProgressCard = ({ jobId, onComplete, onBack }: ScanProgressCard
         body: {
           jobId,
           status: 'failed',
-          errorMessage: 'The scan timed out — no emails were scanned within 60 seconds. Please check your inbox connection and try again.',
+          errorMessage: 'The scan timed out, no emails were scanned within 60 seconds. Please check your inbox connection and try again.',
         },
       });
     }

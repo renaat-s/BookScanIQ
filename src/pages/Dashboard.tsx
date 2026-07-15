@@ -82,7 +82,7 @@ const driveEmbed = (inv: Invoice) => {
 };
 
 const relativeTime = (iso: string | null) => {
-  if (!iso) return "—";
+  if (!iso) return "-";
   const d = new Date(iso).getTime();
   const diff = Date.now() - d;
   const m = Math.floor(diff / 60000);
@@ -349,7 +349,7 @@ const Dashboard = () => {
 
       const values: string[][] = Array.isArray(data?.values) ? data.values : [];
       if (values.length === 0) {
-        toast.error("Ledger is empty — nothing to export.");
+        toast.error("Ledger is empty, nothing to export.");
         return;
       }
 
@@ -433,7 +433,7 @@ const Dashboard = () => {
       <Header />
 
       <main className="flex-1">
-        {/* HERO STRIP — futuristic command bar */}
+        {/* HERO STRIP, futuristic command bar */}
         <section className="relative overflow-hidden border-b border-primary/30 bg-gradient-header">
           <div className="absolute inset-0 opacity-20 pointer-events-none"
                style={{ backgroundImage: "radial-gradient(circle at 20% 10%, hsl(var(--accent) / 0.5), transparent 40%), radial-gradient(circle at 80% 80%, hsl(var(--brand-accent) / 0.4), transparent 45%)" }} />
@@ -443,18 +443,12 @@ const Dashboard = () => {
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5 sm:gap-6 animate-fade-in">
               <div className="space-y-2 sm:space-y-3 min-w-0">
                 <div className="flex flex-wrap items-center gap-2">
-                  <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-white/10 border border-white/25 backdrop-blur-sm text-white/90 text-[10px] sm:text-xs">
-                    <span className="relative flex w-1.5 h-1.5">
-                      <span className="absolute inline-flex w-full h-full rounded-full bg-emerald-300 animate-ping opacity-75" />
-                      <span className="relative inline-flex w-1.5 h-1.5 rounded-full bg-emerald-300" />
-                    </span>
-                    <span className="data-line !text-white/80 !text-[10px]">SYS://LIVE</span>
-                  </div>
                   <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/10 border border-white/20 text-white/85 text-[10px] sm:text-xs">
                     <Clock className="w-3 h-3" />
                     Sync · {relativeTime(lastSyncAt)}
                   </div>
                 </div>
+
                 <h1 className="heading-cyber text-2xl sm:text-3xl md:text-4xl font-bold text-white tracking-tight break-words">
                   <span className="holo-text">Welcome back, {firstName}.</span>
                 </h1>
@@ -710,7 +704,7 @@ const Dashboard = () => {
               )}
             </TabsContent>
 
-            {/* WORKSPACES TAB — live Drive, Sheet, Xero, QuickBooks */}
+            {/* WORKSPACES TAB, live Drive, Sheet, Xero, QuickBooks */}
             <TabsContent value="workspaces" className="m-0">
               <WorkspacesTab />
             </TabsContent>
@@ -744,7 +738,7 @@ const Dashboard = () => {
                 <div className="p-4 rounded-xl bg-gradient-subtle border border-border/60">
                   <div className="text-xs uppercase tracking-wide text-muted-foreground">Total</div>
                   <div className="text-3xl font-bold text-foreground mt-1">
-                    {selected.invoice_total ? formatMoneyFull(parseAmount(selected.invoice_total)) : "—"}
+                    {selected.invoice_total ? formatMoneyFull(parseAmount(selected.invoice_total)) : "-"}
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4 text-sm">
@@ -878,7 +872,7 @@ const EmptyState = ({ onDetect, onCapture }: { onDetect: () => void; onCapture: 
 const Field = ({ label, value }: { label: string; value: string | null }) => (
   <div>
     <div className="text-xs uppercase tracking-wide text-muted-foreground">{label}</div>
-    <div className="font-medium text-foreground mt-0.5">{value || "—"}</div>
+    <div className="font-medium text-foreground mt-0.5">{value || "-"}</div>
   </div>
 );
 

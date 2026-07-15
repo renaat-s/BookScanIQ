@@ -20,7 +20,7 @@ const Pricing = () => {
 
     // Developer bypass – already fully subscribed
     if (subscription.isDeveloper) {
-      toast.info("You have developer access — no subscription needed!");
+      toast.info("You have developer access, no subscription needed!");
       return;
     }
 

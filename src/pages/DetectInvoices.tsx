@@ -70,7 +70,7 @@ const DetectInvoices = () => {
   useEffect(() => {
     if (!loading && !hasInitialized) {
       if (user) {
-        // Skip the redundant email confirmation — the signed-in Google email
+        // Skip the redundant email confirmation, the signed-in Google email
         // is inherently the inbox that will be scanned.
         setStep('select-scan');
       } else {
@@ -221,7 +221,7 @@ const DetectInvoices = () => {
           });
         });
       } else {
-        // Forward scan — keep original synchronous flow
+        // Forward scan, keep original synchronous flow
         const { data, error } = await supabase.functions.invoke('connect-email-detector', {
           body: {
             email: user.email,
@@ -284,7 +284,7 @@ const DetectInvoices = () => {
       
       <main className="container mx-auto px-4 sm:px-6 py-20">
         <div className="max-w-lg mx-auto">
-          {/* Directory setup guard — blocks all feature steps until ready */}
+          {/* Directory setup guard, blocks all feature steps until ready */}
           {user && guard.status !== 'ready' && guard.status !== 'loading' && (
             <SetupGuardCard
               status={guard.status}
@@ -375,7 +375,7 @@ const DetectInvoices = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                {/* Forward Scan — temporarily deactivated */}
+                {/* Forward Scan, temporarily deactivated */}
                 <div className="relative">
                   <Button 
                     disabled
@@ -593,7 +593,7 @@ const DetectInvoices = () => {
                 <CardDescription className="text-base leading-relaxed">
                   {step === 'results'
                     ? 'Your invoice and receipt email data has been processed and sent through your connected workflow.'
-                    : 'Your invoice & receipt email data is being extracted, organized, and sent to your connected platforms. This may take a few minutes — sit back and relax!'}
+                    : 'Your invoice & receipt email data is being extracted, organized, and sent to your connected platforms. This may take a few minutes, sit back and relax!'}
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6 pt-2">

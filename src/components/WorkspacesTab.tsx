@@ -41,7 +41,7 @@ interface ExternalTxn {
 }
 
 const fmtMoney = (n: number | null | undefined, cur?: string | null) => {
-  if (n == null || isNaN(n)) return "—";
+  if (n == null || isNaN(n)) return "-";
   return n.toLocaleString(undefined, {
     style: "currency",
     currency: cur || "USD",
@@ -152,7 +152,7 @@ const WorkspacesTab = () => {
           Live Workspaces
         </CardTitle>
         <CardDescription className="text-xs">
-          View your Drive directory, Sheet ledger, and accounting transactions live — all without leaving InvoiceIQ.
+          View your Drive directory, Sheet ledger, and accounting transactions live, all without leaving InvoiceIQ.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -310,15 +310,15 @@ const ExternalTxnsView = ({
             <TableBody>
               {transactions.map((t) => (
                 <TableRow key={t.id}>
-                  <TableCell className="font-medium">{t.number || "—"}</TableCell>
+                  <TableCell className="font-medium">{t.number || "-"}</TableCell>
                   <TableCell className="text-muted-foreground truncate max-w-[200px]">
-                    {t.contact || "—"}
+                    {t.contact || "-"}
                   </TableCell>
                   <TableCell className="text-muted-foreground tabular-nums">
-                    {t.date ? new Date(t.date).toLocaleDateString() : "—"}
+                    {t.date ? new Date(t.date).toLocaleDateString() : "-"}
                   </TableCell>
                   <TableCell>
-                    {t.status ? <Badge variant="outline">{t.status}</Badge> : "—"}
+                    {t.status ? <Badge variant="outline">{t.status}</Badge> : "-"}
                   </TableCell>
                   <TableCell className="text-right font-semibold tabular-nums">
                     {fmtMoney(t.total, t.currency)}

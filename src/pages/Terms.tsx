@@ -143,7 +143,7 @@ const Terms = () => {
                 <ul>
                   <li><strong>No Guarantee of Accuracy:</strong> We do not guarantee 100% accurate data extraction or matching</li>
                   <li><strong>User Responsibility:</strong> You are responsible for reviewing and verifying all extracted data before making financial decisions</li>
-                  <li><strong>Incorrect Matches:</strong> Bank transaction matching is automated and may occasionally be incorrect — always review matches</li>
+                  <li><strong>Incorrect Matches:</strong> Bank transaction matching is automated and may occasionally be incorrect, always review matches</li>
                   <li><strong>Human Oversight Required:</strong> The Service is a tool to assist, not replace, human financial oversight</li>
                 </ul>
 
