@@ -18,6 +18,7 @@ import { cn } from '@/lib/utils';
 import { InvoiceResultsCard } from '@/components/InvoiceResultsCard';
 import { useDirectoryGuard } from '@/hooks/useDirectoryGuard';
 import SetupGuardCard from '@/components/SetupGuardCard';
+import { useScanUsage } from '@/hooks/useScanUsage';
 
 const MIN_SCAN_DATE = new Date(2025, 2, 26); // March 26, 2025
 const formatDDMMYYYY = (d: Date) => format(d, 'dd/MM/yyyy');
@@ -43,10 +44,11 @@ const parseErrorMessage = (error: unknown): string => {
 };
 
 const DetectInvoices = () => {
-  const { user, loading, signInWithGoogle, signOut } = useAuth();
+  const { user, loading, subscription, signInWithGoogle, signOut } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
   const guard = useDirectoryGuard();
+  const usage = useScanUsage();
   const [step, setStep] = useState<'auth' | 'confirm' | 'select-scan' | 'select-backlog-duration' | 'select-scan-date' | 'connecting' | 'scanning' | 'results' | 'connected' | 'failed'>('auth');
 
   // Auto-redirect to Dashboard once the scan finishes so users land on their results
@@ -105,10 +107,41 @@ const DetectInvoices = () => {
 
   const handleStartScan = async (scanType: ScanType, duration?: BacklogDuration, scanFromDate?: Date) => {
     if (!user?.email) return;
+
+    // Subscription gate: only paid tiers (or developers) can start scans.
+    if (!subscription.loading && !subscription.subscribed && !subscription.isDeveloper) {
+      toast({
+        title: 'Subscription required',
+        description: 'Choose a plan to start scanning your inbox for invoices.',
+      });
+      navigate('/pricing');
+      return;
+    }
+
+    // Monthly scan cap: hard block at 100% for finite caps.
+    if (usage.atCap) {
+      toast({
+        title: 'Monthly scan limit reached',
+        description: `You've used all ${usage.cap} scans this month. Upgrade for more capacity.`,
+        variant: 'destructive',
+      });
+      navigate('/pricing');
+      return;
+    }
+
+    // Soft warn at 80%.
+    if (usage.nearCap && usage.cap) {
+      toast({
+        title: 'Approaching your monthly limit',
+        description: `You've used ${usage.used} of ${usage.cap} scans this month.`,
+      });
+    }
+
     const fromDate = scanFromDate ?? new Date();
     const scanFromDateStr = formatDDMMYYYY(fromDate);
 
     setStep('connecting');
+
 
     try {
       const { data: jobData, error: jobError } = await supabase
