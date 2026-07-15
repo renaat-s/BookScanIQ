@@ -506,8 +506,29 @@ const Settings = () => {
             </Card>
 
 
+            {!integrationsUnlocked && (
+              <Card className="bg-card/80 backdrop-blur-sm border border-border/50 rounded-3xl shadow-elegant">
+                <CardHeader>
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    <Lock className="w-5 h-5 text-violet-500" />
+                    Accounting Integrations
+                  </CardTitle>
+                  <CardDescription>
+                    Xero and QuickBooks integrations are available on the Professional and
+                    Enterprise plans. Upgrade to sync invoices to your accounting software
+                    automatically.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Button className="w-full" onClick={() => navigate('/pricing')}>
+                    View plans
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
 
-
+            {integrationsUnlocked && (
+              <>
             {/* Xero Settings */}
             <Card className="bg-card/80 backdrop-blur-sm border border-border/50 rounded-3xl shadow-elegant hover:shadow-lg hover:border-violet-500/30 transition-all duration-300">
             <CardHeader>
