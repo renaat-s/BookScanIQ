@@ -52,10 +52,10 @@ export const PLANS: PlanConfig[] = [
     monthlyPrice: "$150",
     annualPrice: "$1,750",
     description: "Ideal for growing businesses with higher scan volumes",
-    maxScans: 1000,
+    maxScans: 500,
     hasAccountingIntegrations: true,
     features: [
-      "Up to 1,000 scans/month",
+      "Up to 500 scans/month",
       "Advanced AI extraction",
       "Priority support",
       "Xero + QuickBooks integrations",
