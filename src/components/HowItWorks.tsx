@@ -13,7 +13,7 @@ const steps = [
   {
     icon: Camera,
     title: "Snap & Submit Receipts",
-    description: "Capture receipt photos instantly via the app—our AI transforms them into structured data automatically."
+    description: "Capture receipt photos instantly via the app, our AI transforms them into structured data automatically."
   },
   {
     icon: MessageSquare,

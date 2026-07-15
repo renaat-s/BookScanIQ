@@ -101,7 +101,7 @@ const Hero = () => {
 
       if (data?.success) {
         setDirectoryInstalled(true);
-        toast.success("Workspace synced — you're all set!");
+        toast.success("Workspace synced, you're all set!");
       } else {
         throw new Error(data?.error || "Sync failed");
       }
@@ -147,9 +147,9 @@ const Hero = () => {
 
               <h1
                 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight glitch-text neon-glow-text break-words"
-                data-text="InvoiceIQ — AI-Powered Automated Bookkeeping & Invoice Processing"
+                data-text="InvoiceIQ, AI-Powered Automated Bookkeeping & Invoice Processing"
               >
-                InvoiceIQ — AI-Powered{" "}
+                InvoiceIQ, AI-Powered{" "}
                 <span className="text-gradient">Automated Bookkeeping</span>{" "}
                 &amp; Invoice Processing
               </h1>
@@ -192,7 +192,7 @@ const Hero = () => {
                           : "Sync My Workspace"}
                   </Button>
                   <p className="text-sm text-muted-foreground max-w-md text-center">
-                    Securely sync InvoiceIQ with your Google workspace to unlock all features. We only access what we create — your other files stay private.
+                    Securely sync InvoiceIQ with your Google workspace to unlock all features. We only access what we create, your other files stay private.
                   </p>
                 </div>
               ) : (
@@ -200,8 +200,8 @@ const Hero = () => {
                   <div className="flex items-center gap-2 text-sm text-brand-accent font-medium">
                     <CheckCircle className="w-4 h-4" />
                     {setupComplete
-                      ? "Workspace synced — your bookkeeping is connected and ready!"
-                      : "Workspace synced — finalizing connection…"}
+                      ? "Workspace synced, your bookkeeping is connected and ready!"
+                      : "Workspace synced, finalizing connection…"}
                   </div>
 
                   {spreadsheetId && (
@@ -223,7 +223,7 @@ const Hero = () => {
                     </Button>
                   </Link>
                   <p className="text-sm text-muted-foreground max-w-md text-center">
-                    Detect, file, and review every invoice from your personal portal — your full bookkeeping workspace in one place.
+                    Detect, file, and review every invoice from your personal portal, your full bookkeeping workspace in one place.
                   </p>
                 </div>
               )}
