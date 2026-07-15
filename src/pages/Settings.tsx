@@ -112,7 +112,11 @@ interface Credentials {
 }
 
 const Settings = () => {
-  const { user, loading, signOut, deleteAccount } = useAuth();
+  const { user, loading, subscription, signOut, deleteAccount } = useAuth();
+  const integrationsUnlocked =
+    subscription.isDeveloper ||
+    (subscription.subscribed &&
+      (subscription.tier === 'professional' || subscription.tier === 'enterprise'));
   const [disconnectingGoogle, setDisconnectingGoogle] = useState(false);
   const [deletingAccount, setDeletingAccount] = useState(false);
   const { toast } = useToast();
