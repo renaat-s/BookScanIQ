@@ -789,6 +789,8 @@ const Settings = () => {
               )}
             </CardContent>
           </Card>
+              </>
+            )}
 
           {/* Privacy & Account Controls */}
           <Card className="bg-card/80 backdrop-blur-sm border border-border/50 rounded-3xl shadow-elegant">
