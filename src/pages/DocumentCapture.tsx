@@ -11,10 +11,12 @@ import ChatDialog from "@/components/ChatDialog";
 import { N8nUploadResponse } from "@/types/document-capture";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { useScanUsage } from "@/hooks/useScanUsage";
 
 const DocumentCapture = () => {
-  const { user, loading } = useAuth();
+  const { user, loading, subscription } = useAuth();
   const navigate = useNavigate();
+  const usage = useScanUsage();
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [file, setFile] = useState<File | null>(null);
@@ -79,6 +81,35 @@ const DocumentCapture = () => {
 
   const handleUpload = async () => {
     if (!file) return;
+
+    // Subscription gate.
+    if (!subscription.loading && !subscription.subscribed && !subscription.isDeveloper) {
+      toast({
+        title: "Subscription required",
+        description: "Choose a plan to upload invoices for AI processing.",
+      });
+      navigate("/pricing");
+      return;
+    }
+
+    // Hard block at monthly cap.
+    if (usage.atCap) {
+      toast({
+        title: "Monthly scan limit reached",
+        description: `You've used all ${usage.cap} scans this month. Upgrade for more capacity.`,
+        variant: "destructive",
+      });
+      navigate("/pricing");
+      return;
+    }
+
+    // Soft warn near cap.
+    if (usage.nearCap && usage.cap) {
+      toast({
+        title: "Approaching your monthly limit",
+        description: `You've used ${usage.used} of ${usage.cap} scans this month.`,
+      });
+    }
 
     setIsUploading(true);
     try {
