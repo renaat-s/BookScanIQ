@@ -41,9 +41,3 @@ verify_jwt = true
 
 [functions.get-oauth-config]
 verify_jwt = false
-
-[functions.send-waitlist-welcome]
-verify_jwt = false
-
-[functions.waitlist-signup]
-verify_jwt = false
