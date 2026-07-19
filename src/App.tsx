@@ -82,6 +82,7 @@ const App = () => (
             </Routes>
             </Suspense>
             <FeedbackWidget />
+            <CookieConsent />
             </BrowserRouter>
           </TooltipProvider>
           </LowCogModeProvider>
