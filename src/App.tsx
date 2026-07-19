@@ -13,6 +13,7 @@ import { Loader2 } from "lucide-react";
 // Eagerly load the landing page
 import Index from "./pages/Index";
 import FeedbackWidget from "./components/FeedbackWidget";
+import CookieConsent from "./components/CookieConsent";
 
 // Lazy load all other routes
 const About = lazy(() => import("./pages/About"));
