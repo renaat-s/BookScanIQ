@@ -349,54 +349,12 @@ export type Database = {
         }
         Relationships: []
       }
-      waitlist: {
-        Row: {
-          created_at: string
-          email: string
-          id: string
-          name: string | null
-          referral_source: string | null
-        }
-        Insert: {
-          created_at?: string
-          email: string
-          id?: string
-          name?: string | null
-          referral_source?: string | null
-        }
-        Update: {
-          created_at?: string
-          email?: string
-          id?: string
-          name?: string | null
-          referral_source?: string | null
-        }
-        Relationships: []
-      }
-      waitlist_rate_limits: {
-        Row: {
-          id: string
-          ip_address: string
-          submitted_at: string
-        }
-        Insert: {
-          id?: string
-          ip_address: string
-          submitted_at?: string
-        }
-        Update: {
-          id?: string
-          ip_address?: string
-          submitted_at?: string
-        }
-        Relationships: []
-      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      get_waitlist_count: { Args: never; Returns: number }
+      [_ in never]: never
     }
     Enums: {
       [_ in never]: never
