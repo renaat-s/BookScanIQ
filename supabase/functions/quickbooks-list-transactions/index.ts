@@ -3,13 +3,7 @@
 // then queries the QBO Query API for the most recent invoices.
 import { createClient } from "npm:@supabase/supabase-js@2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type",
-  "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-};
-
+import { corsHeadersFor } from "../_shared/cors.ts";
 const json = (payload: unknown, status = 200) =>
   new Response(JSON.stringify(payload), {
     status,
@@ -17,7 +11,9 @@ const json = (payload: unknown, status = 200) =>
   });
 
 Deno.serve(async (req: Request) => {
-  if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
+  
+  const corsHeaders = corsHeadersFor(req);
+if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
     const authHeader = req.headers.get("Authorization");
