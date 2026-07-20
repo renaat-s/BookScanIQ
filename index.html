@@ -3,6 +3,30 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+
+    <!-- Content Security Policy: restrict where scripts/frames/connections may originate.
+         'unsafe-inline' + 'unsafe-eval' remain for Vite/React runtime + Stripe checkout.
+         Adjust the allowlist when adding a new third-party domain. -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="
+        default-src 'self';
+        base-uri 'self';
+        object-src 'none';
+        form-action 'self' https://checkout.stripe.com https://billing.stripe.com;
+        frame-ancestors 'self';
+        img-src 'self' data: blob: https:;
+        font-src 'self' data: https://fonts.gstatic.com;
+        style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+        script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://cdn.gpteng.co;
+        connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.stripe.com https://www.googleapis.com https://accounts.google.com https://oauth2.googleapis.com;
+        frame-src 'self' https://js.stripe.com https://checkout.stripe.com https://hooks.stripe.com https://accounts.google.com https://drive.google.com https://docs.google.com;
+        upgrade-insecure-requests;
+      "
+    />
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+
     <title>InvoiceIQ - AI-Powered Invoice Processing & Automation</title>
     <meta name="description" content="Transform your invoice management with InvoiceIQ's AI agent. Automate extraction, processing, and approvals with 99% accuracy. Save time and eliminate manual errors." />
     <meta name="author" content="InvoiceIQ" />
