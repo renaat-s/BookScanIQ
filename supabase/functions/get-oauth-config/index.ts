@@ -1,15 +1,11 @@
 // Returns public OAuth client IDs so the frontend can construct
 // authorize URLs without hardcoding them. These IDs are NOT secret —
 // they appear in the user's browser URL bar during OAuth.
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type",
-  "Access-Control-Allow-Methods": "GET, OPTIONS",
-};
-
+import { corsHeadersFor } from "../_shared/cors.ts";
 Deno.serve((req: Request) => {
-  if (req.method === "OPTIONS") {
+  
+  const corsHeaders = corsHeadersFor(req);
+if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
