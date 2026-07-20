@@ -1,10 +1,6 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
-
+import { corsHeadersFor } from "../_shared/cors.ts";
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 const ALLOWED_TYPES = ["application/pdf", "image/jpeg", "image/png", "image/heic", "image/heif", "image/webp", "image/gif"];
 
@@ -36,7 +32,9 @@ function sanitizeFilename(filename: string): string {
 }
 
 Deno.serve(async (req) => {
-  // Handle CORS preflight requests
+  
+  const corsHeaders = corsHeadersFor(req);
+// Handle CORS preflight requests
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
