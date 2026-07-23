@@ -78,15 +78,7 @@ const Terms = () => {
                   <li>You authorize automatic recurring charges to your payment method</li>
                 </ul>
 
-                <h3>4.2 Free Trial</h3>
-                <ul>
-                  <li>14-day free trial available for new users</li>
-                  <li>No credit card required for trial period</li>
-                  <li>Trial automatically expires unless you subscribe</li>
-                  <li>Limited to 50 invoices during trial</li>
-                </ul>
-
-                <h3>4.3 Refunds</h3>
+                <h3>4.2 Refunds</h3>
                 <ul>
                   <li>Refunds are issued at our discretion</li>
                   <li>Unused subscription time is not refundable</li>

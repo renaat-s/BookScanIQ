@@ -72,7 +72,7 @@ const Pricing = () => {
           </h2>
           <p className="text-lg md:text-xl text-foreground/80 max-w-3xl mx-auto leading-[1.8] tracking-[-0.005em] font-light">
             Choose the plan that fits your business. All plans include our core AI features
-            with 14-day free trial and no setup fees.
+            with no setup fees.
           </p>
 
           {/* Billing toggle */}
@@ -180,7 +180,7 @@ const Pricing = () => {
                       {loadingPlan === plan.name.toLowerCase() ? (
                         <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                       ) : null}
-                      {subscription.subscribed ? "Switch Plan" : "Start Free Trial"}
+                      {subscription.subscribed ? "Switch Plan" : "Subscribe"}
                     </Button>
                   )}
                 </CardContent>
@@ -192,7 +192,7 @@ const Pricing = () => {
         <div className="flex justify-center mt-16">
           <div className="bg-card/80 backdrop-blur-sm border border-border/50 rounded-2xl shadow-elegant px-8 py-4">
             <p className="text-muted-foreground text-center">
-              All plans include 14-day free trial • No setup fees • Cancel anytime
+              No setup fees • Cancel anytime
             </p>
           </div>
         </div>
