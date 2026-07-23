@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Menu, LogOut, Trash2, LogIn, ChevronDown, Settings, LayoutDashboard, Info, HelpCircle, Tag, Terminal, Brain } from "lucide-react";
+import { Menu, LogOut, Trash2, LogIn, ChevronDown, Settings, LayoutDashboard, Info, HelpCircle, Tag, Terminal, Brain, CheckCircle2 } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import logoImage from "@/assets/InvoiceIQ_Logo.png";
 import { useAuth } from "@/contexts/AuthContext";
@@ -128,7 +128,7 @@ const Header = () => {
                     <Info className="h-4 w-4 mr-2" /> About Us
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => navigate('/about-invoiceiq')} className="font-mono text-xs uppercase tracking-wider">
-                    <Info className="h-4 w-4 mr-2" /> The Solution
+                    <CheckCircle2 className="h-4 w-4 mr-2" /> The Solution
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => navigate('/faq')} className="font-mono text-xs uppercase tracking-wider">
                     <HelpCircle className="h-4 w-4 mr-2" /> FAQ
@@ -188,7 +188,7 @@ const Header = () => {
                   <Info className="h-4 w-4" /> About Us
                 </Link>
                 <Link to="/about-invoiceiq" className="px-3 py-3 rounded-md hover:bg-primary/10 hover:text-primary transition-smooth flex items-center gap-2">
-                  <Info className="h-4 w-4" /> The Solution
+                  <CheckCircle2 className="h-4 w-4" /> The Solution
                 </Link>
                 <Link to="/faq" className="px-3 py-3 rounded-md hover:bg-primary/10 hover:text-primary transition-smooth flex items-center gap-2">
                   <HelpCircle className="h-4 w-4" /> FAQ
