@@ -128,7 +128,7 @@ const Header = () => {
                     <Info className="h-4 w-4 mr-2" /> About Us
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => navigate('/about-invoiceiq')} className="font-mono text-xs uppercase tracking-wider">
-                    <Info className="h-4 w-4 mr-2" /> The Solution
+                    <CheckCircle2 className="h-4 w-4 mr-2" /> The Solution
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => navigate('/faq')} className="font-mono text-xs uppercase tracking-wider">
                     <HelpCircle className="h-4 w-4 mr-2" /> FAQ
