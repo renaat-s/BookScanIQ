@@ -180,7 +180,7 @@ const Pricing = () => {
                       {loadingPlan === plan.name.toLowerCase() ? (
                         <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                       ) : null}
-                      {subscription.subscribed ? "Switch Plan" : "Start Free Trial"}
+                      {subscription.subscribed ? "Switch Plan" : "Subscribe"}
                     </Button>
                   )}
                 </CardContent>
