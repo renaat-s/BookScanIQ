@@ -72,7 +72,7 @@ const Pricing = () => {
           </h2>
           <p className="text-lg md:text-xl text-foreground/80 max-w-3xl mx-auto leading-[1.8] tracking-[-0.005em] font-light">
             Choose the plan that fits your business. All plans include our core AI features
-            with 14-day free trial and no setup fees.
+            with no setup fees.
           </p>
 
           {/* Billing toggle */}
