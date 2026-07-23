@@ -188,7 +188,7 @@ const Header = () => {
                   <Info className="h-4 w-4" /> About Us
                 </Link>
                 <Link to="/about-invoiceiq" className="px-3 py-3 rounded-md hover:bg-primary/10 hover:text-primary transition-smooth flex items-center gap-2">
-                  <Info className="h-4 w-4" /> The Solution
+                  <CheckCircle2 className="h-4 w-4" /> The Solution
                 </Link>
                 <Link to="/faq" className="px-3 py-3 rounded-md hover:bg-primary/10 hover:text-primary transition-smooth flex items-center gap-2">
                   <HelpCircle className="h-4 w-4" /> FAQ
