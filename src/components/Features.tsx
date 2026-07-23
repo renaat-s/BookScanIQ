@@ -26,7 +26,7 @@ const features = [
     icon: Camera,
     title: "Photo Upload & Conversion",
     description: "Upload a photo of a receipt through the InvoiceIQ app, which then converts it to structured invoice data.",
-    comingSoon: true
+    comingSoon: false
   },
   {
     icon: MessageSquare,
