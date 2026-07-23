@@ -39,12 +39,16 @@ const AboutInvoiceIQ = () => {
           <div className="container mx-auto px-4 sm:px-6 relative z-10">
             <div className="relative w-full max-w-3xl mx-auto">
               <div className="relative z-10">
-                <TiltCard className="rounded-2xl shadow-glow">
-                  <img
-                    src={heroImage}
-                    alt="AI-powered invoice processing dashboard showing automated data extraction and validation"
-                    className="w-full h-auto rounded-2xl"
-                  />
+                <TiltCard className="rounded-2xl shadow-glow overflow-hidden">
+                  <video
+                    src={adVideo.url}
+                    controls
+                    playsInline
+                    preload="metadata"
+                    className="w-full h-auto rounded-2xl block"
+                  >
+                    Your browser does not support the video tag.
+                  </video>
                 </TiltCard>
               </div>
               <div className="absolute top-4 right-4 w-72 h-72 bg-gradient-primary opacity-20 rounded-full blur-3xl" />
