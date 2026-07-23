@@ -192,7 +192,7 @@ const Pricing = () => {
         <div className="flex justify-center mt-16">
           <div className="bg-card/80 backdrop-blur-sm border border-border/50 rounded-2xl shadow-elegant px-8 py-4">
             <p className="text-muted-foreground text-center">
-              All plans include 14-day free trial • No setup fees • Cancel anytime
+              No setup fees • Cancel anytime
             </p>
           </div>
         </div>
