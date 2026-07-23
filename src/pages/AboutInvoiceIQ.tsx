@@ -5,7 +5,7 @@ import HowItWorks from "@/components/HowItWorks";
 import TiltCard from "@/components/TiltCard";
 import CyberBackground from "@/components/CyberBackground";
 import { Helmet } from "react-helmet-async";
-import heroImage from "@/assets/hero-invoice-illustration.png";
+import adVideo from "@/assets/InvoiceIQ_AD_Captioned.mp4.asset.json";
 
 const AboutInvoiceIQ = () => {
   return (
