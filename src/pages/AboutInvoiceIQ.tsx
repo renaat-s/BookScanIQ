@@ -6,6 +6,7 @@ import TiltCard from "@/components/TiltCard";
 import CyberBackground from "@/components/CyberBackground";
 import { Helmet } from "react-helmet-async";
 import adVideo from "@/assets/InvoiceIQ_AD_Captioned.mp4.asset.json";
+import adPoster from "@/assets/IIQ_Thumbnail.png.asset.json";
 
 const AboutInvoiceIQ = () => {
   return (
