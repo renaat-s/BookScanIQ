@@ -43,6 +43,7 @@ const AboutInvoiceIQ = () => {
                 <TiltCard className="rounded-2xl shadow-glow overflow-hidden">
                   <video
                     src={adVideo.url}
+                    poster={adPoster.url}
                     controls
                     playsInline
                     preload="metadata"
