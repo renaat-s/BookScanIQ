@@ -251,7 +251,7 @@ const AdvancedAnalytics = ({ entries }: Props) => {
                   <TableRow>
                     <TableHead>Started</TableHead>
                     <TableHead>Status</TableHead>
-                    <TableHead>Period</TableHead>
+                    <TableHead>Docs</TableHead>
                     <TableHead className="text-right">Duration</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -273,7 +273,7 @@ const AdvancedAnalytics = ({ entries }: Props) => {
                           {j.status}
                         </Badge>
                       </TableCell>
-                      <TableCell className="text-xs">{j.scan_period_weeks ? `${j.scan_period_weeks}w` : "-"}</TableCell>
+                      <TableCell className="text-xs tabular-nums">{j.invoices_found ?? 0}</TableCell>
                       <TableCell className="text-right text-xs tabular-nums">{durationLabel(j)}</TableCell>
                     </TableRow>
                   ))}
