@@ -312,7 +312,7 @@ const AdvancedAnalytics = ({ entries }: Props) => {
                           {j.status}
                         </Badge>
                       </TableCell>
-                      <TableCell className="text-xs tabular-nums">{j.invoices_found ?? 0}</TableCell>
+                      <TableCell className="text-xs tabular-nums">{docCounts[j.id] ?? j.invoices_found ?? 0}</TableCell>
                       <TableCell className="text-right text-xs tabular-nums">{durationLabel(j)}</TableCell>
                     </TableRow>
                   ))}
