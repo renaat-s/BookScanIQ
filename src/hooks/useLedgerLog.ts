@@ -47,10 +47,10 @@ export function useLedgerLog(opts: UseLedgerLogOptions = {}) {
       if (!user) return;
       setSyncing(true);
       try {
-        await supabase.functions.invoke(
-          `sync-ledger-log${force ? "?force=1" : ""}`,
-          { method: "POST" },
-        );
+        await supabase.functions.invoke("sync-ledger-log", {
+          method: "POST",
+          body: { force },
+        });
         await fetchEntries();
       } finally {
         setSyncing(false);

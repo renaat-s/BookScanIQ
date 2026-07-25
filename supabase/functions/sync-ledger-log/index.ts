@@ -104,9 +104,12 @@ Deno.serve(async (req) => {
       return json({ synced: 0, error: "Google not connected" }, corsHeaders);
     }
 
-    // Throttle: skip sync if last one was under 15 min ago, unless ?force=1
-    const url = new URL(req.url);
-    const force = url.searchParams.get("force") === "1";
+    // Throttle: skip sync if last one was under 15 min ago, unless body.force
+    let force = false;
+    try {
+      const body = await req.clone().json();
+      force = body?.force === true;
+    } catch { /* no body */ }
     if (!force && creds.last_ledger_sync_at) {
       const age = Date.now() - new Date(creds.last_ledger_sync_at).getTime();
       if (age < 15 * 60 * 1000) {
