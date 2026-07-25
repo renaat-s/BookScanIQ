@@ -16,6 +16,18 @@ import { supabase } from "@/integrations/supabase/client";
 const formatMoney = (n: number) =>
   n.toLocaleString(undefined, { style: "currency", currency: "USD", maximumFractionDigits: 0 });
 
+// Smart axis tick: pick unit + precision based on magnitude so small values
+// aren't all rounded down to "$0k".
+const formatAxisMoney = (v: number) => {
+  const abs = Math.abs(v);
+  if (abs === 0) return "$0";
+  if (abs >= 1_000_000) return `$${(v / 1_000_000).toFixed(abs >= 10_000_000 ? 0 : 1)}M`;
+  if (abs >= 10_000) return `$${Math.round(v / 1000)}k`;
+  if (abs >= 1_000) return `$${(v / 1000).toFixed(1)}k`;
+  if (abs >= 100) return `$${Math.round(v)}`;
+  return `$${v.toFixed(0)}`;
+};
+
 const monthLabel = (key: string) => {
   const [y, m] = key.split("-").map(Number);
   if (!y || !m) return key;
