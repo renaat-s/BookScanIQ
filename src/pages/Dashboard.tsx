@@ -36,6 +36,7 @@ import {
 } from "lucide-react";
 import WorkspacesTab from "@/components/WorkspacesTab";
 import AuditLogTab from "@/components/AuditLogTab";
+import AnalyticsTab from "@/components/analytics/AnalyticsTab";
 import SavingsWidget from "@/components/SavingsWidget";
 import TipsCard from "@/components/TipsCard";
 import { useDirectoryGuard } from "@/hooks/useDirectoryGuard";
@@ -507,6 +508,7 @@ const Dashboard = () => {
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
               <TabsList className="bg-muted/60 backdrop-blur w-full sm:w-auto overflow-x-auto">
                 <TabsTrigger value="overview" className="gap-1.5 flex-1 sm:flex-none"><Activity className="w-4 h-4" /><span className="hidden xs:inline sm:inline">Overview</span></TabsTrigger>
+                <TabsTrigger value="analytics" className="gap-1.5 flex-1 sm:flex-none"><Sparkles className="w-4 h-4" /><span className="hidden xs:inline sm:inline">Analytics</span></TabsTrigger>
                 <TabsTrigger value="workspaces" className="gap-1.5 flex-1 sm:flex-none"><Plug className="w-4 h-4" /><span className="hidden xs:inline sm:inline">Workspaces</span></TabsTrigger>
                 <TabsTrigger value="audit" className="gap-1.5 flex-1 sm:flex-none"><ShieldCheck className="w-4 h-4" /><span className="hidden xs:inline sm:inline">Audit Log</span></TabsTrigger>
               </TabsList>
@@ -702,6 +704,11 @@ const Dashboard = () => {
                   </div>
                 </>
               )}
+            </TabsContent>
+
+            {/* ANALYTICS TAB */}
+            <TabsContent value="analytics" className="m-0">
+              <AnalyticsTab />
             </TabsContent>
 
             {/* WORKSPACES TAB, live Drive, Sheet, Xero, QuickBooks */}
