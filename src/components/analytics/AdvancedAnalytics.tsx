@@ -226,7 +226,7 @@ const AdvancedAnalytics = ({ entries }: Props) => {
               <ResponsiveContainer>
                 <BarChart data={topCategories} layout="vertical" margin={{ left: 8, right: 12, top: 6, bottom: 0 }}>
                   <CartesianGrid strokeDasharray="3 3" className="stroke-border/60" horizontal={false} />
-                  <XAxis type="number" tickLine={false} axisLine={false} className="text-xs" tickFormatter={(v) => `$${Math.round(v / 1000)}k`} />
+                  <XAxis type="number" tickLine={false} axisLine={false} className="text-xs" tickFormatter={formatAxisMoney} />
                   <YAxis dataKey="name" type="category" tickLine={false} axisLine={false} width={110} className="text-xs" />
                   <RTooltip
                     contentStyle={{ background: "hsl(var(--popover))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 12 }}
