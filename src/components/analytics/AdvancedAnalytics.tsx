@@ -48,6 +48,8 @@ const AdvancedAnalytics = ({ entries }: Props) => {
   const [scanJobs, setScanJobs] = useState<ScanJobRow[]>([]);
   const [syncEvents, setSyncEvents] = useState<AuditRow[]>([]);
 
+  const [docCounts, setDocCounts] = useState<Record<string, number>>({});
+
   useEffect(() => {
     if (!user) return;
     (async () => {
@@ -66,8 +68,33 @@ const AdvancedAnalytics = ({ entries }: Props) => {
           .order("created_at", { ascending: false })
           .limit(30),
       ]);
-      setScanJobs((jobs.data as ScanJobRow[]) || []);
+      const jobRows = (jobs.data as ScanJobRow[]) || [];
+      setScanJobs(jobRows);
       setSyncEvents((audit.data as AuditRow[]) || []);
+
+      // Fallback doc count: n8n does not report invoices_found back, and the
+      // invoices table is unused. Count ledger entries whose last_seen_at
+      // falls between the scan start and completion (+5 min buffer). This
+      // approximates docs processed per scan using the durable ledger log.
+      const counts: Record<string, number> = {};
+      await Promise.all(
+        jobRows.map(async (j) => {
+          if (j.invoices_found && j.invoices_found > 0) {
+            counts[j.id] = j.invoices_found;
+            return;
+          }
+          if (!j.completed_at) return;
+          const endWindow = new Date(new Date(j.completed_at).getTime() + 5 * 60_000).toISOString();
+          const { count } = await supabase
+            .from("ledger_entries")
+            .select("id", { count: "exact", head: true })
+            .eq("user_id", user.id)
+            .gte("last_seen_at", j.created_at)
+            .lte("last_seen_at", endWindow);
+          counts[j.id] = count ?? 0;
+        }),
+      );
+      setDocCounts(counts);
     })();
   }, [user]);
 
