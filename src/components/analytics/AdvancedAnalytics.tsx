@@ -16,6 +16,18 @@ import { supabase } from "@/integrations/supabase/client";
 const formatMoney = (n: number) =>
   n.toLocaleString(undefined, { style: "currency", currency: "USD", maximumFractionDigits: 0 });
 
+// Smart axis tick: pick unit + precision based on magnitude so small values
+// aren't all rounded down to "$0k".
+const formatAxisMoney = (v: number) => {
+  const abs = Math.abs(v);
+  if (abs === 0) return "$0";
+  if (abs >= 1_000_000) return `$${(v / 1_000_000).toFixed(abs >= 10_000_000 ? 0 : 1)}M`;
+  if (abs >= 10_000) return `$${Math.round(v / 1000)}k`;
+  if (abs >= 1_000) return `$${(v / 1000).toFixed(1)}k`;
+  if (abs >= 100) return `$${Math.round(v)}`;
+  return `$${v.toFixed(0)}`;
+};
+
 const monthLabel = (key: string) => {
   const [y, m] = key.split("-").map(Number);
   if (!y || !m) return key;
@@ -48,6 +60,8 @@ const AdvancedAnalytics = ({ entries }: Props) => {
   const [scanJobs, setScanJobs] = useState<ScanJobRow[]>([]);
   const [syncEvents, setSyncEvents] = useState<AuditRow[]>([]);
 
+  const [docCounts, setDocCounts] = useState<Record<string, number>>({});
+
   useEffect(() => {
     if (!user) return;
     (async () => {
@@ -66,8 +80,33 @@ const AdvancedAnalytics = ({ entries }: Props) => {
           .order("created_at", { ascending: false })
           .limit(30),
       ]);
-      setScanJobs((jobs.data as ScanJobRow[]) || []);
+      const jobRows = (jobs.data as ScanJobRow[]) || [];
+      setScanJobs(jobRows);
       setSyncEvents((audit.data as AuditRow[]) || []);
+
+      // Fallback doc count: n8n does not report invoices_found back, and the
+      // invoices table is unused. Count ledger entries whose last_seen_at
+      // falls between the scan start and completion (+5 min buffer). This
+      // approximates docs processed per scan using the durable ledger log.
+      const counts: Record<string, number> = {};
+      await Promise.all(
+        jobRows.map(async (j) => {
+          if (j.invoices_found && j.invoices_found > 0) {
+            counts[j.id] = j.invoices_found;
+            return;
+          }
+          if (!j.completed_at) return;
+          const endWindow = new Date(new Date(j.completed_at).getTime() + 5 * 60_000).toISOString();
+          const { count } = await supabase
+            .from("ledger_entries")
+            .select("id", { count: "exact", head: true })
+            .eq("user_id", user.id)
+            .gte("last_seen_at", j.created_at)
+            .lte("last_seen_at", endWindow);
+          counts[j.id] = count ?? 0;
+        }),
+      );
+      setDocCounts(counts);
     })();
   }, [user]);
 
@@ -160,7 +199,7 @@ const AdvancedAnalytics = ({ entries }: Props) => {
               <LineChart data={last6} margin={{ top: 6, right: 12, bottom: 0, left: -10 }}>
                 <CartesianGrid strokeDasharray="3 3" className="stroke-border/60" vertical={false} />
                 <XAxis dataKey="label" tickLine={false} axisLine={false} className="text-xs" />
-                <YAxis tickLine={false} axisLine={false} className="text-xs" tickFormatter={(v) => `$${Math.round(v / 1000)}k`} />
+                <YAxis tickLine={false} axisLine={false} className="text-xs" tickFormatter={formatAxisMoney} />
                 <RTooltip
                   contentStyle={{ background: "hsl(var(--popover))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 12 }}
                   formatter={(v: number | string) => formatMoney(Number(v))}
@@ -187,7 +226,7 @@ const AdvancedAnalytics = ({ entries }: Props) => {
               <ResponsiveContainer>
                 <BarChart data={topCategories} layout="vertical" margin={{ left: 8, right: 12, top: 6, bottom: 0 }}>
                   <CartesianGrid strokeDasharray="3 3" className="stroke-border/60" horizontal={false} />
-                  <XAxis type="number" tickLine={false} axisLine={false} className="text-xs" tickFormatter={(v) => `$${Math.round(v / 1000)}k`} />
+                  <XAxis type="number" tickLine={false} axisLine={false} className="text-xs" tickFormatter={formatAxisMoney} />
                   <YAxis dataKey="name" type="category" tickLine={false} axisLine={false} width={110} className="text-xs" />
                   <RTooltip
                     contentStyle={{ background: "hsl(var(--popover))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 12 }}
@@ -273,7 +312,7 @@ const AdvancedAnalytics = ({ entries }: Props) => {
                           {j.status}
                         </Badge>
                       </TableCell>
-                      <TableCell className="text-xs tabular-nums">{j.invoices_found ?? 0}</TableCell>
+                      <TableCell className="text-xs tabular-nums">{docCounts[j.id] ?? j.invoices_found ?? 0}</TableCell>
                       <TableCell className="text-right text-xs tabular-nums">{durationLabel(j)}</TableCell>
                     </TableRow>
                   ))}
