@@ -199,7 +199,7 @@ const AdvancedAnalytics = ({ entries }: Props) => {
               <LineChart data={last6} margin={{ top: 6, right: 12, bottom: 0, left: -10 }}>
                 <CartesianGrid strokeDasharray="3 3" className="stroke-border/60" vertical={false} />
                 <XAxis dataKey="label" tickLine={false} axisLine={false} className="text-xs" />
-                <YAxis tickLine={false} axisLine={false} className="text-xs" tickFormatter={(v) => `$${Math.round(v / 1000)}k`} />
+                <YAxis tickLine={false} axisLine={false} className="text-xs" tickFormatter={formatAxisMoney} />
                 <RTooltip
                   contentStyle={{ background: "hsl(var(--popover))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 12 }}
                   formatter={(v: number | string) => formatMoney(Number(v))}
