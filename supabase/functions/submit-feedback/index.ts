@@ -1,17 +1,60 @@
 // Inserts feedback row and forwards a copy to the founder inbox via Resend.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import Stripe from "https://esm.sh/stripe@18.5.0";
 
 import { corsHeadersFor } from "../_shared/cors.ts";
-const json = (b: unknown, s = 200) =>
-  new Response(JSON.stringify(b), { status: s, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
-const RECIPIENT = "renaat.sibanda@gmail.com";
+const DEFAULT_RECIPIENT = "info@invoice-iq.com";
+const PRIORITY_RECIPIENT = "priority@invoice-iq.com";
 const FROM = "InvoiceIQ Feedback <feedback@invoice-iq.com>";
 
+const DEVELOPER_EMAILS = [
+  "renaat.sibanda@gmail.com",
+  "renaat.sibanda23@gmail.com",
+  "ruvimbo.gamanya@gmail.com",
+];
+
+const ENTERPRISE_PRODUCTS = ["prod_UFAkdM7qvMUtYv", "prod_UFAlscQkwRaD2i"];
+const STARTER_PRODUCTS = ["prod_UFAjHWpuf52UEL", "prod_UFAjlJBuzAPjC4"];
+const SOLO_PRODUCTS = ["prod_Ux0JqEpkSviKSJ"];
+const PRO_PRODUCTS = ["prod_UFAjc3ylFV6hsW", "prod_UFAkBm2eLGQWhR"];
+
+async function resolveTier(email: string | null | undefined): Promise<string> {
+  if (!email) return "free";
+  if (DEVELOPER_EMAILS.includes(email.toLowerCase())) return "enterprise";
+  const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
+  if (!stripeKey) return "free";
+  try {
+    const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
+    const customers = await stripe.customers.list({ email, limit: 1 });
+    if (!customers.data.length) return "free";
+    const subs = await stripe.subscriptions.list({
+      customer: customers.data[0].id,
+      status: "active",
+      limit: 1,
+    });
+    if (!subs.data.length) return "free";
+    const productId = subs.data[0].items.data[0].price.product as string;
+    if (ENTERPRISE_PRODUCTS.includes(productId)) return "enterprise";
+    if (PRO_PRODUCTS.includes(productId)) return "professional";
+    if (SOLO_PRODUCTS.includes(productId)) return "solo";
+    if (STARTER_PRODUCTS.includes(productId)) return "starter";
+    return "free";
+  } catch (e) {
+    console.error("tier lookup failed", e);
+    return "free";
+  }
+}
+
 Deno.serve(async (req) => {
-  
   const corsHeaders = corsHeadersFor(req);
-if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
+  const json = (b: unknown, s = 200) =>
+    new Response(JSON.stringify(b), {
+      status: s,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+
+  if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
   try {
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const anonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
@@ -45,14 +88,20 @@ if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders }
       return json({ error: "Failed to save feedback" }, 500);
     }
 
-    // Best-effort email forward — never fail the request if Resend hiccups
+    const tier = await resolveTier(user.email);
+    const isPriority = tier === "enterprise";
+    const recipient = isPriority ? PRIORITY_RECIPIENT : DEFAULT_RECIPIENT;
+
     const resendKey = Deno.env.get("RESEND_API_KEY");
     if (resendKey) {
       try {
         const sentimentLabel = sentiment ? sentiment.toUpperCase() : "—";
+        const tierLabel = tier.toUpperCase();
+        const subjectPrefix = isPriority ? "[PRIORITY] " : "";
         const html = `
-          <h2>New InvoiceIQ feedback</h2>
+          <h2>${isPriority ? "🚨 PRIORITY " : ""}New InvoiceIQ feedback</h2>
           <p><strong>From:</strong> ${user.email ?? user.id}</p>
+          <p><strong>Plan:</strong> ${tierLabel}</p>
           <p><strong>Sentiment:</strong> ${sentimentLabel}</p>
           <p><strong>Route:</strong> ${route ?? "—"}</p>
           <p><strong>Prompt:</strong> ${prompt ?? "—"}</p>
@@ -64,9 +113,9 @@ if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders }
           headers: { "Content-Type": "application/json", Authorization: `Bearer ${resendKey}` },
           body: JSON.stringify({
             from: FROM,
-            to: [RECIPIENT],
+            to: [recipient],
             reply_to: user.email ?? undefined,
-            subject: `[Feedback ${sentimentLabel}] ${message.slice(0, 60)}`,
+            subject: `${subjectPrefix}[Feedback ${sentimentLabel}] ${message.slice(0, 60)}`,
             html,
           }),
         });
@@ -75,9 +124,12 @@ if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders }
       }
     }
 
-    return json({ ok: true });
+    return json({ ok: true, priority: isPriority });
   } catch (e) {
     console.error("submit-feedback error", e);
-    return json({ error: e instanceof Error ? e.message : "Unknown" }, 500);
+    return new Response(JSON.stringify({ error: e instanceof Error ? e.message : "Unknown" }), {
+      status: 500,
+      headers: { ...corsHeadersFor(req), "Content-Type": "application/json" },
+    });
   }
 });
