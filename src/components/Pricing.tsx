@@ -104,7 +104,7 @@ const Pricing = () => {
           </div>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-6 max-w-7xl mx-auto">
           {PLANS.map((plan, index) => {
             const current = isCurrentPlan(index);
             const showCurrentMarker = current && !(plan.name === "Enterprise" && subscription.isDeveloper);
