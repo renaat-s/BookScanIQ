@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import {
@@ -96,12 +97,12 @@ const FAQ = () => {
                 <p className="text-muted-foreground font-light">
                   Can't find the answer you're looking for? Reach out to our support team.
                 </p>
-                <a
-                  href="mailto:support@invoiceiq.com"
+                <Link
+                  to="/support"
                   className="inline-block font-semibold bg-gradient-to-r from-violet-600 to-fuchsia-500 bg-clip-text text-transparent hover:opacity-80 transition-opacity"
                 >
                   Contact Support →
-                </a>
+                </Link>
               </div>
             </div>
           </div>

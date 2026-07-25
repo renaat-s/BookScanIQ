@@ -70,7 +70,7 @@ const FeedbackWidget = () => {
           <SheetHeader>
             <SheetTitle>{PROMPT}</SheetTitle>
             <SheetDescription>
-              One sentence is enough. Goes straight to the founder, no support queue.
+              One sentence is enough. Goes straight to the team, no support queue.
             </SheetDescription>
           </SheetHeader>
 
@@ -100,7 +100,7 @@ const FeedbackWidget = () => {
 
             <Button onClick={submit} disabled={submitting} className="w-full">
               {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
-              {submitting ? "Sending…" : "Send to founder"}
+              {submitting ? "Sending…" : "Send Message"}
             </Button>
           </div>
         </SheetContent>
