@@ -31,8 +31,9 @@ interface ScanJobRow {
   id: string;
   status: string;
   created_at: string;
-  updated_at: string | null;
-  scan_period_weeks: number | null;
+  completed_at: string | null;
+  invoices_found: number | null;
+  scan_type: string | null;
 }
 
 interface AuditRow {
@@ -53,7 +54,7 @@ const AdvancedAnalytics = ({ entries }: Props) => {
       const [jobs, audit] = await Promise.all([
         supabase
           .from("scan_jobs")
-          .select("id, status, created_at, updated_at, scan_period_weeks")
+          .select("id, status, created_at, completed_at, invoices_found, scan_type")
           .eq("user_id", user.id)
           .order("created_at", { ascending: false })
           .limit(50),
@@ -134,8 +135,8 @@ const AdvancedAnalytics = ({ entries }: Props) => {
   }, [syncEvents]);
 
   const durationLabel = (job: ScanJobRow) => {
-    if (!job.updated_at) return "-";
-    const ms = new Date(job.updated_at).getTime() - new Date(job.created_at).getTime();
+    if (!job.completed_at) return "-";
+    const ms = new Date(job.completed_at).getTime() - new Date(job.created_at).getTime();
     if (ms <= 0) return "-";
     const s = Math.round(ms / 1000);
     if (s < 60) return `${s}s`;
