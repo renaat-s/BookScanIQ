@@ -14,7 +14,9 @@ import { useToast } from "@/hooks/use-toast";
 import {
   ScanLine, FileCheck2, AlertCircle, Plug, Settings as SettingsIcon,
   Download, Loader2, ShieldCheck, Search, RefreshCw, Sparkles, Receipt, Trash2,
+  BookOpen,
 } from "lucide-react";
+import { useLedgerLog } from "@/hooks/useLedgerLog";
 
 type FeedItem = {
   id: string;
@@ -157,7 +159,9 @@ const AuditLogTab = () => {
   }, [items, query]);
 
   return (
-    <Card className="border-border/60">
+    <div className="space-y-6">
+      <LedgerLogCard />
+      <Card className="border-border/60">
       <CardHeader>
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div>
@@ -243,6 +247,125 @@ const AuditLogTab = () => {
               </li>
             ))}
           </ol>
+        )}
+      </CardContent>
+    </Card>
+    </div>
+  );
+};
+
+const LedgerLogCard = () => {
+  const { entries, loading, syncing, sync } = useLedgerLog();
+  const [query, setQuery] = useState("");
+
+  const filtered = useMemo(() => {
+    if (!query.trim()) return entries.slice(0, 100);
+    const q = query.toLowerCase();
+    return entries
+      .filter(
+        (e) =>
+          e.vendor?.toLowerCase().includes(q) ||
+          e.category?.toLowerCase().includes(q) ||
+          e.month.includes(q) ||
+          e.type.includes(q),
+      )
+      .slice(0, 100);
+  }, [entries, query]);
+
+  const formatMoney = (n: number) =>
+    n.toLocaleString(undefined, { style: "currency", currency: "USD", maximumFractionDigits: 0 });
+
+  return (
+    <Card className="border-border/60">
+      <CardHeader>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div>
+            <CardTitle className="flex items-center gap-2">
+              <BookOpen className="w-5 h-5 text-primary" />
+              Ledger Log
+            </CardTitle>
+            <CardDescription>
+              Permanent record of every entry that hit your ledger, grouped by month and year. Rows removed from Google Sheets are kept here (marked as removed) so your history stays intact.
+            </CardDescription>
+          </div>
+          <div className="flex items-center gap-2 w-full sm:w-auto">
+            <div className="relative w-full sm:w-64">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Input
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search log…"
+                className="pl-9"
+              />
+            </div>
+            <Button variant="outline" size="sm" onClick={() => sync(true)} disabled={syncing} className="shrink-0">
+              <RefreshCw className={`w-4 h-4 ${syncing ? "animate-spin" : ""}`} />
+              <span className="ml-2 hidden sm:inline">Sync</span>
+            </Button>
+          </div>
+        </div>
+      </CardHeader>
+      <CardContent>
+        {loading && entries.length === 0 ? (
+          <div className="flex items-center justify-center py-8 text-muted-foreground">
+            <Loader2 className="w-5 h-5 animate-spin mr-2" /> Loading permanent log…
+          </div>
+        ) : filtered.length === 0 ? (
+          <div className="text-center py-8 text-muted-foreground">
+            <BookOpen className="w-10 h-10 mx-auto mb-3 opacity-40" />
+            <p className="font-medium">No ledger entries yet</p>
+            <p className="text-sm">Entries appear here after your first sync.</p>
+          </div>
+        ) : (
+          <div className="max-h-[420px] overflow-auto rounded-md border border-border/50">
+            <table className="w-full text-sm">
+              <thead className="bg-muted/40 sticky top-0 z-10">
+                <tr className="text-left">
+                  <th className="p-2 font-medium">Month</th>
+                  <th className="p-2 font-medium">Date</th>
+                  <th className="p-2 font-medium">Vendor</th>
+                  <th className="p-2 font-medium">Category</th>
+                  <th className="p-2 font-medium">Type</th>
+                  <th className="p-2 font-medium text-right">Amount</th>
+                  <th className="p-2 font-medium">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filtered.map((e) => (
+                  <tr key={e.id} className="border-t border-border/40">
+                    <td className="p-2 tabular-nums text-xs text-muted-foreground">{e.month}</td>
+                    <td className="p-2 text-xs">{e.entry_date ?? "-"}</td>
+                    <td className="p-2 truncate max-w-[180px]">{e.vendor || "-"}</td>
+                    <td className="p-2 text-muted-foreground truncate max-w-[140px]">{e.category || "-"}</td>
+                    <td className="p-2">
+                      <Badge
+                        variant="outline"
+                        className={
+                          e.type === "income"
+                            ? "bg-success/15 text-success border-0"
+                            : e.type === "expense"
+                            ? "bg-destructive/15 text-destructive border-0"
+                            : "bg-yellow-500/15 text-yellow-700 dark:text-yellow-400 border-0"
+                        }
+                      >
+                        {e.type}
+                      </Badge>
+                    </td>
+                    <td className="p-2 text-right tabular-nums font-medium">{formatMoney(e.amount)}</td>
+                    <td className="p-2">
+                      {e.verified_present ? (
+                        <span className="text-xs text-muted-foreground">In sheet</span>
+                      ) : (
+                        <Badge variant="outline" className="bg-muted text-muted-foreground border-0 text-[10px]">
+                          Removed
+                        </Badge>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </CardContent>
     </Card>

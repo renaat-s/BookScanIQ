@@ -3,7 +3,7 @@
  * Keep this single source-of-truth for all checkout + subscription logic.
  */
 
-export type PlanTier = "starter" | "professional" | "enterprise";
+export type PlanTier = "starter" | "solo" | "professional" | "enterprise";
 
 export interface PlanConfig {
   name: string;
@@ -20,6 +20,8 @@ export interface PlanConfig {
   maxScans: number | null;
   /** Whether Xero + QuickBooks integrations are unlocked on this tier. */
   hasAccountingIntegrations: boolean;
+  /** Whether the tier can see the Advanced Analytics section. */
+  hasAdvancedAnalytics: boolean;
 }
 
 export const PLANS: PlanConfig[] = [
@@ -34,12 +36,36 @@ export const PLANS: PlanConfig[] = [
     description: "Perfect for small businesses just getting started",
     maxScans: 100,
     hasAccountingIntegrations: false,
+    hasAdvancedAnalytics: false,
     features: [
       "Up to 100 scans/month",
       "Basic AI extraction",
+      "Basic analytics",
       "Email support",
       "Google Drive + Sheets sync",
+    ],
+    popular: false,
+  },
+  {
+    name: "Solo",
+    monthlyPriceId: "price_1Tx6IiARQphcY8qGxe9drgPX",
+    // No annual variant yet. Reuse monthly price so the toggle still works.
+    // TODO: replace with real annual price/product IDs once created in Stripe.
+    annualPriceId: "price_1Tx6IiARQphcY8qGxe9drgPX",
+    monthlyProductId: "prod_Ux0JqEpkSviKSJ",
+    annualProductId: "prod_Ux0JqEpkSviKSJ",
+    monthlyPrice: "$75",
+    annualPrice: "$900",
+    description: "For solo operators who need Xero + QuickBooks sync",
+    maxScans: 250,
+    hasAccountingIntegrations: true,
+    hasAdvancedAnalytics: false,
+    features: [
+      "Up to 250 scans/month",
+      "Xero + QuickBooks integrations",
       "Basic analytics",
+      "Priority email support",
+      "Google Drive + Sheets sync",
     ],
     popular: false,
   },
@@ -54,12 +80,13 @@ export const PLANS: PlanConfig[] = [
     description: "Ideal for growing businesses with higher scan volumes",
     maxScans: 500,
     hasAccountingIntegrations: true,
+    hasAdvancedAnalytics: true,
     features: [
       "Up to 500 scans/month",
       "Advanced AI extraction",
-      "Priority support",
-      "Xero + QuickBooks integrations",
       "Advanced analytics",
+      "Xero + QuickBooks integrations",
+      "Priority support",
     ],
     popular: true,
   },
@@ -74,10 +101,11 @@ export const PLANS: PlanConfig[] = [
     description: "For large organizations with complex requirements",
     maxScans: null,
     hasAccountingIntegrations: true,
+    hasAdvancedAnalytics: true,
     features: [
       "Unlimited scans",
       "Xero + QuickBooks integrations",
-      "Enterprise analytics",
+      "Advanced analytics",
       "SSO & advanced security",
       "SLA guarantee",
     ],
@@ -113,4 +141,9 @@ export const getScanCap = (tier: string | null | undefined): number | null => {
 /** Whether the given tier can connect Xero + QuickBooks. */
 export const canUseAccountingIntegrations = (tier: string | null | undefined): boolean => {
   return getPlanByTier(tier)?.hasAccountingIntegrations ?? false;
+};
+
+/** Whether the given tier can see the Advanced Analytics section. */
+export const canUseAdvancedAnalytics = (tier: string | null | undefined): boolean => {
+  return getPlanByTier(tier)?.hasAdvancedAnalytics ?? false;
 };

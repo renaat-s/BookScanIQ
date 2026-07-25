@@ -90,10 +90,12 @@ if (req.method === "OPTIONS") {
 
       // Map product to tier
       const starterProducts = ["prod_UFAjHWpuf52UEL", "prod_UFAjlJBuzAPjC4"];
+      const soloProducts = ["prod_Ux0JqEpkSviKSJ"];
       const proProducts = ["prod_UFAjc3ylFV6hsW", "prod_UFAkBm2eLGQWhR"];
       const enterpriseProducts = ["prod_UFAkdM7qvMUtYv", "prod_UFAlscQkwRaD2i"];
 
       if (starterProducts.includes(productId as string)) tier = "starter";
+      else if (soloProducts.includes(productId as string)) tier = "solo";
       else if (proProducts.includes(productId as string)) tier = "professional";
       else if (enterpriseProducts.includes(productId as string)) tier = "enterprise";
 
