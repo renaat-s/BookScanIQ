@@ -160,6 +160,63 @@ export type Database = {
           },
         ]
       }
+      ledger_entries: {
+        Row: {
+          amount: number
+          category: string | null
+          created_at: string
+          document_type: string | null
+          drive_file_id: string | null
+          entry_date: string | null
+          id: string
+          last_seen_at: string
+          month: string
+          sheet_row_hash: string
+          source: string
+          type: string
+          updated_at: string
+          user_id: string
+          vendor: string | null
+          verified_present: boolean
+        }
+        Insert: {
+          amount?: number
+          category?: string | null
+          created_at?: string
+          document_type?: string | null
+          drive_file_id?: string | null
+          entry_date?: string | null
+          id?: string
+          last_seen_at?: string
+          month: string
+          sheet_row_hash: string
+          source?: string
+          type: string
+          updated_at?: string
+          user_id: string
+          vendor?: string | null
+          verified_present?: boolean
+        }
+        Update: {
+          amount?: number
+          category?: string | null
+          created_at?: string
+          document_type?: string | null
+          drive_file_id?: string | null
+          entry_date?: string | null
+          id?: string
+          last_seen_at?: string
+          month?: string
+          sheet_row_hash?: string
+          source?: string
+          type?: string
+          updated_at?: string
+          user_id?: string
+          vendor?: string | null
+          verified_present?: boolean
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -257,6 +314,7 @@ export type Database = {
           folder_mapping: Json | null
           google_refresh_token: string | null
           id: string
+          last_ledger_sync_at: string | null
           qb_realm_id: string | null
           quickbooks_expense_account: string | null
           quickbooks_income_account: string | null
@@ -278,6 +336,7 @@ export type Database = {
           folder_mapping?: Json | null
           google_refresh_token?: string | null
           id?: string
+          last_ledger_sync_at?: string | null
           qb_realm_id?: string | null
           quickbooks_expense_account?: string | null
           quickbooks_income_account?: string | null
@@ -299,6 +358,7 @@ export type Database = {
           folder_mapping?: Json | null
           google_refresh_token?: string | null
           id?: string
+          last_ledger_sync_at?: string | null
           qb_realm_id?: string | null
           quickbooks_expense_account?: string | null
           quickbooks_income_account?: string | null
