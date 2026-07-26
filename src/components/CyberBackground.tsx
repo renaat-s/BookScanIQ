@@ -1,4 +1,4 @@
-import ParticleField from "./ParticleField";
+import ParticleField from "./LazyParticleField";
 
 /**
  * Cyberpunk-style page background:
