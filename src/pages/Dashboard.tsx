@@ -709,8 +709,17 @@ const Dashboard = () => {
 
             {/* ANALYTICS TAB */}
             <TabsContent value="analytics" className="m-0">
-              <AnalyticsTab />
+              <Suspense
+                fallback={
+                  <div className="py-16 text-center text-sm text-muted-foreground">
+                    Loading analytics...
+                  </div>
+                }
+              >
+                <AnalyticsTab />
+              </Suspense>
             </TabsContent>
+
 
             {/* WORKSPACES TAB, live Drive, Sheet, Xero, QuickBooks */}
             <TabsContent value="workspaces" className="m-0">
