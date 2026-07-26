@@ -19,7 +19,23 @@ const HTML_CLASS = "low-cog";
 const applyClass = (on: boolean) => {
   if (typeof document === "undefined") return;
   document.documentElement.classList.toggle(HTML_CLASS, on);
+  if (on) loadHyperlegibleFont();
 };
+
+// Atkinson Hyperlegible is only used by Low Cognitive Load mode, so keep it out
+// of the initial payload and fetch it on demand (once).
+let fontLoaded = false;
+const loadHyperlegibleFont = () => {
+  if (fontLoaded) return;
+  fontLoaded = true;
+  Promise.all([
+    import("@fontsource/atkinson-hyperlegible/400.css"),
+    import("@fontsource/atkinson-hyperlegible/700.css"),
+  ]).catch(() => {
+    fontLoaded = false;
+  });
+};
+
 
 export const LowCogModeProvider = ({ children }: { children: ReactNode }) => {
   const { user } = useAuth();

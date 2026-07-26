@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import { motion } from "framer-motion";
 
 import logoImage from "@/assets/InvoiceIQ_Logo.png";
-import ParticleField from "./ParticleField";
+import ParticleField from "./LazyParticleField";
 import TiltCard from "./TiltCard";
 
 const SUBHEAD = "Stop wasting hours on manual invoice processing. InvoiceIQ's AI agent extracts, validates, and processes invoices with 99% accuracy, saving you time and eliminating costly errors.";

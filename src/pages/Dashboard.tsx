@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { lazy, Suspense, useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -36,7 +36,8 @@ import {
 } from "lucide-react";
 import WorkspacesTab from "@/components/WorkspacesTab";
 import AuditLogTab from "@/components/AuditLogTab";
-import AnalyticsTab from "@/components/analytics/AnalyticsTab";
+// Charts (recharts) are heavy, so the Analytics tab loads on demand.
+const AnalyticsTab = lazy(() => import("@/components/analytics/AnalyticsTab"));
 import SavingsWidget from "@/components/SavingsWidget";
 import TipsCard from "@/components/TipsCard";
 import { useDirectoryGuard } from "@/hooks/useDirectoryGuard";
@@ -708,8 +709,17 @@ const Dashboard = () => {
 
             {/* ANALYTICS TAB */}
             <TabsContent value="analytics" className="m-0">
-              <AnalyticsTab />
+              <Suspense
+                fallback={
+                  <div className="py-16 text-center text-sm text-muted-foreground">
+                    Loading analytics...
+                  </div>
+                }
+              >
+                <AnalyticsTab />
+              </Suspense>
             </TabsContent>
+
 
             {/* WORKSPACES TAB, live Drive, Sheet, Xero, QuickBooks */}
             <TabsContent value="workspaces" className="m-0">
