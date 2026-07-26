@@ -36,7 +36,8 @@ import {
 } from "lucide-react";
 import WorkspacesTab from "@/components/WorkspacesTab";
 import AuditLogTab from "@/components/AuditLogTab";
-import AnalyticsTab from "@/components/analytics/AnalyticsTab";
+// Charts (recharts) are heavy, so the Analytics tab loads on demand.
+const AnalyticsTab = lazy(() => import("@/components/analytics/AnalyticsTab"));
 import SavingsWidget from "@/components/SavingsWidget";
 import TipsCard from "@/components/TipsCard";
 import { useDirectoryGuard } from "@/hooks/useDirectoryGuard";
