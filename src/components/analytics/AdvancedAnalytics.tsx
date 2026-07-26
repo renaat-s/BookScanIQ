@@ -84,28 +84,39 @@ const AdvancedAnalytics = ({ entries }: Props) => {
       setScanJobs(jobRows);
       setSyncEvents((audit.data as AuditRow[]) || []);
 
-      // Fallback doc count: n8n does not report invoices_found back, and the
-      // invoices table is unused. Count ledger entries whose last_seen_at
-      // falls between the scan start and completion (+5 min buffer). This
-      // approximates docs processed per scan using the durable ledger log.
-      const counts: Record<string, number> = {};
-      await Promise.all(
-        jobRows.map(async (j) => {
-          if (j.invoices_found && j.invoices_found > 0) {
-            counts[j.id] = j.invoices_found;
-            return;
-          }
-          if (!j.completed_at) return;
-          const endWindow = new Date(new Date(j.completed_at).getTime() + 5 * 60_000).toISOString();
-          const { count } = await supabase
-            .from("ledger_entries")
-            .select("id", { count: "exact", head: true })
-            .eq("user_id", user.id)
-            .gte("last_seen_at", j.created_at)
-            .lte("last_seen_at", endWindow);
-          counts[j.id] = count ?? 0;
-        }),
+      // Fallback doc count: n8n does not report invoices_found back, so we
+      // approximate docs processed per scan from the durable ledger log.
+      // One query for all jobs (previously one query per job, up to 50 round
+      // trips) then bucket locally.
+      const pending = jobRows.filter(
+        (j) => !(j.invoices_found && j.invoices_found > 0) && j.completed_at,
       );
+      const counts: Record<string, number> = {};
+      jobRows.forEach((j) => {
+        if (j.invoices_found && j.invoices_found > 0) counts[j.id] = j.invoices_found;
+      });
+
+      if (pending.length) {
+        const earliest = pending.reduce(
+          (min, j) => (j.created_at < min ? j.created_at : min),
+          pending[0].created_at,
+        );
+        const { data: seen } = await supabase
+          .from("ledger_entries")
+          .select("last_seen_at")
+          .eq("user_id", user.id)
+          .gte("last_seen_at", earliest)
+          .limit(5000);
+        const stamps = ((seen as { last_seen_at: string | null }[]) || [])
+          .map((r) => (r.last_seen_at ? new Date(r.last_seen_at).getTime() : NaN))
+          .filter((n) => !Number.isNaN(n));
+        pending.forEach((j) => {
+          const start = new Date(j.created_at).getTime();
+          const end = new Date(j.completed_at as string).getTime() + 5 * 60_000;
+          counts[j.id] = stamps.filter((t) => t >= start && t <= end).length;
+        });
+      }
+
       setDocCounts(counts);
     })();
   }, [user]);
