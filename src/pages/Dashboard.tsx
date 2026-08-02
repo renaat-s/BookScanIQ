@@ -511,6 +511,7 @@ const Dashboard = () => {
                 <TabsTrigger value="overview" className="gap-1.5 flex-1 sm:flex-none"><Activity className="w-4 h-4" /><span className="hidden xs:inline sm:inline">Overview</span></TabsTrigger>
                 <TabsTrigger value="analytics" className="gap-1.5 flex-1 sm:flex-none"><Sparkles className="w-4 h-4" /><span className="hidden xs:inline sm:inline">Analytics</span></TabsTrigger>
                 <TabsTrigger value="workspaces" className="gap-1.5 flex-1 sm:flex-none"><Plug className="w-4 h-4" /><span className="hidden xs:inline sm:inline">Workspaces</span></TabsTrigger>
+                <TabsTrigger value="alerts" className="gap-1.5 flex-1 sm:flex-none relative"><Bell className="w-4 h-4" /><span className="hidden xs:inline sm:inline">Alerts</span>{alertCount > 0 && (<span className="ml-1 inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-destructive text-destructive-foreground text-[10px] font-semibold">{alertCount}</span>)}</TabsTrigger>
                 <TabsTrigger value="audit" className="gap-1.5 flex-1 sm:flex-none"><ShieldCheck className="w-4 h-4" /><span className="hidden xs:inline sm:inline">Audit Log</span></TabsTrigger>
               </TabsList>
               <div className="flex gap-2">
