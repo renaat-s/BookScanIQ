@@ -102,11 +102,16 @@ const relativeTime = (iso: string | null) => {
 };
 
 const Dashboard = () => {
-  const { user, loading: authLoading } = useAuth();
+  const { user, loading: authLoading, subscription } = useAuth();
   const navigate = useNavigate();
   const guard = useDirectoryGuard();
   const { lowCog } = useLowCogMode();
   const { duplicates: alertDuplicates, anomalies: alertAnomalies } = useAlerts();
+  const alertCount =
+    alertDuplicates.length +
+    (subscription.isDeveloper || canUseAdvancedAnalytics(subscription.tier)
+      ? alertAnomalies.length
+      : 0);
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
