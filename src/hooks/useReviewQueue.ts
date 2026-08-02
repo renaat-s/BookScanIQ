@@ -82,8 +82,7 @@ export function useReviewQueue() {
             : e,
         ),
       );
-      const patch: Record<string, unknown> = { review_status: status };
-      if (note !== undefined) patch.review_note = note;
+      const patch = { review_status: status, ...(note !== undefined ? { review_note: note } : {}) };
       const { error } = await supabase
         .from("ledger_entries")
         .update(patch)
