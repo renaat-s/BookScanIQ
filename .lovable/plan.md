@@ -1,85 +1,68 @@
-## Analytics Feature + Solo Tier
+# Feature C — Duplicate & Anomaly Detection
 
-Adds an **Analytics** tab to the Dashboard, gated by plan. Also wires up the new **InvoiceIQ: Solo ($75)** tier and introduces a permanent per-user ledger log so historical analytics survive edits/deletes in Google Sheets.
+Catch double-sent invoices and unusual spending, using only data already in the app. No n8n work at all.
 
----
+## What the user sees
 
-### 1. Solo tier ($75)
+A new **Alerts** view in the Dashboard (tab alongside Analytics / Audit Log) plus a small alert count badge on the Dashboard header.
 
-Add to `src/lib/stripe-plans.ts`:
-- Name: `Solo`
-- Product: `prod_Ux0JqEpkSviKSJ`, monthly price: `price_1Tx6IiARQphcY8qGxe9drgPX`
-- 250 scans/month, `hasAccountingIntegrations: true` (Xero/QB), `hasAdvancedAnalytics: false`
-- Annual variant reuses monthly for now (you can add annual later; I'll leave a TODO)
-- Add new flag `hasAdvancedAnalytics: boolean` on every plan:
-  - Starter: false · Solo: false · Professional: true · Enterprise: true
-- Show it on `/pricing` between Starter and Professional.
+Each alert is a card showing:
+- Type chip: `Possible duplicate` (amber) or `Spend anomaly` (red)
+- Plain-English reason, e.g. "Two entries from Acme Ltd for £249.00 dated 3 days apart" or "Amazon spend this month is 4x your 6-month average"
+- The entries involved (vendor, date, amount, category), each linking to the document in Drive where a link exists
+- Actions: **Dismiss** (hides it permanently) and **View in Ledger**
 
-### 2. Permanent ledger log (source of truth for history)
+Empty state: "No issues found. Your ledger looks clean."
 
-Google Sheets is user-editable, so trends/charts need a durable mirror.
+## Detection rules
 
-New table `public.ledger_entries` (RLS: user reads own rows only; service_role full):
+Run over `ledger_entries` for the signed-in user (last 6 months).
+
+**Duplicates** — two or more entries where:
+- same vendor (normalised: lowercase, trimmed, punctuation/legal suffixes stripped), AND
+- amount equal within 1p, AND
+- dates within 14 days of each other
+
+Confidence: `high` if same amount + same date, `medium` otherwise.
+
+**Spend anomalies** — per vendor and per category:
+- current-month total > 3x the average of the prior 5 months, AND absolute difference > £100 (avoids noise on tiny amounts)
+- a single entry > 5x that vendor's median entry amount
+
+Uncategorized entries are included in duplicate checks but excluded from anomaly baselines (their data is unreliable).
+
+## Technical details
+
+**Database** — one new migration:
+
+```text
+public.alert_dismissals
+  id uuid pk
+  user_id uuid not null
+  alert_key text not null      -- deterministic hash of the rule + entry ids
+  created_at timestamptz
+  unique (user_id, alert_key)
 ```
-id uuid pk, user_id uuid, entry_date date, month text (YYYY-MM),
-type text ('income'|'expense'|'uncategorized'),
-amount numeric, vendor text, category text,
-document_type text ('invoice'|'receipt'|'bill'|'other'),
-drive_file_id text, source text ('sheet_sync'|'n8n'|'manual'),
-sheet_row_hash text unique per user (idempotency),
-created_at timestamptz default now()
-```
+With GRANTs for `authenticated` / `service_role`, RLS enabled, and policies scoped to `auth.uid() = user_id` (select/insert/delete).
 
-Insert paths (append-only from the app's perspective):
-- **New edge function `sync-ledger-log`**: on-demand + daily; reads the user's Bookkeeping sheet, hashes each row, upserts by `(user_id, sheet_row_hash)`. Idempotent, safe to re-run. Called automatically when the Analytics tab loads (with a 15-min cooldown) and via a "Refresh log" button.
-- **Backfill**: first Analytics load performs a full sheet scan so the log matches the user's history to date.
-- Deletions in Sheets do **not** delete log rows (that's the point). A `verified_present` bool is toggled on each sync.
+No change to `ledger_entries` — detection is derived, not stored, so it stays accurate as new rows sync in.
 
-New "Ledger Log" section inside the Audit Log tab so users can view/scroll/export the full permanent log.
+**Detection logic** — new `src/lib/anomaly-detection.ts`, pure functions over the `LedgerEntry[]` already fetched by `useLedgerLog.ts`:
+- `normaliseVendor(name)`
+- `findDuplicates(entries)`
+- `findAnomalies(entries)`
+- `buildAlertKey(alert)` — stable key so dismissals survive refetch
 
-### 3. Analytics tab on Dashboard
+Pure and deterministic, so it is unit-testable with no network.
 
-New tab `Analytics` in `src/pages/Dashboard.tsx` alongside existing tabs. Content is tier-gated:
+**Hook** — `src/hooks/useAlerts.ts`: reads ledger entries, runs the detectors, subtracts dismissed keys from `alert_dismissals`, returns `{ alerts, counts, dismiss, loading }`.
 
-**Basic Analytics** (Starter, Solo) — sourced from `ledger_entries` (current month) + `scan_jobs`/`invoices`:
-- Scans this month card: count + usage bar with 80% amber / 100% red states (reuses `useScanUsage`)
-- Documents processed this month: total + breakdown by `document_type` (invoice/receipt/bill/other) as stacked bar
-- Monthly totals: income / expenses / net (same values as main dashboard cards, restated here)
-- Recent activity: last 10 rows from `invoices` joined with status chip (processed / uncategorized / error)
+**UI** — `src/components/dashboard/AlertsTab.tsx` plus a small `AlertCard.tsx`, using existing shadcn `Card`, `Badge`, `Button`, `Tooltip` and the app's semantic tokens. Wired into the Dashboard tab list next to Analytics, lazy-loaded like `AnalyticsTab`. Respects Neurodivergent Mode (no motion, larger spacing, traffic-light colouring).
 
-**Advanced Analytics** (Professional, Enterprise) — all of Basic, plus:
-- Trends: 6-month income vs expense line chart (recharts) from `ledger_entries` grouped by `month`
-- Category spend: horizontal bar chart of top 10 vendors/categories (current month, toggle to 6-mo)
-- Uncategorized rate: single stat + sparkline over 6 months
-- Scan history: table of every `scan_jobs` row with document count, duration, status, started/finished timestamps
-- Sync status: last 20 rows from `audit_events` filtered to Xero/QB sync events — success count, failure count, last-sync-per-platform badges
+**Tier gating** — follows the existing pattern in `stripe-plans.ts` / `useScanUsage.ts`: duplicate detection for all paid tiers; spend-anomaly alerts for Pro and Enterprise, with a locked-state upsell card for Starter and Solo.
 
-For Starter/Solo users, an **"Upgrade for Advanced Analytics"** upsell card appears where the advanced section would be, linking to `/pricing#professional`.
+## Out of scope
 
-### 4. Files
-
-New:
-- `supabase/migrations/<ts>_ledger_log.sql` (table + grants + RLS + indexes on user_id, month)
-- `supabase/functions/sync-ledger-log/index.ts`
-- `src/hooks/useLedgerLog.ts` (fetch + trigger sync)
-- `src/components/analytics/AnalyticsTab.tsx` (router: basic vs advanced)
-- `src/components/analytics/BasicAnalytics.tsx`
-- `src/components/analytics/AdvancedAnalytics.tsx`
-- `src/components/analytics/charts/` (TrendChart, CategoryChart, UncategorizedTrend, ScanHistoryTable, SyncStatusPanel)
-
-Modified:
-- `src/lib/stripe-plans.ts` — add Solo, add `hasAdvancedAnalytics`, add `canUseAdvancedAnalytics(tier)`
-- `src/pages/Dashboard.tsx` — add Analytics tab
-- `src/pages/Pricing.tsx` — render Solo card
-- `src/components/AuditLogTab.tsx` — add "Ledger Log" sub-section
-- `check-subscription` edge fn — recognise Solo product IDs
-
-### Technical notes
-
-- Charts: `recharts` (already installed).
-- Sync cooldown stored in `user_credentials.last_ledger_sync_at` (new column) to prevent spam.
-- All new queries use `useQuery` with 5-min stale time.
-- Row hash = SHA-256 of `date|type|amount|vendor|category` per user, so identical rows collapse.
-- `uncategorized` rows are logged but excluded from income/expense sums (matches existing dashboard rule).
-
-Ready to build.
+- No auto-deletion or auto-merging of duplicates (report only)
+- No email notifications for alerts
+- No changes to n8n, Xero, or QuickBooks export
