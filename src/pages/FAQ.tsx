@@ -18,7 +18,7 @@ const faqs = [
   },
   {
     question: "What happens if the InvoiceIQ can't identify my invoice's expenditure type?",
-    answer: "If our AI can't identify the expenditure type of your invoice, you'll receive a notification on your dashboard. You can then manually review and categorize the invoice. Our smart algorithms learn from your corrections to improve future matching accuracy."
+    answer: "If our AI can't identify the expenditure type of your invoice, you'll receive a notification on your dashboard. You can then manually review and categorize the invoice. Our smart algorithms learn from your corrections to improve future categorization accuracy."
   },
   {
     question: "How secure is my data?",
@@ -26,7 +26,7 @@ const faqs = [
   },
   {
     question: "Can I integrate InvoiceIQ with my accounting software?",
-    answer: "Yes! InvoiceIQ supports exports to popular accounting software platforms including Xero and QuickBooks. Our AI automation exports your matched invoice data to Xero once it has successfully resolved it."
+    answer: "Yes! InvoiceIQ supports exports to popular accounting software platforms including Xero and QuickBooks. Our AI automation exports your resolved invoice data to Xero once it has successfully processed and verified it."
   },
   {
     question: "What file formats can I upload?",
@@ -47,8 +47,8 @@ const FAQ = () => {
     <div className="min-h-screen">
       <Helmet>
         <title>FAQ - InvoiceIQ Frequently Asked Questions</title>
-        <meta name="description" content="Find answers to common questions about InvoiceIQ invoice automation. Learn about supported banks, security, pricing, AI accuracy, and more." />
-        <meta name="keywords" content="InvoiceIQ FAQ, invoice automation questions, bank support, security questions, pricing" />
+        <meta name="description" content="Find answers to common questions about InvoiceIQ invoice automation. Learn about integrations, security, pricing, AI accuracy, and more." />
+        <meta name="keywords" content="InvoiceIQ FAQ, invoice automation questions, integrations, security questions, pricing" />
         <link rel="canonical" href="https://invoiceiq.com/faq" />
       </Helmet>
       <Header />
