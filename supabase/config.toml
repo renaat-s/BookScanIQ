@@ -41,3 +41,6 @@ verify_jwt = true
 
 [functions.get-oauth-config]
 verify_jwt = false
+
+[functions.run-scheduled-scans]
+verify_jwt = false
