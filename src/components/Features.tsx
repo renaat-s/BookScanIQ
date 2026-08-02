@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Mail, ScanText, GitMerge, Camera, MessageSquare, Send } from "lucide-react";
+import { Mail, ScanText, Camera, MessageSquare, Send } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
 
@@ -14,12 +14,6 @@ const features = [
     icon: ScanText,
     title: "Automatic Parsing & Categorization",
     description: "AI automatically extracts and categorizes all invoice data - vendor details, amounts, dates, and line items.",
-    comingSoon: false
-  },
-  {
-    icon: GitMerge,
-    title: "Bank Transaction Matching",
-    description: "Seamlessly match invoices with bank transactions to reconcile accounts and track payments effortlessly.",
     comingSoon: false
   },
   {

@@ -50,7 +50,7 @@ const Terms = () => {
 
                 <h2>2. Service Description</h2>
                 <p>
-                  InvoiceIQ is an automated invoice processing service that uses AI to extract data from invoices, match them with bank transactions, and automate payment tracking and reminders.
+                  InvoiceIQ is an automated invoice processing service that uses AI to extract and structure data from invoices, and automate payment tracking and reminders.
                 </p>
 
                 <h2>3. User Accounts</h2>
@@ -133,9 +133,8 @@ const Terms = () => {
                   <strong>IMPORTANT:</strong> While our AI strives for high accuracy, automated invoice processing may occasionally produce errors.
                 </p>
                 <ul>
-                  <li><strong>No Guarantee of Accuracy:</strong> We do not guarantee 100% accurate data extraction or matching</li>
+                  <li><strong>No Guarantee of Accuracy:</strong> We do not guarantee 100% accurate data extraction or categorization</li>
                   <li><strong>User Responsibility:</strong> You are responsible for reviewing and verifying all extracted data before making financial decisions</li>
-                  <li><strong>Incorrect Matches:</strong> Bank transaction matching is automated and may occasionally be incorrect, always review matches</li>
                   <li><strong>Human Oversight Required:</strong> The Service is a tool to assist, not replace, human financial oversight</li>
                 </ul>
 
@@ -160,14 +159,14 @@ const Terms = () => {
                 <ul>
                   <li>We are not liable for any indirect, incidental, or consequential damages</li>
                   <li>Our total liability is limited to the amount you paid in the last 12 months</li>
-                  <li>We are not responsible for errors in invoice data extraction or matching</li>
+                  <li>We are not responsible for errors in invoice data extraction or categorization</li>
                   <li>We are not liable for financial losses due to incorrect invoice processing</li>
                   <li>We are not responsible for late payments or missed payment deadlines</li>
                 </ul>
 
                 <h2>9. Third-Party Integrations</h2>
                 <p>
-                  The Service integrates with third-party platforms (Google Workspace, banks, accounting software). We are not responsible for:
+                  The Service integrates with third-party platforms (Google Workspace, accounting software). We are not responsible for:
                 </p>
                 <ul>
                   <li>Third-party service downtime or changes</li>
