@@ -52,6 +52,7 @@ import { useTheme } from 'next-themes';
 import { Switch } from '@/components/ui/switch';
 import { Moon, Sun } from 'lucide-react';
 import { useLowCogMode } from '@/contexts/LowCogModeContext';
+import RecurringScansCard from '@/components/RecurringScansCard';
 
 const AppearanceToggleRow = () => {
   const { theme, setTheme } = useTheme();
@@ -505,6 +506,9 @@ const Settings = () => {
               </CardContent>
             </Card>
 
+
+            {/* Recurring Auto-Scans */}
+            <RecurringScansCard />
 
             {!integrationsUnlocked && (
               <Card className="bg-card/80 backdrop-blur-sm border border-border/50 rounded-3xl shadow-elegant">
