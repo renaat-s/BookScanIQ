@@ -328,6 +328,54 @@ export type Database = {
         }
         Relationships: []
       }
+      scan_schedules: {
+        Row: {
+          created_at: string
+          day_of_week: number
+          enabled: boolean
+          frequency: string
+          hour_utc: number
+          id: string
+          last_error: string | null
+          last_run_at: string | null
+          last_status: string | null
+          lookback_weeks: number
+          next_run_at: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          day_of_week?: number
+          enabled?: boolean
+          frequency?: string
+          hour_utc?: number
+          id?: string
+          last_error?: string | null
+          last_run_at?: string | null
+          last_status?: string | null
+          lookback_weeks?: number
+          next_run_at?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          day_of_week?: number
+          enabled?: boolean
+          frequency?: string
+          hour_utc?: number
+          id?: string
+          last_error?: string | null
+          last_run_at?: string | null
+          last_status?: string | null
+          lookback_weeks?: number
+          next_run_at?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_credentials: {
         Row: {
           created_at: string
