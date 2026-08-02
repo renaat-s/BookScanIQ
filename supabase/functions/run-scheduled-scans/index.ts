@@ -47,7 +47,8 @@ Deno.serve(async (req) => {
     return new Response(null, { status: 204 });
   }
 
-  const cronSecret = Deno.env.get("N8N_WEBHOOK_SECRET");
+  const cronSecret = Deno.env.get("CRON_SECRET");
+  const workflowSecret = Deno.env.get("N8N_WEBHOOK_SECRET") ?? "";
   const provided = req.headers.get("x-cron-secret");
   if (!cronSecret || provided !== cronSecret) {
     console.error("run-scheduled-scans: unauthorized invocation");
