@@ -189,9 +189,13 @@ export type Database = {
           document_type: string | null
           drive_file_id: string | null
           entry_date: string | null
+          exported_at: string | null
           id: string
           last_seen_at: string
           month: string
+          review_note: string | null
+          review_status: string
+          reviewed_at: string | null
           sheet_row_hash: string
           source: string
           type: string
@@ -207,9 +211,13 @@ export type Database = {
           document_type?: string | null
           drive_file_id?: string | null
           entry_date?: string | null
+          exported_at?: string | null
           id?: string
           last_seen_at?: string
           month: string
+          review_note?: string | null
+          review_status?: string
+          reviewed_at?: string | null
           sheet_row_hash: string
           source?: string
           type: string
@@ -225,9 +233,13 @@ export type Database = {
           document_type?: string | null
           drive_file_id?: string | null
           entry_date?: string | null
+          exported_at?: string | null
           id?: string
           last_seen_at?: string
           month?: string
+          review_note?: string | null
+          review_status?: string
+          reviewed_at?: string | null
           sheet_row_hash?: string
           source?: string
           type?: string
@@ -249,6 +261,7 @@ export type Database = {
           low_cognitive_mode: boolean
           minutes_per_doc: number
           n8n_webhook_connected: boolean | null
+          review_queue_enabled: boolean
           updated_at: string
           user_id: string
         }
@@ -262,6 +275,7 @@ export type Database = {
           low_cognitive_mode?: boolean
           minutes_per_doc?: number
           n8n_webhook_connected?: boolean | null
+          review_queue_enabled?: boolean
           updated_at?: string
           user_id: string
         }
@@ -275,6 +289,7 @@ export type Database = {
           low_cognitive_mode?: boolean
           minutes_per_doc?: number
           n8n_webhook_connected?: boolean | null
+          review_queue_enabled?: boolean
           updated_at?: string
           user_id?: string
         }

@@ -161,6 +161,22 @@ Deno.serve(async (req) => {
       return json({ synced: 0, reason: "no_header" }, corsHeaders);
     }
 
+    // Review queue gate: when enabled, brand-new rows land as "pending".
+    const { data: profileRow } = await admin
+      .from("profiles")
+      .select("review_queue_enabled")
+      .eq("user_id", user.id)
+      .maybeSingle();
+    const gateEnabled = Boolean(profileRow?.review_queue_enabled);
+
+    const { data: existingRows } = await admin
+      .from("ledger_entries")
+      .select("sheet_row_hash")
+      .eq("user_id", user.id);
+    const existingHashes = new Set<string>(
+      (existingRows || []).map((e: { sheet_row_hash: string }) => e.sheet_row_hash),
+    );
+
     const seenHashes = new Set<string>();
     const upserts: Array<Record<string, unknown>> = [];
 
@@ -219,28 +235,29 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Upsert in batches
+    // Upsert in batches. New rows carry a review_status; existing rows omit it
+    // so a user's approve/reject decision is never overwritten by a re-sync.
+    const freshRows = upserts
+      .filter((u) => !existingHashes.has(u.sheet_row_hash as string))
+      .map((u) => ({ ...u, review_status: gateEnabled ? "pending" : "approved" }));
+    const knownRows = upserts.filter((u) => existingHashes.has(u.sheet_row_hash as string));
+
     let synced = 0;
-    for (let i = 0; i < upserts.length; i += 500) {
-      const chunk = upserts.slice(i, i + 500);
-      const { error } = await admin
-        .from("ledger_entries")
-        .upsert(chunk, { onConflict: "user_id,sheet_row_hash" });
-      if (error) throw new Error(`upsert error: ${error.message}`);
-      synced += chunk.length;
+    for (const set of [freshRows, knownRows]) {
+      for (let i = 0; i < set.length; i += 500) {
+        const chunk = set.slice(i, i + 500);
+        const { error } = await admin
+          .from("ledger_entries")
+          .upsert(chunk, { onConflict: "user_id,sheet_row_hash" });
+        if (error) throw new Error(`upsert error: ${error.message}`);
+        synced += chunk.length;
+      }
     }
 
     // Mark rows not seen this run as no longer present in sheet (they're kept
     // in the log — the point of the permanent log — but flagged).
     if (seenHashes.size > 0) {
-      // Fetch existing hashes for this user to compute the diff.
-      const { data: existing } = await admin
-        .from("ledger_entries")
-        .select("sheet_row_hash")
-        .eq("user_id", user.id);
-      const missing = (existing || [])
-        .map((e: { sheet_row_hash: string }) => e.sheet_row_hash)
-        .filter((h: string) => !seenHashes.has(h));
+      const missing = Array.from(existingHashes).filter((h) => !seenHashes.has(h));
       if (missing.length > 0) {
         await admin
           .from("ledger_entries")

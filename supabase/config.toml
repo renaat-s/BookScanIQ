@@ -44,3 +44,6 @@ verify_jwt = false
 
 [functions.run-scheduled-scans]
 verify_jwt = false
+
+[functions.review-gate]
+verify_jwt = false

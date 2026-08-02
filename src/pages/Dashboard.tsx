@@ -42,10 +42,11 @@ import SavingsWidget from "@/components/SavingsWidget";
 import TipsCard from "@/components/TipsCard";
 import { useDirectoryGuard } from "@/hooks/useDirectoryGuard";
 import { useLowCogMode } from "@/contexts/LowCogModeContext";
-import { ShieldCheck, CheckCircle2, AlertCircle, XCircle, Bell } from "lucide-react";
+import { ShieldCheck, CheckCircle2, AlertCircle, XCircle, Bell, ClipboardCheck } from "lucide-react";
 import { useAlerts } from "@/hooks/useAlerts";
 import { canUseAdvancedAnalytics } from "@/lib/stripe-plans";
 const AlertsTab = lazy(() => import("@/components/alerts/AlertsTab"));
+const ReviewQueueTab = lazy(() => import("@/components/review/ReviewQueueTab"));
 
 interface Invoice {
   id: string;
@@ -521,6 +522,7 @@ const Dashboard = () => {
                 <TabsTrigger value="analytics" className="gap-1.5 flex-1 sm:flex-none"><Sparkles className="w-4 h-4" /><span className="hidden xs:inline sm:inline">Analytics</span></TabsTrigger>
                 <TabsTrigger value="workspaces" className="gap-1.5 flex-1 sm:flex-none"><Plug className="w-4 h-4" /><span className="hidden xs:inline sm:inline">Workspaces</span></TabsTrigger>
                 <TabsTrigger value="alerts" className="gap-1.5 flex-1 sm:flex-none relative"><Bell className="w-4 h-4" /><span className="hidden xs:inline sm:inline">Alerts</span>{alertCount > 0 && (<span className="ml-1 inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-destructive text-destructive-foreground text-[10px] font-semibold">{alertCount}</span>)}</TabsTrigger>
+                <TabsTrigger value="review" className="gap-1.5 flex-1 sm:flex-none"><ClipboardCheck className="w-4 h-4" /><span className="hidden xs:inline sm:inline">Review</span></TabsTrigger>
                 <TabsTrigger value="audit" className="gap-1.5 flex-1 sm:flex-none"><ShieldCheck className="w-4 h-4" /><span className="hidden xs:inline sm:inline">Audit Log</span></TabsTrigger>
               </TabsList>
               <div className="flex gap-2">
@@ -750,6 +752,19 @@ const Dashboard = () => {
                 }
               >
                 <AlertsTab />
+              </Suspense>
+            </TabsContent>
+
+            {/* REVIEW QUEUE TAB */}
+            <TabsContent value="review" className="m-0">
+              <Suspense
+                fallback={
+                  <div className="py-16 text-center text-sm text-muted-foreground">
+                    Loading review queue...
+                  </div>
+                }
+              >
+                <ReviewQueueTab />
               </Suspense>
             </TabsContent>
 
