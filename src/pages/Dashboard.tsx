@@ -42,7 +42,9 @@ import SavingsWidget from "@/components/SavingsWidget";
 import TipsCard from "@/components/TipsCard";
 import { useDirectoryGuard } from "@/hooks/useDirectoryGuard";
 import { useLowCogMode } from "@/contexts/LowCogModeContext";
-import { ShieldCheck, CheckCircle2, AlertCircle, XCircle } from "lucide-react";
+import { ShieldCheck, CheckCircle2, AlertCircle, XCircle, Bell } from "lucide-react";
+import { useAlerts } from "@/hooks/useAlerts";
+const AlertsTab = lazy(() => import("@/components/alerts/AlertsTab"));
 
 interface Invoice {
   id: string;
@@ -103,6 +105,7 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const guard = useDirectoryGuard();
   const { lowCog } = useLowCogMode();
+  const { total: alertCount } = useAlerts();
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -730,6 +733,19 @@ const Dashboard = () => {
 
 
 
+
+            {/* ALERTS TAB */}
+            <TabsContent value="alerts" className="m-0">
+              <Suspense
+                fallback={
+                  <div className="py-16 text-center text-sm text-muted-foreground">
+                    Loading alerts...
+                  </div>
+                }
+              >
+                <AlertsTab />
+              </Suspense>
+            </TabsContent>
 
             {/* AUDIT LOG TAB */}
             <TabsContent value="audit" className="m-0">
