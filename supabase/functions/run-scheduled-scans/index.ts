@@ -134,7 +134,7 @@ Deno.serve(async (req) => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "x-workflow-secret": cronSecret,
+          "x-workflow-secret": workflowSecret,
         },
         body: JSON.stringify({
           requestId: crypto.randomUUID(),
