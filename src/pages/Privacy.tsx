@@ -53,7 +53,6 @@ const Privacy = () => {
                 <ul>
                   <li><strong>Account Information:</strong> Name, email address, company name, and billing information</li>
                   <li><strong>Invoice Data:</strong> Invoices, receipts, and related financial documents you upload</li>
-                  <li><strong>Bank Statements:</strong> Transaction data for matching purposes</li>
                   <li><strong>Communications:</strong> Messages you send to our support team</li>
                 </ul>
 

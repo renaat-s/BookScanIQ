@@ -159,14 +159,14 @@ const Terms = () => {
                 <ul>
                   <li>We are not liable for any indirect, incidental, or consequential damages</li>
                   <li>Our total liability is limited to the amount you paid in the last 12 months</li>
-                  <li>We are not responsible for errors in invoice data extraction or matching</li>
+                  <li>We are not responsible for errors in invoice data extraction or categorization</li>
                   <li>We are not liable for financial losses due to incorrect invoice processing</li>
                   <li>We are not responsible for late payments or missed payment deadlines</li>
                 </ul>
 
                 <h2>9. Third-Party Integrations</h2>
                 <p>
-                  The Service integrates with third-party platforms (Google Workspace, banks, accounting software). We are not responsible for:
+                  The Service integrates with third-party platforms (Google Workspace, accounting software). We are not responsible for:
                 </p>
                 <ul>
                   <li>Third-party service downtime or changes</li>
