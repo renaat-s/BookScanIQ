@@ -5,7 +5,7 @@ import { AlertTriangle, Copy, Lock, RefreshCw, ShieldCheck } from "lucide-react"
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useAlerts } from "@/hooks/useAlerts";
-import { hasAdvancedAnalytics } from "@/lib/stripe-plans";
+import { canUseAdvancedAnalytics } from "@/lib/stripe-plans";
 import { AlertCard } from "./AlertCard";
 
 export function AlertsTab() {
@@ -14,7 +14,7 @@ export function AlertsTab() {
   const { duplicates, anomalies, total, dismissedCount, loading, dismiss, restoreAll } = useAlerts();
 
   const anomaliesUnlocked =
-    subscription.isDeveloper || hasAdvancedAnalytics(subscription.tier);
+    subscription.isDeveloper || canUseAdvancedAnalytics(subscription.tier);
 
   if (loading) {
     return (
