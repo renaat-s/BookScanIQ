@@ -68,7 +68,9 @@ function fmtMoney(n: number): string {
 }
 
 function fmtDate(d: Date | null): string {
-  return d ? d.toLocaleDateString("en-GB", { day: "numeric", month: "short", yyyy: undefined } as Intl.DateTimeFormatOptions) : "unknown date";
+  return d
+    ? d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })
+    : "unknown date";
 }
 
 /** Deterministic key so a dismissal survives refetches. */
