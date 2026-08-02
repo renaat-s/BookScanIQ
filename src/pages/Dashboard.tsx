@@ -44,6 +44,7 @@ import { useDirectoryGuard } from "@/hooks/useDirectoryGuard";
 import { useLowCogMode } from "@/contexts/LowCogModeContext";
 import { ShieldCheck, CheckCircle2, AlertCircle, XCircle, Bell } from "lucide-react";
 import { useAlerts } from "@/hooks/useAlerts";
+import { canUseAdvancedAnalytics } from "@/lib/stripe-plans";
 const AlertsTab = lazy(() => import("@/components/alerts/AlertsTab"));
 
 interface Invoice {
@@ -105,7 +106,7 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const guard = useDirectoryGuard();
   const { lowCog } = useLowCogMode();
-  const { total: alertCount } = useAlerts();
+  const { duplicates: alertDuplicates, anomalies: alertAnomalies } = useAlerts();
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);

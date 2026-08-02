@@ -11,7 +11,7 @@ import { AlertCard } from "./AlertCard";
 export function AlertsTab() {
   const navigate = useNavigate();
   const { subscription } = useAuth();
-  const { duplicates, anomalies, total, dismissedCount, loading, dismiss, restoreAll } = useAlerts();
+  const { duplicates, anomalies, dismissedCount, loading, dismiss, restoreAll } = useAlerts();
 
   const anomaliesUnlocked =
     subscription.isDeveloper || canUseAdvancedAnalytics(subscription.tier);
@@ -52,7 +52,7 @@ export function AlertsTab() {
         </div>
       </div>
 
-      {total === 0 && (!anomaliesUnlocked ? duplicates.length === 0 : true) && (
+      {duplicates.length === 0 && (!anomaliesUnlocked || anomalies.length === 0) && (
         <Card className="p-10 text-center space-y-2">
           <ShieldCheck className="w-10 h-10 mx-auto text-emerald-500" />
           <p className="font-semibold">No issues found</p>
