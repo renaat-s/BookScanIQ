@@ -68,9 +68,9 @@ const Privacy = () => {
                 <p>We use your information to:</p>
                 <ul>
                   <li>Provide and maintain our invoice processing service</li>
-                  <li>Process and match your invoices with bank transactions</li>
+                  <li>Process and structure your invoice data automatically</li>
                   <li>Send payment reminders and notifications</li>
-                  <li>Improve our AI matching algorithms</li>
+                  <li>Improve our AI extraction algorithms</li>
                   <li>Provide customer support</li>
                   <li>Send important service updates and security alerts</li>
                   <li>Generate anonymized usage statistics</li>

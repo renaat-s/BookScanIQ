@@ -30,7 +30,7 @@ const Index = () => {
         />
         <meta
           name="keywords"
-          content="automated bookkeeping, invoice automation, AI invoice processing, bank transaction matching, Google Workspace, Xero, QuickBooks"
+          content="automated bookkeeping, invoice automation, AI invoice processing, Google Workspace, Xero, QuickBooks"
         />
         <link rel="canonical" href="https://invoice-iq.com/" />
         <script type="application/ld+json">

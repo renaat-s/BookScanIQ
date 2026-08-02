@@ -33,8 +33,8 @@ const faqs = [
     answer: "InvoiceIQ accepts PDF and scanned documents. Our AI OCR technology can extract data from even poor-quality scans, mobile phone photos and embedded email data."
   },
   {
-    question: "How does the AI matching work?",
-    answer: "Our AI Agent extracts key information from your invoices (vendor name, amount, date, reference numbers) and intelligently matches them with your bank transactions. It considers multiple factors including amount, date range, vendor variations, and payment references to find the right match."
+    question: "How does the AI extraction work?",
+    answer: "Our AI Agent extracts key information from your invoices (vendor name, amount, date, reference numbers) and structures it automatically. It considers multiple factors including vendor variations and line items to produce clean, categorized data ready for export to your accounting software."
   },
   {
     question: "What happens to my data if I cancel?",

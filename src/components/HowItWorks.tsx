@@ -22,8 +22,8 @@ const steps = [
   },
   {
     icon: Brain,
-    title: "AI Agent Extracts & Matches",
-    description: "Our AI Agent automatically extracts invoice data and matches it with your bank transactions in real-time."
+    title: "AI Agent Extracts Data",
+    description: "Our AI Agent automatically extracts and structures all invoice data, capturing vendor details, amounts, dates, and line items in real-time."
   },
   {
     icon: Send,
