@@ -3,6 +3,9 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
 import { corsHeadersFor } from "../_shared/cors.ts";
+
+// Per-request CORS headers; assigned at the top of each request handler.
+let corsHeaders: Record<string, string> = {};
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), {
     status,
@@ -36,7 +39,7 @@ async function exchangeRefreshToken(refreshToken: string): Promise<string> {
 
 Deno.serve(async (req) => {
   
-  const corsHeaders = corsHeadersFor(req);
+  corsHeaders = corsHeadersFor(req);
 if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
