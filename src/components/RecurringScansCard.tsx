@@ -19,8 +19,11 @@ import { canUseAdvancedAnalytics } from '@/lib/stripe-plans';
 import {
   computeNextRun,
   describeSchedule,
+  localToUtc,
+  utcToLocal,
   DAY_NAMES,
-  LOOKBACK_OPTIONS,
+  BACKLOG_OPTIONS,
+  TIMEZONES,
   type ScanFrequency,
 } from '@/lib/scan-schedule';
 import { CalendarClock, Loader2, Lock, AlertTriangle, CheckCircle2 } from 'lucide-react';
@@ -28,36 +31,50 @@ import { CalendarClock, Loader2, Lock, AlertTriangle, CheckCircle2 } from 'lucid
 interface ScheduleState {
   enabled: boolean;
   frequency: ScanFrequency;
-  dayOfWeek: number;
-  hourUtc: number;
-  lookbackWeeks: number;
+  /** Day + hour as the user sees them, in `timezone`. */
+  dayLocal: number;
+  hourLocal: number;
+  timezone: string;
+  backlogWeeks: number;
   lastRunAt: string | null;
   nextRunAt: string | null;
   lastStatus: string | null;
   lastError: string | null;
 }
 
+const guessTimezone = () => {
+  const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  return TIMEZONES.some((t) => t.value === tz) ? tz : 'UTC';
+};
+
 const DEFAULTS: ScheduleState = {
   enabled: false,
   frequency: 'weekly',
-  dayOfWeek: 1,
-  hourUtc: 7,
-  lookbackWeeks: 4,
+  dayLocal: 1,
+  hourLocal: 7,
+  timezone: 'UTC',
+  backlogWeeks: 4,
   lastRunAt: null,
   nextRunAt: null,
   lastStatus: null,
   lastError: null,
 };
 
-const formatWhen = (iso: string | null) =>
-  iso ? new Date(iso).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' }) : null;
+const formatWhen = (iso: string | null, timeZone: string) =>
+  iso
+    ? new Date(iso).toLocaleString(undefined, {
+        dateStyle: 'medium',
+        timeStyle: 'short',
+        timeZone,
+      })
+    : null;
 
 const RecurringScansCard = () => {
   const { user, subscription } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
 
-  const [state, setState] = useState<ScheduleState>(DEFAULTS);
+  const [state, setState] = useState<ScheduleState>({ ...DEFAULTS, timezone: guessTimezone() });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
@@ -74,12 +91,15 @@ const RecurringScansCard = () => {
       .maybeSingle();
 
     if (data) {
+      const timezone = (data as { timezone?: string }).timezone || 'UTC';
+      const { hourLocal, dayLocal } = utcToLocal(data.hour_utc, data.day_of_week, timezone);
       setState({
         enabled: data.enabled,
         frequency: data.frequency as ScanFrequency,
-        dayOfWeek: data.day_of_week,
-        hourUtc: data.hour_utc,
-        lookbackWeeks: data.lookback_weeks,
+        dayLocal,
+        hourLocal,
+        timezone,
+        backlogWeeks: data.lookback_weeks,
         lastRunAt: data.last_run_at,
         nextRunAt: data.next_run_at,
         lastStatus: data.last_status,
@@ -96,8 +116,10 @@ const RecurringScansCard = () => {
   const persist = async (next: ScheduleState) => {
     if (!user) return;
     setSaving(true);
+
+    const { hourUtc, dayUtc } = localToUtc(next.hourLocal, next.dayLocal, next.timezone);
     const nextRun = next.enabled
-      ? computeNextRun(next.frequency, next.dayOfWeek, next.hourUtc).toISOString()
+      ? computeNextRun(next.frequency, dayUtc, hourUtc).toISOString()
       : null;
 
     const { error } = await supabase.from('scan_schedules').upsert(
@@ -105,9 +127,10 @@ const RecurringScansCard = () => {
         user_id: user.id,
         enabled: next.enabled,
         frequency: next.frequency,
-        day_of_week: next.dayOfWeek,
-        hour_utc: next.hourUtc,
-        lookback_weeks: next.lookbackWeeks,
+        day_of_week: dayUtc,
+        hour_utc: hourUtc,
+        timezone: next.timezone,
+        lookback_weeks: next.backlogWeeks,
         next_run_at: nextRun,
       },
       { onConflict: 'user_id' },
@@ -127,7 +150,7 @@ const RecurringScansCard = () => {
     toast({
       title: next.enabled ? 'Automatic scans on' : 'Automatic scans off',
       description: next.enabled
-        ? `${describeSchedule(next.frequency, next.dayOfWeek, next.hourUtc)}.`
+        ? `${describeSchedule(next.frequency, next.dayLocal, next.hourLocal, next.timezone)}.`
         : 'Your inbox will only be scanned when you start a scan manually.',
     });
   };
@@ -182,7 +205,7 @@ const RecurringScansCard = () => {
                   Run scans automatically
                 </Label>
                 <p className="text-xs text-muted-foreground">
-                  {describeSchedule(state.frequency, state.dayOfWeek, state.hourUtc)}
+                  {describeSchedule(state.frequency, state.dayLocal, state.hourLocal, state.timezone)}
                 </p>
               </div>
               <Switch
@@ -213,10 +236,29 @@ const RecurringScansCard = () => {
               </div>
 
               <div className="space-y-2">
-                <Label className="text-sm">Time (UTC)</Label>
+                <Label className="text-sm">Timezone</Label>
                 <Select
-                  value={String(state.hourUtc)}
-                  onValueChange={(v) => persist({ ...state, hourUtc: Number(v) })}
+                  value={state.timezone}
+                  onValueChange={(v) => persist({ ...state, timezone: v })}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="max-h-72">
+                    {TIMEZONES.map((tz) => (
+                      <SelectItem key={tz.value} value={tz.value}>
+                        {tz.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label className="text-sm">Time</Label>
+                <Select
+                  value={String(state.hourLocal)}
+                  onValueChange={(v) => persist({ ...state, hourLocal: Number(v) })}
                 >
                   <SelectTrigger>
                     <SelectValue />
@@ -235,8 +277,8 @@ const RecurringScansCard = () => {
                 <div className="space-y-2">
                   <Label className="text-sm">Day</Label>
                   <Select
-                    value={String(state.dayOfWeek)}
-                    onValueChange={(v) => persist({ ...state, dayOfWeek: Number(v) })}
+                    value={String(state.dayLocal)}
+                    onValueChange={(v) => persist({ ...state, dayLocal: Number(v) })}
                   >
                     <SelectTrigger>
                       <SelectValue />
@@ -253,18 +295,18 @@ const RecurringScansCard = () => {
               )}
 
               <div className="space-y-2">
-                <Label className="text-sm">Look back</Label>
+                <Label className="text-sm">Backlog</Label>
                 <Select
-                  value={String(state.lookbackWeeks)}
-                  onValueChange={(v) => persist({ ...state, lookbackWeeks: Number(v) })}
+                  value={String(state.backlogWeeks)}
+                  onValueChange={(v) => persist({ ...state, backlogWeeks: Number(v) })}
                 >
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    {LOOKBACK_OPTIONS.map((w) => (
+                    {BACKLOG_OPTIONS.map((w) => (
                       <SelectItem key={w} value={String(w)}>
-                        {w} week{w > 1 ? 's' : ''}
+                        {w} weeks
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -276,13 +318,15 @@ const RecurringScansCard = () => {
               <p className="text-muted-foreground">
                 Next run:{' '}
                 <span className="text-foreground font-medium">
-                  {state.enabled ? formatWhen(state.nextRunAt) ?? 'Scheduling...' : 'Paused'}
+                  {state.enabled
+                    ? formatWhen(state.nextRunAt, state.timezone) ?? 'Scheduling...'
+                    : 'Paused'}
                 </span>
               </p>
               <p className="text-muted-foreground">
                 Last run:{' '}
                 <span className="text-foreground font-medium">
-                  {formatWhen(state.lastRunAt) ?? 'Never'}
+                  {formatWhen(state.lastRunAt, state.timezone) ?? 'Never'}
                 </span>
                 {state.lastStatus ? ` (${state.lastStatus})` : ''}
               </p>
