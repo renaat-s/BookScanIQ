@@ -130,18 +130,6 @@ const Dashboard = () => {
     if (!authLoading && !user) navigate("/");
   }, [authLoading, user, navigate]);
 
-  // Happy-path trim: a fresh user (workspace ready, zero invoices) skips the
-  // empty-state click and goes straight to /detect-invoices, where the period
-  // selector still lets them pick 4/8/12 weeks. Runs at most once per session.
-  useEffect(() => {
-    if (loading) return;
-    if (guard.status !== "ready") return;
-    if (invoices.length !== 0) return;
-    if (sessionStorage.getItem("iiq_skipped_empty_state") === "1") return;
-    sessionStorage.setItem("iiq_skipped_empty_state", "1");
-    navigate("/detect-invoices");
-  }, [loading, guard.status, invoices.length, navigate]);
-
   const loadInvoices = async () => {
     if (!user) return;
     const { data } = await supabase

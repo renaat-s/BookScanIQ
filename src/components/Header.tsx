@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Menu, LogOut, Trash2, LogIn, ChevronDown, Settings, LayoutDashboard, Info, HelpCircle, Tag, Terminal, Brain, CheckCircle2 } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -34,6 +34,17 @@ const Header = () => {
   const { lowCog, toggleLowCog } = useLowCogMode();
   const [deleting, setDeleting] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+
+  // Warm the lazy Dashboard chunk as soon as an authenticated header appears.
+  // This keeps the current page painted during the first navigation after a refresh.
+  useEffect(() => {
+    if (user) void import("@/pages/Dashboard");
+  }, [user]);
+
+  const openDashboard = async () => {
+    await import("@/pages/Dashboard");
+    navigate("/dashboard");
+  };
 
   const handleSignIn = async () => {
     await signInWithGoogle();
@@ -79,6 +90,10 @@ const Header = () => {
             {user && (
               <Link
                 to="/dashboard"
+                onClick={(event) => {
+                  event.preventDefault();
+                  void openDashboard();
+                }}
                 className={`group relative inline-flex items-center gap-2 px-5 py-2 rounded-md font-mono text-xs uppercase tracking-[0.22em] border transition-all
                   ${location.pathname === '/dashboard'
                     ? 'border-primary/70 text-primary bg-primary/10 shadow-[0_0_18px_hsl(var(--primary)/0.35)]'
@@ -140,7 +155,7 @@ const Header = () => {
                   {user ? (
                     <>
                       <DropdownMenuSeparator />
-                      <DropdownMenuItem onClick={() => navigate('/dashboard')} className="font-mono text-xs uppercase tracking-wider">
+                      <DropdownMenuItem onClick={() => void openDashboard()} className="font-mono text-xs uppercase tracking-wider">
                         <LayoutDashboard className="h-4 w-4 mr-2" /> Dashboard
                       </DropdownMenuItem>
                       <DropdownMenuItem onClick={() => navigate('/settings')} className="font-mono text-xs uppercase tracking-wider">
@@ -180,7 +195,7 @@ const Header = () => {
             <SheetContent side="right" className="w-72 bg-background/95 backdrop-blur-xl border-l border-primary/30">
               <div className="flex flex-col gap-1 mt-8 font-mono text-xs uppercase tracking-[0.2em]">
                 {user && (
-                  <button onClick={() => navigate('/dashboard')} className="px-3 py-3 rounded-md hover:bg-primary/10 hover:text-primary text-left transition-smooth flex items-center gap-2 border border-primary/30 mb-2">
+                  <button onClick={() => void openDashboard()} className="px-3 py-3 rounded-md hover:bg-primary/10 hover:text-primary text-left transition-smooth flex items-center gap-2 border border-primary/30 mb-2">
                     <Terminal className="h-4 w-4" /> Dashboard
                   </button>
                 )}
