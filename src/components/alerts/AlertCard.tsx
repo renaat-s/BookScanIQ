@@ -1,9 +1,10 @@
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { AlertTriangle, Copy, ExternalLink, X } from "lucide-react";
+import { AlertTriangle, Copy, X } from "lucide-react";
 import type { DetectedAlert } from "@/lib/anomaly-detection";
 import { useLowCogMode } from "@/contexts/LowCogModeContext";
+import DriveLinkPreview from "@/components/DriveLinkPreview";
 
 interface AlertCardProps {
   alert: DetectedAlert;
@@ -92,15 +93,10 @@ export function AlertCard({ alert, onDismiss }: AlertCardProps) {
               <div className="flex items-center gap-3">
                 <span className="font-mono font-semibold">{formatMoney(Number(entry.amount))}</span>
                 {entry.drive_file_id && (
-                  <a
-                    href={`https://drive.google.com/file/d/${entry.drive_file_id}/view`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 text-primary hover:underline"
-                  >
-                    <ExternalLink className="w-3.5 h-3.5" />
-                    <span className="hidden sm:inline">Open</span>
-                  </a>
+                  <DriveLinkPreview
+                    url={`https://drive.google.com/file/d/${entry.drive_file_id}/view`}
+                    label="Open"
+                  />
                 )}
               </div>
             </div>
