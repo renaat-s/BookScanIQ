@@ -16,6 +16,7 @@ interface ScheduleRow {
   day_of_week: number;
   hour_utc: number;
   lookback_weeks: number;
+  timezone: string;
 }
 
 /** Next UTC run time strictly after `from`. */
@@ -76,7 +77,7 @@ Deno.serve(async (req) => {
 
   const { data: due, error: dueError } = await supabase
     .from("scan_schedules")
-    .select("id, user_id, frequency, day_of_week, hour_utc, lookback_weeks")
+    .select("id, user_id, frequency, day_of_week, hour_utc, lookback_weeks, timezone")
     .eq("enabled", true)
     .lte("next_run_at", now.toISOString())
     .limit(200);
@@ -144,6 +145,13 @@ Deno.serve(async (req) => {
           scanType: "backfill",
           jobId: job.id,
           backlogWeeks: s.lookback_weeks,
+          schedule: {
+            frequency: s.frequency,
+            dayOfWeekUtc: s.day_of_week,
+            hourUtc: s.hour_utc,
+            timezone: s.timezone ?? "UTC",
+            backlogWeeks: s.lookback_weeks,
+          },
           scanFromDate: formatDDMMYYYY(from),
           trigger: "scheduled",
           timestamp: now.toISOString(),
