@@ -256,6 +256,7 @@ export type Database = {
           created_at: string
           directory_installed: boolean
           email: string | null
+          export_dry_run: boolean
           full_name: string | null
           id: string
           low_cognitive_mode: boolean
@@ -270,6 +271,7 @@ export type Database = {
           created_at?: string
           directory_installed?: boolean
           email?: string | null
+          export_dry_run?: boolean
           full_name?: string | null
           id?: string
           low_cognitive_mode?: boolean
@@ -284,6 +286,7 @@ export type Database = {
           created_at?: string
           directory_installed?: boolean
           email?: string | null
+          export_dry_run?: boolean
           full_name?: string | null
           id?: string
           low_cognitive_mode?: boolean
