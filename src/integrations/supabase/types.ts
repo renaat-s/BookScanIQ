@@ -359,6 +359,7 @@ export type Database = {
           last_status: string | null
           lookback_weeks: number
           next_run_at: string | null
+          timezone: string
           updated_at: string
           user_id: string
         }
@@ -374,6 +375,7 @@ export type Database = {
           last_status?: string | null
           lookback_weeks?: number
           next_run_at?: string | null
+          timezone?: string
           updated_at?: string
           user_id: string
         }
@@ -389,6 +391,7 @@ export type Database = {
           last_status?: string | null
           lookback_weeks?: number
           next_run_at?: string | null
+          timezone?: string
           updated_at?: string
           user_id?: string
         }
