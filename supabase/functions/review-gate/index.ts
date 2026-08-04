@@ -74,7 +74,7 @@ Deno.serve(async (req) => {
         .is("exported_at", null)
         .order("entry_date", { ascending: true })
         .limit(500);
-      return json({ gateEnabled, entries: data ?? [] }, corsHeaders);
+      return json({ dryRun, gateEnabled, entries: data ?? [] }, corsHeaders);
     }
 
     // 3) mark-exported: n8n confirms the rows reached Xero / QuickBooks.
