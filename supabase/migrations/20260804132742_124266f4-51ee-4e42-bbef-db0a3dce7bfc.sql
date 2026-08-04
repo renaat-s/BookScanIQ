@@ -1,0 +1,1 @@
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS export_dry_run boolean NOT NULL DEFAULT false;
