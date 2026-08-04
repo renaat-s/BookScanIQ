@@ -28,10 +28,13 @@ Deno.serve(async (req) => {
 
     const { data: profile } = await admin
       .from("profiles")
-      .select("review_queue_enabled")
+      .select("review_queue_enabled, export_dry_run")
       .eq("user_id", userId)
       .maybeSingle();
     const gateEnabled = Boolean(profile?.review_queue_enabled);
+    // Global kill-switch wins; otherwise the per-user flag. Default false.
+    const globalDryRun = (Deno.env.get("EXPORT_DRY_RUN") ?? "").toLowerCase() === "true";
+    const dryRun = globalDryRun || Boolean((profile as { export_dry_run?: boolean } | null)?.export_dry_run);
 
     // 1) check: is a single document cleared for export?
     if (action === "check") {
