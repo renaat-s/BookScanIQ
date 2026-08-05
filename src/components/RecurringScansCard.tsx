@@ -328,15 +328,26 @@ const RecurringScansCard = () => {
                 <span className="text-foreground font-medium">
                   {formatWhen(state.lastRunAt, state.timezone) ?? 'Never'}
                 </span>
-                {state.lastStatus ? ` (${state.lastStatus})` : ''}
+                {state.lastStatus ? ` (${STATUS_LABELS[state.lastStatus] ?? state.lastStatus})` : ''}
               </p>
-              {state.lastStatus === 'failed' && state.lastError && (
-                <p className="flex items-start gap-2 text-destructive">
+              {(state.lastStatus === 'failed' || state.lastStatus === 'blocked') && state.lastError && (
+                <p
+                  className={`flex items-start gap-2 ${
+                    state.lastStatus === 'blocked' ? 'text-amber-500' : 'text-destructive'
+                  }`}
+                >
+                  <AlertTriangle className="w-4 h-4 mt-0.5 shrink-0" />
+                  <span>{state.lastError}</span>
+                </p>
+              )}
+              {state.lastStatus === 'success_last_scan' && state.lastError && (
+                <p className="flex items-start gap-2 text-amber-500">
                   <AlertTriangle className="w-4 h-4 mt-0.5 shrink-0" />
                   <span>{state.lastError}</span>
                 </p>
               )}
             </div>
+
           </>
         )}
       </CardContent>
