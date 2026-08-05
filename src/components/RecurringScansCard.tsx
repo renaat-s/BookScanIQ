@@ -83,6 +83,7 @@ const RecurringScansCard = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
 
+  const usage = useScanUsage();
   const [state, setState] = useState<ScheduleState>({ ...DEFAULTS, timezone: guessTimezone() });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
