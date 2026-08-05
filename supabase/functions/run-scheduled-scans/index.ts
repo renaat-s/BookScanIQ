@@ -1,4 +1,6 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { getScanAllowance } from "../_shared/scan-allowance.ts";
+
 
 /**
  * Cron-invoked scheduler for recurring auto-scans.
@@ -94,6 +96,7 @@ Deno.serve(async (req) => {
   console.log(`run-scheduled-scans: ${schedules.length} schedule(s) due`);
 
   let triggered = 0;
+  let blocked = 0;
 
   for (const s of schedules) {
     // Claim the slot immediately so a slow webhook can't cause a double-run.
@@ -112,6 +115,32 @@ Deno.serve(async (req) => {
 
       const email = profile?.email;
       if (!email) throw new Error("No email on file for this user");
+
+      // ---- Feature A guardrail: scan-and-deduct against the monthly allowance ----
+      const allowance = await getScanAllowance(supabase, s.user_id, email);
+
+      if (allowance.remaining !== null && allowance.remaining <= 0) {
+        const message =
+          `Monthly scan allowance reached (${allowance.used}/${allowance.cap} documents). ` +
+          `This scheduled scan was skipped. Your allowance resets at the start of next month.`;
+        console.log(`Skipping scheduled scan for ${s.user_id}: allowance exhausted`);
+
+        await supabase
+          .from("scan_schedules")
+          .update({ last_status: "blocked", last_error: message })
+          .eq("id", s.id);
+
+        await supabase.from("audit_events").insert({
+          user_id: s.user_id,
+          event_type: "scan_blocked",
+          message: "Scheduled scan skipped: monthly allowance reached",
+          reasoning: message,
+          metadata: { cap: allowance.cap, used: allowance.used, tier: allowance.tier },
+        });
+
+        blocked++;
+        continue;
+      }
 
       const { data: job, error: jobError } = await supabase
         .from("scan_jobs")
@@ -145,6 +174,16 @@ Deno.serve(async (req) => {
           scanType: "backfill",
           jobId: job.id,
           backlogWeeks: s.lookback_weeks,
+          // Hard stop for n8n: process at most this many documents in this run.
+          // null = unlimited (Enterprise / developer).
+          documentLimit: allowance.remaining,
+          allowance: {
+            tier: allowance.tier,
+            cap: allowance.cap,
+            used: allowance.used,
+            remaining: allowance.remaining,
+            lastOne: allowance.lastOne,
+          },
           schedule: {
             frequency: s.frequency,
             dayOfWeekUtc: s.day_of_week,
@@ -164,12 +203,18 @@ Deno.serve(async (req) => {
 
       await supabase
         .from("scan_schedules")
-        .update({ last_status: "success" })
+        .update({
+          last_status: allowance.lastOne ? "success_last_scan" : "success",
+          last_error: allowance.lastOne
+            ? `Heads up: this run uses the last document on your ${allowance.tier ?? "current"} plan (${allowance.cap}/month).`
+            : null,
+        })
         .eq("id", s.id);
 
       await supabase.from("scan_jobs").update({ status: "completed", completed_at: new Date().toISOString() }).eq("id", job.id);
 
       triggered++;
+
     } catch (err) {
       const message = err instanceof Error ? err.message : "Unknown error";
       console.error(`Scheduled scan failed for user ${s.user_id}:`, message);
@@ -180,7 +225,7 @@ Deno.serve(async (req) => {
     }
   }
 
-  return new Response(JSON.stringify({ success: true, due: schedules.length, triggered }), {
+  return new Response(JSON.stringify({ success: true, due: schedules.length, triggered, blocked }), {
     status: 200,
     headers: { "Content-Type": "application/json" },
   });

@@ -16,6 +16,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { canUseAdvancedAnalytics } from '@/lib/stripe-plans';
+import { useScanUsage } from '@/hooks/useScanUsage';
 import {
   computeNextRun,
   describeSchedule,
@@ -60,6 +61,14 @@ const DEFAULTS: ScheduleState = {
   lastError: null,
 };
 
+const STATUS_LABELS: Record<string, string> = {
+  running: 'running',
+  success: 'success',
+  success_last_scan: 'success, last scan on plan',
+  blocked: 'skipped, allowance reached',
+  failed: 'failed',
+};
+
 const formatWhen = (iso: string | null, timeZone: string) =>
   iso
     ? new Date(iso).toLocaleString(undefined, {
@@ -69,11 +78,13 @@ const formatWhen = (iso: string | null, timeZone: string) =>
       })
     : null;
 
+
 const RecurringScansCard = () => {
   const { user, subscription } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
 
+  const usage = useScanUsage();
   const [state, setState] = useState<ScheduleState>({ ...DEFAULTS, timezone: guessTimezone() });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -199,6 +210,31 @@ const RecurringScansCard = () => {
           </div>
         ) : (
           <>
+            {usage.cap !== null && !usage.loading && (
+              <div
+                className={`rounded-2xl border p-4 text-sm space-y-1 ${
+                  usage.atCap
+                    ? 'border-destructive/40 bg-destructive/10 text-destructive'
+                    : usage.cap - usage.used <= 1 || usage.nearCap
+                    ? 'border-amber-500/40 bg-amber-500/10 text-amber-600 dark:text-amber-400'
+                    : 'border-border/50 bg-muted/30 text-muted-foreground'
+                }`}
+              >
+                <p className="font-medium">
+                  {usage.atCap
+                    ? 'Monthly allowance reached'
+                    : usage.cap - usage.used === 1
+                    ? 'Only 1 document left this month'
+                    : `${usage.cap - usage.used} of ${usage.cap} documents left this month`}
+                </p>
+                <p className="text-xs opacity-90">
+                  {usage.atCap
+                    ? 'Scheduled scans are skipped until your allowance resets next month.'
+                    : 'Scheduled runs deduct as documents are filed and stop the moment the allowance runs out.'}
+                </p>
+              </div>
+            )}
+
             <div className="flex items-center justify-between gap-4">
               <div className="space-y-1">
                 <Label htmlFor="auto-scan-toggle" className="text-sm font-medium">
@@ -328,15 +364,26 @@ const RecurringScansCard = () => {
                 <span className="text-foreground font-medium">
                   {formatWhen(state.lastRunAt, state.timezone) ?? 'Never'}
                 </span>
-                {state.lastStatus ? ` (${state.lastStatus})` : ''}
+                {state.lastStatus ? ` (${STATUS_LABELS[state.lastStatus] ?? state.lastStatus})` : ''}
               </p>
-              {state.lastStatus === 'failed' && state.lastError && (
-                <p className="flex items-start gap-2 text-destructive">
+              {(state.lastStatus === 'failed' || state.lastStatus === 'blocked') && state.lastError && (
+                <p
+                  className={`flex items-start gap-2 ${
+                    state.lastStatus === 'blocked' ? 'text-amber-500' : 'text-destructive'
+                  }`}
+                >
+                  <AlertTriangle className="w-4 h-4 mt-0.5 shrink-0" />
+                  <span>{state.lastError}</span>
+                </p>
+              )}
+              {state.lastStatus === 'success_last_scan' && state.lastError && (
+                <p className="flex items-start gap-2 text-amber-500">
                   <AlertTriangle className="w-4 h-4 mt-0.5 shrink-0" />
                   <span>{state.lastError}</span>
                 </p>
               )}
             </div>
+
           </>
         )}
       </CardContent>

@@ -34,21 +34,16 @@ export function useScanUsage(): ScanUsage {
     const now = new Date();
     const start = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
 
-    const [scansRes, uploadsRes] = await Promise.all([
-      supabase
-        .from('scan_jobs')
-        .select('id', { count: 'exact', head: true })
-        .eq('user_id', user.id)
-        .gte('created_at', start),
-      supabase
-        .from('invoices')
-        .select('id', { count: 'exact', head: true })
-        .eq('user_id', user.id)
-        .is('scan_job_id', null)
-        .gte('created_at', start),
-    ]);
+    // A "scan" is deducted per processed document, whether it came from an
+    // inbox scan (scan_job_id set) or a manual upload (scan_job_id null).
+    const { count } = await supabase
+      .from('invoices')
+      .select('id', { count: 'exact', head: true })
+      .eq('user_id', user.id)
+      .gte('created_at', start);
 
-    const total = (scansRes.count ?? 0) + (uploadsRes.count ?? 0);
+    const total = count ?? 0;
+
     setUsed(total);
     setLoading(false);
   }, [user]);
