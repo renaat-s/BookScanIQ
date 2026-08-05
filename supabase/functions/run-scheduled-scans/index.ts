@@ -225,7 +225,7 @@ Deno.serve(async (req) => {
     }
   }
 
-  return new Response(JSON.stringify({ success: true, due: schedules.length, triggered }), {
+  return new Response(JSON.stringify({ success: true, due: schedules.length, triggered, blocked }), {
     status: 200,
     headers: { "Content-Type": "application/json" },
   });
