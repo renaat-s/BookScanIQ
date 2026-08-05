@@ -168,9 +168,18 @@ Deno.serve(async (req) => {
     console.log('Scan job updated successfully:', jobData);
 
     return new Response(
-      JSON.stringify({ success: true, job: jobData }),
+      JSON.stringify({
+        success: true,
+        job: jobData,
+        // Guardrail signals for n8n: stop sending documents when limitReached.
+        limitReached,
+        filed: acceptedCount,
+        blocked: blockedCount,
+        allowance: allowanceSnapshot,
+      }),
       { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
+
 
   } catch (error) {
     console.error('Error in update-scan-progress:', error);
