@@ -60,6 +60,14 @@ const DEFAULTS: ScheduleState = {
   lastError: null,
 };
 
+const STATUS_LABELS: Record<string, string> = {
+  running: 'running',
+  success: 'success',
+  success_last_scan: 'success, last scan on plan',
+  blocked: 'skipped, allowance reached',
+  failed: 'failed',
+};
+
 const formatWhen = (iso: string | null, timeZone: string) =>
   iso
     ? new Date(iso).toLocaleString(undefined, {
@@ -68,6 +76,7 @@ const formatWhen = (iso: string | null, timeZone: string) =>
         timeZone,
       })
     : null;
+
 
 const RecurringScansCard = () => {
   const { user, subscription } = useAuth();
