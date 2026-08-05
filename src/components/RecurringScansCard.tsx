@@ -16,6 +16,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { canUseAdvancedAnalytics } from '@/lib/stripe-plans';
+import { useScanUsage } from '@/hooks/useScanUsage';
 import {
   computeNextRun,
   describeSchedule,
