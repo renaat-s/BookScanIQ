@@ -1,4 +1,6 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { getScanAllowance } from "../_shared/scan-allowance.ts";
+
 
 /**
  * Cron-invoked scheduler for recurring auto-scans.
