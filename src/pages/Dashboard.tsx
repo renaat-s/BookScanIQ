@@ -503,7 +503,7 @@ const Dashboard = () => {
           </div>
 
 
-          <Tabs defaultValue="overview" className="space-y-4 sm:space-y-6">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4 sm:space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
               <TabsList className="bg-muted/60 backdrop-blur w-full sm:w-auto overflow-x-auto">
                 <TabsTrigger value="overview" className="gap-1.5 flex-1 sm:flex-none"><Activity className="w-4 h-4" /><span className="hidden xs:inline sm:inline">Overview</span></TabsTrigger>
