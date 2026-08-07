@@ -125,6 +125,25 @@ const Dashboard = () => {
   const [density, setDensity] = useState<"comfortable" | "compact">("comfortable");
   const [liveStats, setLiveStats] = useState<{ totalDocuments: number; income: number; expense: number; net: number } | null>(null);
   const [liveLoading, setLiveLoading] = useState(false);
+  const DASHBOARD_TABS = ["overview", "analytics", "workspaces", "alerts", "review", "audit"] as const;
+  const [activeTab, setActiveTabState] = useState<string>(() => {
+    if (typeof window === "undefined") return "overview";
+    const fromUrl = new URLSearchParams(window.location.search).get("tab");
+    const stored = window.localStorage.getItem("invoiceiq-dashboard-tab");
+    const candidate = fromUrl || stored || "overview";
+    return (DASHBOARD_TABS as readonly string[]).includes(candidate) ? candidate : "overview";
+  });
+  const setActiveTab = (value: string) => {
+    setActiveTabState(value);
+    try {
+      window.localStorage.setItem("invoiceiq-dashboard-tab", value);
+      const url = new URL(window.location.href);
+      url.searchParams.set("tab", value);
+      window.history.replaceState({}, "", url);
+    } catch {
+      /* storage unavailable */
+    }
+  };
 
   useEffect(() => {
     if (!authLoading && !user) navigate("/");
@@ -503,7 +522,7 @@ const Dashboard = () => {
           </div>
 
 
-          <Tabs defaultValue="overview" className="space-y-4 sm:space-y-6">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4 sm:space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
               <TabsList className="bg-muted/60 backdrop-blur w-full sm:w-auto overflow-x-auto">
                 <TabsTrigger value="overview" className="gap-1.5 flex-1 sm:flex-none"><Activity className="w-4 h-4" /><span className="hidden xs:inline sm:inline">Overview</span></TabsTrigger>
