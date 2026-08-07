@@ -125,6 +125,25 @@ const Dashboard = () => {
   const [density, setDensity] = useState<"comfortable" | "compact">("comfortable");
   const [liveStats, setLiveStats] = useState<{ totalDocuments: number; income: number; expense: number; net: number } | null>(null);
   const [liveLoading, setLiveLoading] = useState(false);
+  const DASHBOARD_TABS = ["overview", "analytics", "workspaces", "alerts", "review", "audit"] as const;
+  const [activeTab, setActiveTabState] = useState<string>(() => {
+    if (typeof window === "undefined") return "overview";
+    const fromUrl = new URLSearchParams(window.location.search).get("tab");
+    const stored = window.localStorage.getItem("invoiceiq-dashboard-tab");
+    const candidate = fromUrl || stored || "overview";
+    return (DASHBOARD_TABS as readonly string[]).includes(candidate) ? candidate : "overview";
+  });
+  const setActiveTab = (value: string) => {
+    setActiveTabState(value);
+    try {
+      window.localStorage.setItem("invoiceiq-dashboard-tab", value);
+      const url = new URL(window.location.href);
+      url.searchParams.set("tab", value);
+      window.history.replaceState({}, "", url);
+    } catch {
+      /* storage unavailable */
+    }
+  };
 
   useEffect(() => {
     if (!authLoading && !user) navigate("/");
