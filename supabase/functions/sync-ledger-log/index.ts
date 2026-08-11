@@ -239,6 +239,7 @@ Deno.serve(async (req) => {
 
     const seenHashes = new Set<string>();
     const upserts: Array<Record<string, unknown>> = [];
+    const folderNameCache = new Map<string, string>();
 
     for (let i = headerIdx + 1; i < rows.length; i++) {
       const r = rows[i];
@@ -248,7 +249,10 @@ Deno.serve(async (req) => {
       const amt = parseNum(r[colIdx.amount]);
       const vendor = colIdx.vendor >= 0 ? String(r[colIdx.vendor] ?? "").trim() : "";
       const categoryCol = colIdx.category >= 0 ? String(r[colIdx.category] ?? "").trim() : "";
-      const folderCol = colIdx.folder >= 0 ? folderToCategory(r[colIdx.folder]) : "";
+      const folderRaw = colIdx.folder >= 0 ? String(r[colIdx.folder] ?? "").trim() : "";
+      const folderCol = folderRaw
+        ? await resolveFolderName(folderRaw, accessToken, folderNameCache)
+        : "";
       const category = categoryCol || folderCol;
       const link = colIdx.link >= 0 ? r[colIdx.link] : null;
 
