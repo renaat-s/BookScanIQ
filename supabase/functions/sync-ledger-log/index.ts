@@ -283,8 +283,12 @@ Deno.serve(async (req) => {
       const folderCol = folderRaw
         ? await resolveFolderName(folderRaw, accessToken, folderNameCache)
         : "";
-      const category = categoryCol || folderCol;
       const link = colIdx.link >= 0 ? r[colIdx.link] : null;
+      const fileId = extractDriveFileId(link);
+      let category = categoryCol || folderCol;
+      if (!category && fileId) {
+        category = await parentFolderName(fileId, accessToken, folderNameCache);
+      }
 
       const isUncategorized = r.some((c) => (c ?? "").toString().trim().toLowerCase() === "uncategorized");
       let type: "income" | "expense" | "uncategorized" = "uncategorized";
