@@ -68,12 +68,17 @@ function extractDriveFileId(v: unknown): string | null {
   return m ? m[1] : null;
 }
 
-// The Drive "Folder" column is the de-facto category (e.g. "2026/08/Subscriptions").
-// Take the last meaningful path segment and ignore year/month/root segments.
-function folderToCategory(v: unknown): string {
-  if (v == null) return "";
-  const raw = String(v).trim();
-  if (!raw) return "";
+// The "Folder" column may hold either a human folder path/name or a raw Drive
+// folder ID. IDs are resolved to their folder name via the Drive API below.
+const DRIVE_ID_RE = /^[A-Za-z0-9_-]{20,}$/;
+
+function looksLikeDriveId(s: string): boolean {
+  return DRIVE_ID_RE.test(s) && /[0-9_-]/.test(s);
+}
+
+// Strip year/month/root segments from a folder path and keep the leaf name,
+// which is the classification (e.g. "Subscriptions", "Refunds").
+function cleanFolderName(raw: string): string {
   const parts = raw
     .split(/[\/\\>»|]+/)
     .map((p) => p.trim())
@@ -84,6 +89,69 @@ function folderToCategory(v: unknown): string {
   const last = parts[parts.length - 1] ?? "";
   return last.replace(/[_-]+/g, " ").trim();
 }
+
+// Resolve a Drive folder ID to its display name, cached per sync run.
+async function resolveFolderName(
+  raw: string,
+  accessToken: string,
+  cache: Map<string, string>,
+): Promise<string> {
+  const id = raw.match(/folders\/([A-Za-z0-9_-]+)/)?.[1]
+    ?? raw.match(/[?&]id=([A-Za-z0-9_-]+)/)?.[1]
+    ?? raw;
+  if (!looksLikeDriveId(id)) return cleanFolderName(raw);
+  if (cache.has(id)) return cache.get(id)!;
+  try {
+    const res = await fetch(
+      `https://www.googleapis.com/drive/v3/files/${encodeURIComponent(id)}?fields=name&supportsAllDrives=true`,
+      { headers: { Authorization: `Bearer ${accessToken}` } },
+    );
+    if (!res.ok) {
+      console.warn(`folder name lookup failed for ${id}: ${res.status}`);
+      cache.set(id, "");
+      return "";
+    }
+    const body = await res.json();
+    const name = cleanFolderName(String(body?.name ?? ""));
+    cache.set(id, name);
+    return name;
+  } catch (e) {
+    console.warn("folder name lookup error", e);
+    cache.set(id, "");
+    return "";
+  }
+}
+
+// Fallback: ask Drive which folder the document itself lives in, then use that
+// folder's name as the classification.
+async function parentFolderName(
+  fileId: string,
+  accessToken: string,
+  cache: Map<string, string>,
+): Promise<string> {
+  const key = `parent:${fileId}`;
+  if (cache.has(key)) return cache.get(key)!;
+  try {
+    const res = await fetch(
+      `https://www.googleapis.com/drive/v3/files/${encodeURIComponent(fileId)}?fields=parents&supportsAllDrives=true`,
+      { headers: { Authorization: `Bearer ${accessToken}` } },
+    );
+    if (!res.ok) {
+      cache.set(key, "");
+      return "";
+    }
+    const parentId = (await res.json())?.parents?.[0];
+    const name = parentId ? await resolveFolderName(parentId, accessToken, cache) : "";
+    cache.set(key, name);
+    return name;
+  } catch {
+    cache.set(key, "");
+    return "";
+  }
+}
+
+
+
 
 function inferDocumentType(v: unknown): string {
   const s = String(v ?? "").toLowerCase();
@@ -201,6 +269,7 @@ Deno.serve(async (req) => {
 
     const seenHashes = new Set<string>();
     const upserts: Array<Record<string, unknown>> = [];
+    const folderNameCache = new Map<string, string>();
 
     for (let i = headerIdx + 1; i < rows.length; i++) {
       const r = rows[i];
@@ -210,9 +279,16 @@ Deno.serve(async (req) => {
       const amt = parseNum(r[colIdx.amount]);
       const vendor = colIdx.vendor >= 0 ? String(r[colIdx.vendor] ?? "").trim() : "";
       const categoryCol = colIdx.category >= 0 ? String(r[colIdx.category] ?? "").trim() : "";
-      const folderCol = colIdx.folder >= 0 ? folderToCategory(r[colIdx.folder]) : "";
-      const category = categoryCol || folderCol;
+      const folderRaw = colIdx.folder >= 0 ? String(r[colIdx.folder] ?? "").trim() : "";
+      const folderCol = folderRaw
+        ? await resolveFolderName(folderRaw, accessToken, folderNameCache)
+        : "";
       const link = colIdx.link >= 0 ? r[colIdx.link] : null;
+      const fileId = extractDriveFileId(link);
+      let category = categoryCol || folderCol;
+      if (!category && fileId) {
+        category = await parentFolderName(fileId, accessToken, folderNameCache);
+      }
 
       const isUncategorized = r.some((c) => (c ?? "").toString().trim().toLowerCase() === "uncategorized");
       let type: "income" | "expense" | "uncategorized" = "uncategorized";
@@ -251,7 +327,7 @@ Deno.serve(async (req) => {
         vendor: vendor || null,
         category: category || null,
         document_type: colIdx.docType >= 0 ? inferDocumentType(r[colIdx.docType]) : inferDocumentType(category || vendor),
-        drive_file_id: extractDriveFileId(link),
+        drive_file_id: fileId,
         source: "sheet_sync",
         sheet_row_hash: hash,
         verified_present: true,
