@@ -218,7 +218,7 @@ Deno.serve(async (req) => {
         type,
         amt.toFixed(2),
         vendor.toLowerCase(),
-        category.toLowerCase(),
+        categoryCol.toLowerCase(), // folder-derived category deliberately excluded: keeps hashes stable
         String(r[colIdx.link] ?? ""),
       ].join("|");
       const hash = await sha256Hex(hashInput);
