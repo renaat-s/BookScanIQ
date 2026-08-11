@@ -327,7 +327,7 @@ Deno.serve(async (req) => {
         vendor: vendor || null,
         category: category || null,
         document_type: colIdx.docType >= 0 ? inferDocumentType(r[colIdx.docType]) : inferDocumentType(category || vendor),
-        drive_file_id: extractDriveFileId(link),
+        drive_file_id: fileId,
         source: "sheet_sync",
         sheet_row_hash: hash,
         verified_present: true,
