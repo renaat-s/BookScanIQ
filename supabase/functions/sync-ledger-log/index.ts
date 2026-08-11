@@ -68,6 +68,23 @@ function extractDriveFileId(v: unknown): string | null {
   return m ? m[1] : null;
 }
 
+// The Drive "Folder" column is the de-facto category (e.g. "2026/08/Subscriptions").
+// Take the last meaningful path segment and ignore year/month/root segments.
+function folderToCategory(v: unknown): string {
+  if (v == null) return "";
+  const raw = String(v).trim();
+  if (!raw) return "";
+  const parts = raw
+    .split(/[\/\\>»|]+/)
+    .map((p) => p.trim())
+    .filter(Boolean)
+    .filter((p) => !/^(20\d{2}|\d{1,2}|q[1-4])$/i.test(p))
+    .filter((p) => !/^(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)/i.test(p) || p.length > 12)
+    .filter((p) => !/^(invoice[s]?|receipt[s]?|documents?|root|drive)$/i.test(p));
+  const last = parts[parts.length - 1] ?? "";
+  return last.replace(/[_-]+/g, " ").trim();
+}
+
 function inferDocumentType(v: unknown): string {
   const s = String(v ?? "").toLowerCase();
   if (s.includes("invoice")) return "invoice";
