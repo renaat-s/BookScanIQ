@@ -122,6 +122,36 @@ async function resolveFolderName(
   }
 }
 
+// Fallback: ask Drive which folder the document itself lives in, then use that
+// folder's name as the classification.
+async function parentFolderName(
+  fileId: string,
+  accessToken: string,
+  cache: Map<string, string>,
+): Promise<string> {
+  const key = `parent:${fileId}`;
+  if (cache.has(key)) return cache.get(key)!;
+  try {
+    const res = await fetch(
+      `https://www.googleapis.com/drive/v3/files/${encodeURIComponent(fileId)}?fields=parents&supportsAllDrives=true`,
+      { headers: { Authorization: `Bearer ${accessToken}` } },
+    );
+    if (!res.ok) {
+      cache.set(key, "");
+      return "";
+    }
+    const parentId = (await res.json())?.parents?.[0];
+    const name = parentId ? await resolveFolderName(parentId, accessToken, cache) : "";
+    cache.set(key, name);
+    return name;
+  } catch {
+    cache.set(key, "");
+    return "";
+  }
+}
+
+
+
 
 function inferDocumentType(v: unknown): string {
   const s = String(v ?? "").toLowerCase();
