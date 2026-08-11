@@ -151,6 +151,11 @@ Deno.serve(async (req) => {
         colIdx.date = r.findIndex((c) => c === "date" || c.includes("date"));
         colIdx.vendor = r.findIndex((c) => c === "vendor" || c.includes("vendor") || c === "merchant" || c === "supplier");
         colIdx.category = r.findIndex((c) => c === "category" || c.includes("category"));
+        // No dedicated category column in most ledgers: the Drive "Folder"
+        // column carries the classification (e.g. Subscriptions, Refunds).
+        colIdx.folder = r.findIndex(
+          (c) => c === "folder" || c.includes("folder") || c === "classification" || c.includes("expense type") || c === "sub-type",
+        );
         colIdx.link = r.findIndex((c) => c.includes("link") || c.includes("url") || c === "file");
         colIdx.docType = r.findIndex((c) => c.includes("document") || c === "kind");
         break;
