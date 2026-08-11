@@ -192,7 +192,9 @@ Deno.serve(async (req) => {
       const typeRaw = (r[colIdx.type] ?? "").toString().toLowerCase();
       const amt = parseNum(r[colIdx.amount]);
       const vendor = colIdx.vendor >= 0 ? String(r[colIdx.vendor] ?? "").trim() : "";
-      const category = colIdx.category >= 0 ? String(r[colIdx.category] ?? "").trim() : "";
+      const categoryCol = colIdx.category >= 0 ? String(r[colIdx.category] ?? "").trim() : "";
+      const folderCol = colIdx.folder >= 0 ? folderToCategory(r[colIdx.folder]) : "";
+      const category = categoryCol || folderCol;
       const link = colIdx.link >= 0 ? r[colIdx.link] : null;
 
       const isUncategorized = r.some((c) => (c ?? "").toString().trim().toLowerCase() === "uncategorized");
