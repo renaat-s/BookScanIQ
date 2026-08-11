@@ -90,7 +90,7 @@ export function AlertsTab() {
               <div>
                 <p className="font-medium">Spend anomaly alerts are a Pro feature</p>
                 <p className="text-sm text-muted-foreground">
-                  Get notified when a vendor or category costs far more than usual.
+                  Get notified when a vendor costs far more than usual.
                 </p>
               </div>
             </div>

@@ -63,7 +63,7 @@ const AnalyticsTab = () => {
               <div>
                 <h3 className="font-semibold">Unlock Advanced Analytics</h3>
                 <p className="text-sm text-muted-foreground max-w-lg">
-                  Get 6-month trends, category spend breakdowns, uncategorized rate over time,
+                  Get 6-month trends, vendor spend breakdowns, uncategorized rate over time,
                   full scan history, and sync status per accounting platform.
                 </p>
               </div>

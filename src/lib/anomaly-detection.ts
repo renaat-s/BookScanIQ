@@ -44,7 +44,7 @@ export function normaliseVendor(name: string | null | undefined): string {
 }
 
 export function isUncategorized(entry: LedgerEntry): boolean {
-  const hay = `${entry.type ?? ""} ${entry.category ?? ""} ${entry.vendor ?? ""}`.toLowerCase();
+  const hay = `${entry.type ?? ""} ${entry.vendor ?? ""}`.toLowerCase();
   return hay.includes("uncategor");
 }
 
@@ -185,7 +185,7 @@ export function findAnomalies(
   const alerts: DetectedAlert[] = [];
 
   const buildSpikeAlerts = (
-    dimension: "vendor" | "category",
+    dimension: "vendor",
     labelOf: (e: LedgerEntry) => string | null,
   ) => {
     const byGroup = new Map<string, LedgerEntry[]>();
@@ -227,7 +227,7 @@ export function findAnomalies(
           kind: "anomaly",
           confidence: ratio >= SPIKE_MULTIPLIER * 2 ? "high" : "medium",
           title: `${label} spend is unusually high`,
-          reason: `${dimension === "vendor" ? "Spend with" : "Spend in"} ${label} this month is ${fmtMoney(current)}, about ${ratio.toFixed(1)}x the ${priorKeys.length}-month average of ${fmtMoney(priorAvg)}.`,
+          reason: `Spend with ${label} this month is ${fmtMoney(current)}, about ${ratio.toFixed(1)}x the ${priorKeys.length}-month average of ${fmtMoney(priorAvg)}.`,
           entries: involved,
         });
       }
@@ -235,7 +235,6 @@ export function findAnomalies(
   };
 
   buildSpikeAlerts("vendor", (e) => e.vendor?.trim() || null);
-  buildSpikeAlerts("category", (e) => e.category?.trim() || null);
 
   // Single-entry outliers against the vendor's own median.
   const byVendor = new Map<string, LedgerEntry[]>();

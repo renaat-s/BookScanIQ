@@ -148,13 +148,13 @@ const AdvancedAnalytics = ({ entries }: Props) => {
 
   const nowMonth = last6[last6.length - 1]?.key;
 
-  // Category spend (current month, expense + uncategorized excluded)
-  const topCategories = useMemo(() => {
+  // Vendor spend (current month, expenses only)
+  const topVendors = useMemo(() => {
     const map = new Map<string, number>();
     entries.forEach((e) => {
       if (e.month !== nowMonth) return;
       if (e.type !== "expense") return;
-      const key = e.vendor || e.category || "Unknown";
+      const key = e.vendor?.trim() || "Unknown vendor";
       map.set(key, (map.get(key) ?? 0) + e.amount);
     });
     return Array.from(map.entries())
@@ -222,20 +222,20 @@ const AdvancedAnalytics = ({ entries }: Props) => {
           </CardContent>
         </Card>
 
-        {/* Category spend */}
+        {/* Vendor spend */}
         <Card className="border-border/60">
           <CardHeader>
             <CardTitle className="text-base flex items-center gap-2">
-              <PieIcon className="w-4 h-4 text-primary" /> Category spend
+              <PieIcon className="w-4 h-4 text-primary" /> Vendor spend
             </CardTitle>
-            <CardDescription>Top expenses this month by vendor/category</CardDescription>
+            <CardDescription>Top expenses this month by vendor</CardDescription>
           </CardHeader>
           <CardContent className="h-[260px]">
-            {topCategories.length === 0 ? (
+            {topVendors.length === 0 ? (
               <p className="text-sm text-muted-foreground text-center py-12">No expenses this month.</p>
             ) : (
               <ResponsiveContainer>
-                <BarChart data={topCategories} layout="vertical" margin={{ left: 8, right: 12, top: 6, bottom: 0 }}>
+                <BarChart data={topVendors} layout="vertical" margin={{ left: 8, right: 12, top: 6, bottom: 0 }}>
                   <CartesianGrid strokeDasharray="3 3" className="stroke-border/60" horizontal={false} />
                   <XAxis type="number" tickLine={false} axisLine={false} className="text-xs" tickFormatter={formatAxisMoney} />
                   <YAxis dataKey="name" type="category" tickLine={false} axisLine={false} width={110} className="text-xs" />
