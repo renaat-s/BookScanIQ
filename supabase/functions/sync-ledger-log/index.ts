@@ -211,6 +211,7 @@ Deno.serve(async (req) => {
         type,
         amt.toFixed(2),
         vendor.toLowerCase(),
+        "", // legacy category slot: kept empty so existing row hashes stay stable
         String(r[colIdx.link] ?? ""),
       ].join("|");
       const hash = await sha256Hex(hashInput);
