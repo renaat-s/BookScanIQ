@@ -68,6 +68,23 @@ function extractDriveFileId(v: unknown): string | null {
   return m ? m[1] : null;
 }
 
+// The Drive "Folder" column is the de-facto category (e.g. "2026/08/Subscriptions").
+// Take the last meaningful path segment and ignore year/month/root segments.
+function folderToCategory(v: unknown): string {
+  if (v == null) return "";
+  const raw = String(v).trim();
+  if (!raw) return "";
+  const parts = raw
+    .split(/[\/\\>»|]+/)
+    .map((p) => p.trim())
+    .filter(Boolean)
+    .filter((p) => !/^(20\d{2}|\d{1,2}|q[1-4])$/i.test(p))
+    .filter((p) => !/^(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)/i.test(p) || p.length > 12)
+    .filter((p) => !/^(invoice[s]?|receipt[s]?|documents?|root|drive)$/i.test(p));
+  const last = parts[parts.length - 1] ?? "";
+  return last.replace(/[_-]+/g, " ").trim();
+}
+
 function inferDocumentType(v: unknown): string {
   const s = String(v ?? "").toLowerCase();
   if (s.includes("invoice")) return "invoice";
@@ -151,6 +168,11 @@ Deno.serve(async (req) => {
         colIdx.date = r.findIndex((c) => c === "date" || c.includes("date"));
         colIdx.vendor = r.findIndex((c) => c === "vendor" || c.includes("vendor") || c === "merchant" || c === "supplier");
         colIdx.category = r.findIndex((c) => c === "category" || c.includes("category"));
+        // No dedicated category column in most ledgers: the Drive "Folder"
+        // column carries the classification (e.g. Subscriptions, Refunds).
+        colIdx.folder = r.findIndex(
+          (c) => c === "folder" || c.includes("folder") || c === "classification" || c.includes("expense type") || c === "sub-type",
+        );
         colIdx.link = r.findIndex((c) => c.includes("link") || c.includes("url") || c === "file");
         colIdx.docType = r.findIndex((c) => c.includes("document") || c === "kind");
         break;
@@ -187,7 +209,9 @@ Deno.serve(async (req) => {
       const typeRaw = (r[colIdx.type] ?? "").toString().toLowerCase();
       const amt = parseNum(r[colIdx.amount]);
       const vendor = colIdx.vendor >= 0 ? String(r[colIdx.vendor] ?? "").trim() : "";
-      const category = colIdx.category >= 0 ? String(r[colIdx.category] ?? "").trim() : "";
+      const categoryCol = colIdx.category >= 0 ? String(r[colIdx.category] ?? "").trim() : "";
+      const folderCol = colIdx.folder >= 0 ? folderToCategory(r[colIdx.folder]) : "";
+      const category = categoryCol || folderCol;
       const link = colIdx.link >= 0 ? r[colIdx.link] : null;
 
       const isUncategorized = r.some((c) => (c ?? "").toString().trim().toLowerCase() === "uncategorized");
@@ -211,7 +235,7 @@ Deno.serve(async (req) => {
         type,
         amt.toFixed(2),
         vendor.toLowerCase(),
-        category.toLowerCase(),
+        categoryCol.toLowerCase(), // folder-derived category deliberately excluded: keeps hashes stable
         String(r[colIdx.link] ?? ""),
       ].join("|");
       const hash = await sha256Hex(hashInput);
