@@ -87,7 +87,7 @@ export function AlertCard({ alert, onDismiss }: AlertCardProps) {
                 <span className="text-muted-foreground">
                   {" "}
                   &middot; {formatDate(entry.entry_date)}
-                  {entry.category ? ` · ${entry.category}` : ""}
+                  
                 </span>
               </div>
               <div className="flex items-center gap-3">

@@ -202,7 +202,7 @@ const BasicAnalytics = ({ entries, monthKey, usage }: Props) => {
                       <div className="min-w-0 flex-1">
                         <p className="text-sm font-medium truncate">{e.vendor || "Unknown vendor"}</p>
                         <p className="text-xs text-muted-foreground truncate">
-                          {e.entry_date ?? "no date"} · {e.category || "no category"}
+                          {e.entry_date ?? "no date"} · {e.vendor || "Unknown vendor"}
                         </p>
                       </div>
                       <div className="text-right shrink-0">

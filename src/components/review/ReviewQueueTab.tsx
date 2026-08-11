@@ -85,7 +85,7 @@ function EntryRow({
         </div>
         <p className="text-xs text-muted-foreground mt-0.5">
           {formatDate(entry.entry_date)}
-          {entry.category ? ` · ${entry.category}` : ""}
+          
           {entry.review_note ? ` · Note: ${entry.review_note}` : ""}
         </p>
       </div>

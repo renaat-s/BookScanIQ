@@ -68,90 +68,6 @@ function extractDriveFileId(v: unknown): string | null {
   return m ? m[1] : null;
 }
 
-// The "Folder" column may hold either a human folder path/name or a raw Drive
-// folder ID. IDs are resolved to their folder name via the Drive API below.
-const DRIVE_ID_RE = /^[A-Za-z0-9_-]{20,}$/;
-
-function looksLikeDriveId(s: string): boolean {
-  return DRIVE_ID_RE.test(s) && /[0-9_-]/.test(s);
-}
-
-// Strip year/month/root segments from a folder path and keep the leaf name,
-// which is the classification (e.g. "Subscriptions", "Refunds").
-function cleanFolderName(raw: string): string {
-  const parts = raw
-    .split(/[\/\\>»|]+/)
-    .map((p) => p.trim())
-    .filter(Boolean)
-    .filter((p) => !/^(20\d{2}|\d{1,2}|q[1-4])$/i.test(p))
-    .filter((p) => !/^(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)/i.test(p) || p.length > 12)
-    .filter((p) => !/^(invoice[s]?|receipt[s]?|documents?|root|drive)$/i.test(p));
-  const last = parts[parts.length - 1] ?? "";
-  return last.replace(/[_-]+/g, " ").trim();
-}
-
-// Resolve a Drive folder ID to its display name, cached per sync run.
-async function resolveFolderName(
-  raw: string,
-  accessToken: string,
-  cache: Map<string, string>,
-): Promise<string> {
-  const id = raw.match(/folders\/([A-Za-z0-9_-]+)/)?.[1]
-    ?? raw.match(/[?&]id=([A-Za-z0-9_-]+)/)?.[1]
-    ?? raw;
-  if (!looksLikeDriveId(id)) return cleanFolderName(raw);
-  if (cache.has(id)) return cache.get(id)!;
-  try {
-    const res = await fetch(
-      `https://www.googleapis.com/drive/v3/files/${encodeURIComponent(id)}?fields=name&supportsAllDrives=true`,
-      { headers: { Authorization: `Bearer ${accessToken}` } },
-    );
-    if (!res.ok) {
-      console.warn(`folder name lookup failed for ${id}: ${res.status}`);
-      cache.set(id, "");
-      return "";
-    }
-    const body = await res.json();
-    const name = cleanFolderName(String(body?.name ?? ""));
-    cache.set(id, name);
-    return name;
-  } catch (e) {
-    console.warn("folder name lookup error", e);
-    cache.set(id, "");
-    return "";
-  }
-}
-
-// Fallback: ask Drive which folder the document itself lives in, then use that
-// folder's name as the classification.
-async function parentFolderName(
-  fileId: string,
-  accessToken: string,
-  cache: Map<string, string>,
-): Promise<string> {
-  const key = `parent:${fileId}`;
-  if (cache.has(key)) return cache.get(key)!;
-  try {
-    const res = await fetch(
-      `https://www.googleapis.com/drive/v3/files/${encodeURIComponent(fileId)}?fields=parents&supportsAllDrives=true`,
-      { headers: { Authorization: `Bearer ${accessToken}` } },
-    );
-    if (!res.ok) {
-      cache.set(key, "");
-      return "";
-    }
-    const parentId = (await res.json())?.parents?.[0];
-    const name = parentId ? await resolveFolderName(parentId, accessToken, cache) : "";
-    cache.set(key, name);
-    return name;
-  } catch {
-    cache.set(key, "");
-    return "";
-  }
-}
-
-
-
 
 function inferDocumentType(v: unknown): string {
   const s = String(v ?? "").toLowerCase();
@@ -235,12 +151,6 @@ Deno.serve(async (req) => {
         colIdx.amount = a;
         colIdx.date = r.findIndex((c) => c === "date" || c.includes("date"));
         colIdx.vendor = r.findIndex((c) => c === "vendor" || c.includes("vendor") || c === "merchant" || c === "supplier");
-        colIdx.category = r.findIndex((c) => c === "category" || c.includes("category"));
-        // No dedicated category column in most ledgers: the Drive "Folder"
-        // column carries the classification (e.g. Subscriptions, Refunds).
-        colIdx.folder = r.findIndex(
-          (c) => c === "folder" || c.includes("folder") || c === "classification" || c.includes("expense type") || c === "sub-type",
-        );
         colIdx.link = r.findIndex((c) => c.includes("link") || c.includes("url") || c === "file");
         colIdx.docType = r.findIndex((c) => c.includes("document") || c === "kind");
         break;
@@ -269,7 +179,6 @@ Deno.serve(async (req) => {
 
     const seenHashes = new Set<string>();
     const upserts: Array<Record<string, unknown>> = [];
-    const folderNameCache = new Map<string, string>();
 
     for (let i = headerIdx + 1; i < rows.length; i++) {
       const r = rows[i];
@@ -278,17 +187,8 @@ Deno.serve(async (req) => {
       const typeRaw = (r[colIdx.type] ?? "").toString().toLowerCase();
       const amt = parseNum(r[colIdx.amount]);
       const vendor = colIdx.vendor >= 0 ? String(r[colIdx.vendor] ?? "").trim() : "";
-      const categoryCol = colIdx.category >= 0 ? String(r[colIdx.category] ?? "").trim() : "";
-      const folderRaw = colIdx.folder >= 0 ? String(r[colIdx.folder] ?? "").trim() : "";
-      const folderCol = folderRaw
-        ? await resolveFolderName(folderRaw, accessToken, folderNameCache)
-        : "";
       const link = colIdx.link >= 0 ? r[colIdx.link] : null;
       const fileId = extractDriveFileId(link);
-      let category = categoryCol || folderCol;
-      if (!category && fileId) {
-        category = await parentFolderName(fileId, accessToken, folderNameCache);
-      }
 
       const isUncategorized = r.some((c) => (c ?? "").toString().trim().toLowerCase() === "uncategorized");
       let type: "income" | "expense" | "uncategorized" = "uncategorized";
@@ -311,7 +211,7 @@ Deno.serve(async (req) => {
         type,
         amt.toFixed(2),
         vendor.toLowerCase(),
-        categoryCol.toLowerCase(), // folder-derived category deliberately excluded: keeps hashes stable
+        "", // legacy category slot: kept empty so existing row hashes stay stable
         String(r[colIdx.link] ?? ""),
       ].join("|");
       const hash = await sha256Hex(hashInput);
@@ -325,8 +225,7 @@ Deno.serve(async (req) => {
         type,
         amount: Math.abs(amt),
         vendor: vendor || null,
-        category: category || null,
-        document_type: colIdx.docType >= 0 ? inferDocumentType(r[colIdx.docType]) : inferDocumentType(category || vendor),
+        document_type: colIdx.docType >= 0 ? inferDocumentType(r[colIdx.docType]) : inferDocumentType(vendor),
         drive_file_id: fileId,
         source: "sheet_sync",
         sheet_row_hash: hash,
