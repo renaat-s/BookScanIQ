@@ -149,10 +149,3 @@ Deno.serve(async (req: Request) => {
     return json({ error: (err as Error).message }, 500);
   }
 });
-
-function json(payload: unknown, status = 200) {
-  return new Response(JSON.stringify(payload), {
-    status,
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
-  });
-}
