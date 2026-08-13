@@ -68,7 +68,9 @@ Deno.serve(async (req) => {
     if (action === "list-approved") {
       const { data } = await admin
         .from("ledger_entries")
-        .select("id, entry_date, month, type, amount, vendor, category, document_type, drive_file_id")
+        .select(
+          "id, entry_date, month, type, amount, currency, exchange_rate, vendor, category, document_type, drive_file_id",
+        )
         .eq("user_id", userId)
         .eq("review_status", "approved")
         .is("exported_at", null)

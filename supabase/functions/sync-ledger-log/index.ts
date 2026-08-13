@@ -129,6 +129,9 @@ Deno.serve(async (req) => {
       return json({ synced: 0, error: "Google not connected" }, corsHeaders);
     }
 
+    const defaultCurrency =
+      ((creds as { default_currency?: string | null }).default_currency || "GBP").toUpperCase();
+
     // Throttle: skip sync if last one was under 15 min ago, unless body.force
     let force = false;
     try {
