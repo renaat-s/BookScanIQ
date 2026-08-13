@@ -121,7 +121,7 @@ Deno.serve(async (req) => {
     const admin = createClient(supabaseUrl, serviceKey);
     const { data: creds } = await admin
       .from("user_credentials")
-      .select("google_refresh_token, user_spreadsheet_id, last_ledger_sync_at")
+      .select("google_refresh_token, user_spreadsheet_id, last_ledger_sync_at, default_currency")
       .eq("user_id", user.id)
       .single();
 
@@ -209,7 +209,10 @@ Deno.serve(async (req) => {
       if (!r || r.length === 0) continue;
 
       const typeRaw = (r[colIdx.type] ?? "").toString().toLowerCase();
-      const amt = parseNum(r[colIdx.amount]);
+      const amountRaw = r[colIdx.amount];
+      const amt = parseNum(amountRaw);
+      // Currency comes from the raw amount string; fall back to the user default.
+      const currency = detectCurrency(amountRaw) ?? defaultCurrency;
       const vendor = colIdx.vendor >= 0 ? String(r[colIdx.vendor] ?? "").trim() : "";
       const link = colIdx.link >= 0 ? r[colIdx.link] : null;
       const fileId = extractDriveFileId(link);
@@ -249,6 +252,7 @@ Deno.serve(async (req) => {
         type,
         amount: Math.abs(amt),
         vendor: vendor || null,
+        currency,
         document_type: colIdx.docType >= 0 ? inferDocumentType(r[colIdx.docType]) : inferDocumentType(vendor),
         drive_file_id: fileId,
         source: "sheet_sync",
