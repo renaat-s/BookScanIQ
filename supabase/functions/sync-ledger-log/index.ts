@@ -34,6 +34,30 @@ function parseNum(v: unknown): number {
   return isNaN(n) ? 0 : n;
 }
 
+// Map currency symbols / codes found in raw sheet amount strings to ISO codes.
+const SYMBOL_CURRENCY: Array<[RegExp, string]> = [
+  [/£|\bGBP\b/i, "GBP"],
+  [/€|\bEUR\b/i, "EUR"],
+  [/\bUSD\b|\bUS\$|\$/i, "USD"],
+  [/\bAUD\b/i, "AUD"],
+  [/\bCAD\b/i, "CAD"],
+  [/\bZAR\b|\bR\s?\d/i, "ZAR"],
+  [/¥|\bJPY\b/i, "JPY"],
+];
+
+/** Detect an ISO currency code from a currency-laden string ("£6.66" -> GBP). */
+function detectCurrency(v: unknown): string | null {
+  const s = String(v ?? "").trim();
+  if (!s) return null;
+  // Explicit ISO code wins over ambiguous symbols.
+  const iso = s.match(/\b(GBP|USD|EUR|AUD|CAD|ZAR|JPY|CHF|NZD|SEK|NOK|DKK|INR)\b/i);
+  if (iso) return iso[1].toUpperCase();
+  for (const [re, code] of SYMBOL_CURRENCY) {
+    if (re.test(s)) return code;
+  }
+  return null;
+}
+
 function parseDate(v: unknown): Date | null {
   if (v == null || v === "") return null;
   const s = String(v).trim();
