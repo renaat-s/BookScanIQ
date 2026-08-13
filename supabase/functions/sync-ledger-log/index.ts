@@ -34,6 +34,30 @@ function parseNum(v: unknown): number {
   return isNaN(n) ? 0 : n;
 }
 
+// Map currency symbols / codes found in raw sheet amount strings to ISO codes.
+const SYMBOL_CURRENCY: Array<[RegExp, string]> = [
+  [/£|\bGBP\b/i, "GBP"],
+  [/€|\bEUR\b/i, "EUR"],
+  [/\bUSD\b|\bUS\$|\$/i, "USD"],
+  [/\bAUD\b/i, "AUD"],
+  [/\bCAD\b/i, "CAD"],
+  [/\bZAR\b|\bR\s?\d/i, "ZAR"],
+  [/¥|\bJPY\b/i, "JPY"],
+];
+
+/** Detect an ISO currency code from a currency-laden string ("£6.66" -> GBP). */
+function detectCurrency(v: unknown): string | null {
+  const s = String(v ?? "").trim();
+  if (!s) return null;
+  // Explicit ISO code wins over ambiguous symbols.
+  const iso = s.match(/\b(GBP|USD|EUR|AUD|CAD|ZAR|JPY|CHF|NZD|SEK|NOK|DKK|INR)\b/i);
+  if (iso) return iso[1].toUpperCase();
+  for (const [re, code] of SYMBOL_CURRENCY) {
+    if (re.test(s)) return code;
+  }
+  return null;
+}
+
 function parseDate(v: unknown): Date | null {
   if (v == null || v === "") return null;
   const s = String(v).trim();
@@ -97,13 +121,16 @@ Deno.serve(async (req) => {
     const admin = createClient(supabaseUrl, serviceKey);
     const { data: creds } = await admin
       .from("user_credentials")
-      .select("google_refresh_token, user_spreadsheet_id, last_ledger_sync_at")
+      .select("google_refresh_token, user_spreadsheet_id, last_ledger_sync_at, default_currency")
       .eq("user_id", user.id)
       .single();
 
     if (!creds?.google_refresh_token || !creds?.user_spreadsheet_id) {
       return json({ synced: 0, error: "Google not connected" }, corsHeaders);
     }
+
+    const defaultCurrency =
+      ((creds as { default_currency?: string | null }).default_currency || "GBP").toUpperCase();
 
     // Throttle: skip sync if last one was under 15 min ago, unless body.force
     let force = false;
@@ -185,7 +212,10 @@ Deno.serve(async (req) => {
       if (!r || r.length === 0) continue;
 
       const typeRaw = (r[colIdx.type] ?? "").toString().toLowerCase();
-      const amt = parseNum(r[colIdx.amount]);
+      const amountRaw = r[colIdx.amount];
+      const amt = parseNum(amountRaw);
+      // Currency comes from the raw amount string; fall back to the user default.
+      const currency = detectCurrency(amountRaw) ?? defaultCurrency;
       const vendor = colIdx.vendor >= 0 ? String(r[colIdx.vendor] ?? "").trim() : "";
       const link = colIdx.link >= 0 ? r[colIdx.link] : null;
       const fileId = extractDriveFileId(link);
@@ -225,6 +255,7 @@ Deno.serve(async (req) => {
         type,
         amount: Math.abs(amt),
         vendor: vendor || null,
+        currency,
         document_type: colIdx.docType >= 0 ? inferDocumentType(r[colIdx.docType]) : inferDocumentType(vendor),
         drive_file_id: fileId,
         source: "sheet_sync",

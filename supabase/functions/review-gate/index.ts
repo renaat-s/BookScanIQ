@@ -68,7 +68,9 @@ Deno.serve(async (req) => {
     if (action === "list-approved") {
       const { data } = await admin
         .from("ledger_entries")
-        .select("id, entry_date, month, type, amount, vendor, category, document_type, drive_file_id")
+        .select(
+          "id, entry_date, month, type, amount, currency, exchange_rate, vendor, category, document_type, drive_file_id",
+        )
         .eq("user_id", userId)
         .eq("review_status", "approved")
         .is("exported_at", null)
@@ -79,8 +81,24 @@ Deno.serve(async (req) => {
         qbEnvironment === "sandbox"
           ? "https://sandbox-quickbooks.api.intuit.com"
           : "https://quickbooks.api.intuit.com";
+
+      // Fallback currency so n8n never receives a null/empty CurrencyRef.
+      const { data: creds } = await admin
+        .from("user_credentials")
+        .select("default_currency")
+        .eq("user_id", userId)
+        .maybeSingle();
+      const defaultCurrency =
+        ((creds as { default_currency?: string | null } | null)?.default_currency || "GBP").toUpperCase();
+
+      const entries = (data ?? []).map((e: Record<string, unknown>) => ({
+        ...e,
+        currency: (e.currency as string | null) || defaultCurrency,
+        exchange_rate: (e.exchange_rate as number | null) ?? null,
+      }));
+
       return json(
-        { dryRun, gateEnabled, qbEnvironment, qbApiBaseUrl, entries: data ?? [] },
+        { dryRun, gateEnabled, qbEnvironment, qbApiBaseUrl, defaultCurrency, entries },
         corsHeaders,
       );
     }
