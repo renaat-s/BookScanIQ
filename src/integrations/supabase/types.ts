@@ -186,9 +186,11 @@ export type Database = {
           amount: number
           category: string | null
           created_at: string
+          currency: string | null
           document_type: string | null
           drive_file_id: string | null
           entry_date: string | null
+          exchange_rate: number | null
           exported_at: string | null
           id: string
           last_seen_at: string
@@ -208,9 +210,11 @@ export type Database = {
           amount?: number
           category?: string | null
           created_at?: string
+          currency?: string | null
           document_type?: string | null
           drive_file_id?: string | null
           entry_date?: string | null
+          exchange_rate?: number | null
           exported_at?: string | null
           id?: string
           last_seen_at?: string
@@ -230,9 +234,11 @@ export type Database = {
           amount?: number
           category?: string | null
           created_at?: string
+          currency?: string | null
           document_type?: string | null
           drive_file_id?: string | null
           entry_date?: string | null
+          exchange_rate?: number | null
           exported_at?: string | null
           id?: string
           last_seen_at?: string
@@ -400,6 +406,7 @@ export type Database = {
       user_credentials: {
         Row: {
           created_at: string
+          default_currency: string
           email: string | null
           folder_mapping: Json | null
           google_refresh_token: string | null
@@ -422,6 +429,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          default_currency?: string
           email?: string | null
           folder_mapping?: Json | null
           google_refresh_token?: string | null
@@ -444,6 +452,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          default_currency?: string
           email?: string | null
           folder_mapping?: Json | null
           google_refresh_token?: string | null
