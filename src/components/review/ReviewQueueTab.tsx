@@ -118,6 +118,17 @@ function EntryRow({
         </Button>
       )}
 
+      {onUnapprove && !entry.exported_at && (
+        <Button
+          size="sm"
+          variant="outline"
+          className="gap-1.5"
+          onClick={() => onUnapprove(entry.id)}
+        >
+          <Undo2 className="w-4 h-4" /> Move to pending
+        </Button>
+      )}
+
       {showActions && (
         <div className="flex gap-2">
           <Button size="sm" className="gap-1.5" onClick={() => onApprove(entry.id)}>
@@ -128,6 +139,7 @@ function EntryRow({
           </Button>
         </div>
       )}
+
     </Card>
   );
 }
