@@ -14,6 +14,7 @@ interface Body {
   code?: string;
   realm_id?: string;
   redirect_uri?: string;
+  environment?: string;
 }
 
 Deno.serve(async (req: Request) => {
