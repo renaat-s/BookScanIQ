@@ -305,10 +305,11 @@ export function ReviewQueueTab() {
       )}
 
       <Tabs defaultValue="pending" className="space-y-4">
-        <TabsList>
+        <TabsList className="flex-wrap h-auto">
           <TabsTrigger value="pending">Pending ({pending.length})</TabsTrigger>
-          <TabsTrigger value="approved">Approved ({approved.length})</TabsTrigger>
-          <TabsTrigger value="rejected">Rejected ({rejected.length})</TabsTrigger>
+          <TabsTrigger value="approved">Approved ({approvedList.length})</TabsTrigger>
+          <TabsTrigger value="exported">Exported ({exportedList.length})</TabsTrigger>
+          <TabsTrigger value="rejected">Rejected ({rejectedThisMonth.length})</TabsTrigger>
         </TabsList>
 
         <TabsContent value="pending" className="space-y-3 m-0">
@@ -332,26 +333,57 @@ export function ReviewQueueTab() {
         </TabsContent>
 
         <TabsContent value="approved" className="space-y-3 m-0">
-          {approved.slice(0, 100).map((e) => (
-            <EntryRow
-              key={e.id}
-              entry={e}
-              selected={false}
-              onSelect={onSelect}
-              onApprove={() => undefined}
-              onReject={() => undefined}
-              showActions={false}
-            />
-          ))}
+          <p className="text-xs text-muted-foreground">
+            Entries that have not been exported yet can be sent back to Pending. Exported
+            entries move to the Exported window 12 hours after export.
+          </p>
+          {approvedList.length === 0 ? (
+            <p className="py-12 text-center text-sm text-muted-foreground">
+              No approved documents this month.
+            </p>
+          ) : (
+            approvedList.slice(0, 100).map((e) => (
+              <EntryRow
+                key={e.id}
+                entry={e}
+                selected={false}
+                onSelect={onSelect}
+                onApprove={() => undefined}
+                onReject={() => undefined}
+                onUnapprove={(id) => setStatus([id], "pending")}
+                showActions={false}
+              />
+            ))
+          )}
+        </TabsContent>
+
+        <TabsContent value="exported" className="space-y-3 m-0">
+          {exportedList.length === 0 ? (
+            <p className="py-12 text-center text-sm text-muted-foreground">
+              Nothing has been exported yet this month.
+            </p>
+          ) : (
+            exportedList.slice(0, 100).map((e) => (
+              <EntryRow
+                key={e.id}
+                entry={e}
+                selected={false}
+                onSelect={onSelect}
+                onApprove={() => undefined}
+                onReject={() => undefined}
+                showActions={false}
+              />
+            ))
+          )}
         </TabsContent>
 
         <TabsContent value="rejected" className="space-y-3 m-0">
-          {rejected.length === 0 ? (
+          {rejectedThisMonth.length === 0 ? (
             <p className="py-12 text-center text-sm text-muted-foreground">
               No rejected documents.
             </p>
           ) : (
-            rejected.map((e) => (
+            rejectedThisMonth.map((e) => (
               <EntryRow
                 key={e.id}
                 entry={e}
@@ -365,8 +397,15 @@ export function ReviewQueueTab() {
           )}
         </TabsContent>
       </Tabs>
+
+      <p className="text-xs text-muted-foreground">
+        Approved, exported and rejected entries roll over at the start of each financial
+        month and remain permanently viewable in the Ledger Log under the Audit tab.
+        Pending entries are never cleared.
+      </p>
     </div>
   );
 }
+
 
 export default ReviewQueueTab;
