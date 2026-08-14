@@ -264,11 +264,15 @@ export function ReviewQueueTab() {
           <p className="text-2xl font-semibold mt-1">{formatMoney(pendingValue)}</p>
         </Card>
         <Card className="p-4">
-          <p className="text-xs text-muted-foreground">Approved / rejected</p>
+          <p className="text-xs text-muted-foreground">Approved / exported / rejected</p>
           <p className="text-2xl font-semibold mt-1">
-            {approved.length} <span className="text-muted-foreground text-base">/ {rejected.length}</span>
+            {approvedList.length}{" "}
+            <span className="text-muted-foreground text-base">
+              / {exportedList.length} / {rejectedThisMonth.length}
+            </span>
           </p>
         </Card>
+
       </div>
 
       {selected.size > 0 && (
