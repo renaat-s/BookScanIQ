@@ -47,6 +47,7 @@ import {
   ShieldOff,
   Brain,
   Lock,
+  Info,
 } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { Switch } from '@/components/ui/switch';
@@ -658,6 +659,23 @@ const Settings = () => {
                   Connect QuickBooks
                 </Button>
               )}
+
+              <div className="rounded-lg border border-amber-500/30 bg-amber-500/5 p-4 space-y-2">
+                <div className="flex items-start gap-3">
+                  <Info className="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
+                  <div className="space-y-1">
+                    <p className="text-sm font-semibold text-foreground">
+                      QuickBooks doesn't support HTML documents
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      QuickBooks can't accept invoices, receipts, or bills that are supplied as
+                      HTML documents. If InvoiceIQ exports an entry that came from an HTML
+                      source, it won't appear inside QuickBooks afterwards — that's why some
+                      exported entries may seem missing from your books.
+                    </p>
+                  </div>
+                </div>
+              </div>
 
               {qbConnected && (
                 <div className="space-y-4 rounded-lg border border-border/60 bg-muted/30 p-4">
