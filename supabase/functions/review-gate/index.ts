@@ -107,20 +107,23 @@ Deno.serve(async (req) => {
       // Fallback currency so n8n never receives a null/empty CurrencyRef.
       const { data: creds } = await admin
         .from("user_credentials")
-        .select("default_currency")
+        .select("default_currency, qb_home_currency")
         .eq("user_id", userId)
         .maybeSingle();
-      const defaultCurrency =
-        ((creds as { default_currency?: string | null } | null)?.default_currency || "GBP").toUpperCase();
+      const credRow = creds as { default_currency?: string | null; qb_home_currency?: string | null } | null;
+      const defaultCurrency = (credRow?.default_currency || "GBP").toUpperCase();
+      const homeCurrency = (credRow?.qb_home_currency || "USD").toUpperCase();
 
-      const entries = (data ?? []).map((e: Record<string, unknown>) => ({
-        ...e,
-        currency: (e.currency as string | null) || defaultCurrency,
-        exchange_rate: (e.exchange_rate as number | null) ?? null,
-      }));
+      const entries = await Promise.all(
+        (data ?? []).map(async (e: Record<string, unknown>) => {
+          const currency = ((e.currency as string | null) || defaultCurrency).toUpperCase();
+          const exchange_rate = currency === homeCurrency ? null : await getRate(currency, homeCurrency);
+          return { ...e, currency, exchange_rate };
+        }),
+      );
 
       return json(
-        { dryRun, gateEnabled, qbEnvironment, qbApiBaseUrl, defaultCurrency, entries },
+        { dryRun, gateEnabled, qbEnvironment, qbApiBaseUrl, defaultCurrency, homeCurrency, entries },
         corsHeaders,
       );
     }
