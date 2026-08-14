@@ -412,6 +412,7 @@ export type Database = {
           google_refresh_token: string | null
           id: string
           last_ledger_sync_at: string | null
+          qb_environment: string
           qb_home_currency: string
           qb_realm_id: string | null
           quickbooks_expense_account: string | null
@@ -436,6 +437,7 @@ export type Database = {
           google_refresh_token?: string | null
           id?: string
           last_ledger_sync_at?: string | null
+          qb_environment?: string
           qb_home_currency?: string
           qb_realm_id?: string | null
           quickbooks_expense_account?: string | null
@@ -460,6 +462,7 @@ export type Database = {
           google_refresh_token?: string | null
           id?: string
           last_ledger_sync_at?: string | null
+          qb_environment?: string
           qb_home_currency?: string
           qb_realm_id?: string | null
           quickbooks_expense_account?: string | null

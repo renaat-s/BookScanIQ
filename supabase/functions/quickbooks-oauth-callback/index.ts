@@ -14,6 +14,7 @@ interface Body {
   code?: string;
   realm_id?: string;
   redirect_uri?: string;
+  environment?: string;
 }
 
 Deno.serve(async (req: Request) => {
@@ -85,8 +86,14 @@ Deno.serve(async (req: Request) => {
       return json({ error: "No refresh_token returned by Intuit" }, 400);
     }
 
-    // 1b) Resolve the realm's home currency from CompanyInfo
-    const qbEnvironment = (Deno.env.get("QUICKBOOKS_ENVIRONMENT") ?? "production").toLowerCase();
+    // 1b) Resolve environment (never hardcoded) and the realm's home currency
+    const envCandidate = (
+      Deno.env.get("QB_ENV") ||
+      body.environment ||
+      Deno.env.get("QUICKBOOKS_ENVIRONMENT") ||
+      "sandbox"
+    ).toLowerCase();
+    const qbEnvironment = envCandidate === "production" ? "production" : "sandbox";
     const qbApiBaseUrl =
       qbEnvironment === "sandbox"
         ? "https://sandbox-quickbooks.api.intuit.com"
@@ -118,6 +125,7 @@ Deno.serve(async (req: Request) => {
         qb_realm_id: realmId,
         quickbooks_refresh_token: refreshToken,
         qb_home_currency: homeCurrency,
+        qb_environment: qbEnvironment,
       })
       .eq("user_id", userId)
       .select("user_id");
