@@ -17,14 +17,17 @@ import { currencySymbol, dominantCurrency, formatMoney } from "@/lib/currency";
 
 // Smart axis tick: pick unit + precision based on magnitude so small values
 // aren't all rounded down to "$0k".
-const formatAxisMoney = (v: number) => {
-  const abs = Math.abs(v);
-  if (abs === 0) return "$0";
-  if (abs >= 1_000_000) return `$${(v / 1_000_000).toFixed(abs >= 10_000_000 ? 0 : 1)}M`;
-  if (abs >= 10_000) return `$${Math.round(v / 1000)}k`;
-  if (abs >= 1_000) return `$${(v / 1000).toFixed(1)}k`;
-  if (abs >= 100) return `$${Math.round(v)}`;
-  return `$${v.toFixed(0)}`;
+const makeAxisFormatter = (currency: string) => {
+  const sym = currencySymbol(currency);
+  return (v: number) => {
+    const abs = Math.abs(v);
+    if (abs === 0) return `${sym}0`;
+    if (abs >= 1_000_000) return `${sym}${(v / 1_000_000).toFixed(abs >= 10_000_000 ? 0 : 1)}M`;
+    if (abs >= 10_000) return `${sym}${Math.round(v / 1000)}k`;
+    if (abs >= 1_000) return `${sym}${(v / 1000).toFixed(1)}k`;
+    if (abs >= 100) return `${sym}${Math.round(v)}`;
+    return `${sym}${v.toFixed(0)}`;
+  };
 };
 
 const monthLabel = (key: string) => {
@@ -56,6 +59,9 @@ interface AuditRow {
 
 const AdvancedAnalytics = ({ entries }: Props) => {
   const { user } = useAuth();
+  // Charts and totals use the currency the underlying ledger entries carry.
+  const currency = useMemo(() => dominantCurrency(entries), [entries]);
+  const formatAxisMoney = useMemo(() => makeAxisFormatter(currency), [currency]);
   const [scanJobs, setScanJobs] = useState<ScanJobRow[]>([]);
   const [syncEvents, setSyncEvents] = useState<AuditRow[]>([]);
 
@@ -212,7 +218,7 @@ const AdvancedAnalytics = ({ entries }: Props) => {
                 <YAxis tickLine={false} axisLine={false} className="text-xs" tickFormatter={formatAxisMoney} />
                 <RTooltip
                   contentStyle={{ background: "hsl(var(--popover))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 12 }}
-                  formatter={(v: number | string) => formatMoney(Number(v))}
+                  formatter={(v: number | string) => formatMoney(Number(v), currency)}
                 />
                 <Line type="monotone" dataKey="income" stroke="hsl(var(--success))" strokeWidth={2} dot={{ r: 3 }} />
                 <Line type="monotone" dataKey="expense" stroke="hsl(var(--destructive))" strokeWidth={2} dot={{ r: 3 }} />
@@ -240,7 +246,7 @@ const AdvancedAnalytics = ({ entries }: Props) => {
                   <YAxis dataKey="name" type="category" tickLine={false} axisLine={false} width={110} className="text-xs" />
                   <RTooltip
                     contentStyle={{ background: "hsl(var(--popover))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 12 }}
-                    formatter={(v: number | string) => formatMoney(Number(v))}
+                    formatter={(v: number | string) => formatMoney(Number(v), currency)}
                   />
                   <Bar dataKey="value" fill="hsl(var(--primary))" radius={[0, 4, 4, 0]} />
                 </BarChart>
