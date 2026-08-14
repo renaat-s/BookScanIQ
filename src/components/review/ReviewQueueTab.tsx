@@ -31,12 +31,23 @@ const formatDate = (raw: string | null) => {
     : d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
 };
 
+const EXPORT_HOLD_MS = 12 * 60 * 60 * 1000;
+
+const isCurrentMonth = (entry: ReviewEntry) => {
+  const raw = entry.reviewed_at || entry.entry_date || entry.created_at;
+  const d = new Date(raw);
+  if (Number.isNaN(d.getTime())) return true;
+  const now = new Date();
+  return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth();
+};
+
 function EntryRow({
   entry,
   selected,
   onSelect,
   onApprove,
   onReject,
+  onUnapprove,
   showActions,
 }: {
   entry: ReviewEntry;
@@ -44,8 +55,10 @@ function EntryRow({
   onSelect: (id: string, checked: boolean) => void;
   onApprove: (id: string) => void;
   onReject: (id: string) => void;
+  onUnapprove?: (id: string) => void;
   showActions: boolean;
 }) {
+
   const { lowCog } = useLowCogMode();
   const isIncome = entry.type === "income";
   const isUncategorized = entry.type === "uncategorized";
