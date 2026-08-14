@@ -17,6 +17,7 @@ import {
   BookOpen,
 } from "lucide-react";
 import { useLedgerLog } from "@/hooks/useLedgerLog";
+import { formatMoney } from "@/lib/currency";
 
 type FeedItem = {
   id: string;
