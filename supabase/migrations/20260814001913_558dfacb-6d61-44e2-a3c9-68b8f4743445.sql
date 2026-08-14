@@ -1,0 +1,1 @@
+ALTER TABLE public.user_credentials ADD COLUMN IF NOT EXISTS qb_environment TEXT NOT NULL DEFAULT 'sandbox';
