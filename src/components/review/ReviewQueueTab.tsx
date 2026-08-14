@@ -12,7 +12,9 @@ import {
   ExternalLink,
   Lock,
   RefreshCw,
+  Undo2,
   XCircle,
+
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -31,12 +33,23 @@ const formatDate = (raw: string | null) => {
     : d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
 };
 
+const EXPORT_HOLD_MS = 12 * 60 * 60 * 1000;
+
+const isCurrentMonth = (entry: ReviewEntry) => {
+  const raw = entry.reviewed_at || entry.entry_date || entry.created_at;
+  const d = new Date(raw);
+  if (Number.isNaN(d.getTime())) return true;
+  const now = new Date();
+  return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth();
+};
+
 function EntryRow({
   entry,
   selected,
   onSelect,
   onApprove,
   onReject,
+  onUnapprove,
   showActions,
 }: {
   entry: ReviewEntry;
@@ -44,8 +57,10 @@ function EntryRow({
   onSelect: (id: string, checked: boolean) => void;
   onApprove: (id: string) => void;
   onReject: (id: string) => void;
+  onUnapprove?: (id: string) => void;
   showActions: boolean;
 }) {
+
   const { lowCog } = useLowCogMode();
   const isIncome = entry.type === "income";
   const isUncategorized = entry.type === "uncategorized";
@@ -105,6 +120,17 @@ function EntryRow({
         </Button>
       )}
 
+      {onUnapprove && !entry.exported_at && (
+        <Button
+          size="sm"
+          variant="outline"
+          className="gap-1.5"
+          onClick={() => onUnapprove(entry.id)}
+        >
+          <Undo2 className="w-4 h-4" /> Move to pending
+        </Button>
+      )}
+
       {showActions && (
         <div className="flex gap-2">
           <Button size="sm" className="gap-1.5" onClick={() => onApprove(entry.id)}>
@@ -115,6 +141,7 @@ function EntryRow({
           </Button>
         </div>
       )}
+
     </Card>
   );
 }
@@ -141,6 +168,34 @@ export function ReviewQueueTab() {
     () => pending.reduce((sum, e) => sum + (e.amount || 0), 0),
     [pending],
   );
+
+  // Monthly reset: approved / exported / rejected windows only show the current
+  // financial month. Older entries stay permanently in the Ledger Log (Audit tab).
+  const approvedThisMonth = useMemo(
+    () => approved.filter(isCurrentMonth),
+    [approved],
+  );
+  const rejectedThisMonth = useMemo(
+    () => rejected.filter(isCurrentMonth),
+    [rejected],
+  );
+
+  // Exported entries move out of Approved automatically 12 hours after export.
+  const { approvedList, exportedList } = useMemo(() => {
+    const now = Date.now();
+    const approvedList: ReviewEntry[] = [];
+    const exportedList: ReviewEntry[] = [];
+    for (const e of approvedThisMonth) {
+      const exportedAt = e.exported_at ? new Date(e.exported_at).getTime() : null;
+      if (exportedAt && !Number.isNaN(exportedAt) && now - exportedAt >= EXPORT_HOLD_MS) {
+        exportedList.push(e);
+      } else {
+        approvedList.push(e);
+      }
+    }
+    return { approvedList, exportedList };
+  }, [approvedThisMonth]);
+
 
   const onSelect = (id: string, checked: boolean) =>
     setSelected((prev) => {
@@ -209,11 +264,15 @@ export function ReviewQueueTab() {
           <p className="text-2xl font-semibold mt-1">{formatMoney(pendingValue)}</p>
         </Card>
         <Card className="p-4">
-          <p className="text-xs text-muted-foreground">Approved / rejected</p>
+          <p className="text-xs text-muted-foreground">Approved / exported / rejected</p>
           <p className="text-2xl font-semibold mt-1">
-            {approved.length} <span className="text-muted-foreground text-base">/ {rejected.length}</span>
+            {approvedList.length}{" "}
+            <span className="text-muted-foreground text-base">
+              / {exportedList.length} / {rejectedThisMonth.length}
+            </span>
           </p>
         </Card>
+
       </div>
 
       {selected.size > 0 && (
@@ -246,10 +305,11 @@ export function ReviewQueueTab() {
       )}
 
       <Tabs defaultValue="pending" className="space-y-4">
-        <TabsList>
+        <TabsList className="flex-wrap h-auto">
           <TabsTrigger value="pending">Pending ({pending.length})</TabsTrigger>
-          <TabsTrigger value="approved">Approved ({approved.length})</TabsTrigger>
-          <TabsTrigger value="rejected">Rejected ({rejected.length})</TabsTrigger>
+          <TabsTrigger value="approved">Approved ({approvedList.length})</TabsTrigger>
+          <TabsTrigger value="exported">Exported ({exportedList.length})</TabsTrigger>
+          <TabsTrigger value="rejected">Rejected ({rejectedThisMonth.length})</TabsTrigger>
         </TabsList>
 
         <TabsContent value="pending" className="space-y-3 m-0">
@@ -273,26 +333,57 @@ export function ReviewQueueTab() {
         </TabsContent>
 
         <TabsContent value="approved" className="space-y-3 m-0">
-          {approved.slice(0, 100).map((e) => (
-            <EntryRow
-              key={e.id}
-              entry={e}
-              selected={false}
-              onSelect={onSelect}
-              onApprove={() => undefined}
-              onReject={() => undefined}
-              showActions={false}
-            />
-          ))}
+          <p className="text-xs text-muted-foreground">
+            Entries that have not been exported yet can be sent back to Pending. Exported
+            entries move to the Exported window 12 hours after export.
+          </p>
+          {approvedList.length === 0 ? (
+            <p className="py-12 text-center text-sm text-muted-foreground">
+              No approved documents this month.
+            </p>
+          ) : (
+            approvedList.slice(0, 100).map((e) => (
+              <EntryRow
+                key={e.id}
+                entry={e}
+                selected={false}
+                onSelect={onSelect}
+                onApprove={() => undefined}
+                onReject={() => undefined}
+                onUnapprove={(id) => setStatus([id], "pending")}
+                showActions={false}
+              />
+            ))
+          )}
+        </TabsContent>
+
+        <TabsContent value="exported" className="space-y-3 m-0">
+          {exportedList.length === 0 ? (
+            <p className="py-12 text-center text-sm text-muted-foreground">
+              Nothing has been exported yet this month.
+            </p>
+          ) : (
+            exportedList.slice(0, 100).map((e) => (
+              <EntryRow
+                key={e.id}
+                entry={e}
+                selected={false}
+                onSelect={onSelect}
+                onApprove={() => undefined}
+                onReject={() => undefined}
+                showActions={false}
+              />
+            ))
+          )}
         </TabsContent>
 
         <TabsContent value="rejected" className="space-y-3 m-0">
-          {rejected.length === 0 ? (
+          {rejectedThisMonth.length === 0 ? (
             <p className="py-12 text-center text-sm text-muted-foreground">
               No rejected documents.
             </p>
           ) : (
-            rejected.map((e) => (
+            rejectedThisMonth.map((e) => (
               <EntryRow
                 key={e.id}
                 entry={e}
@@ -306,8 +397,15 @@ export function ReviewQueueTab() {
           )}
         </TabsContent>
       </Tabs>
+
+      <p className="text-xs text-muted-foreground">
+        Approved, exported and rejected entries roll over at the start of each financial
+        month and remain permanently viewable in the Ledger Log under the Audit tab.
+        Pending entries are never cleared.
+      </p>
     </div>
   );
 }
+
 
 export default ReviewQueueTab;
