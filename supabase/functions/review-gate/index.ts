@@ -6,6 +6,25 @@ import { corsHeadersFor } from "../_shared/cors.ts";
 const json = (b: unknown, headers: Record<string, string>, s = 200) =>
   new Response(JSON.stringify(b), { status: s, headers: { ...headers, "Content-Type": "application/json" } });
 
+// QuickBooks environment resolution — never hardcoded.
+// Priority: QB_ENV secret > per-user qb_environment > legacy QUICKBOOKS_ENVIRONMENT > sandbox.
+function resolveQbEnv(userValue?: string | null): "sandbox" | "production" {
+  const candidate = (
+    Deno.env.get("QB_ENV") ||
+    userValue ||
+    Deno.env.get("QUICKBOOKS_ENVIRONMENT") ||
+    "sandbox"
+  ).toLowerCase();
+  return candidate === "production" ? "production" : "sandbox";
+}
+
+function qbBaseUrl(env: "sandbox" | "production"): string {
+  return env === "sandbox"
+    ? "https://sandbox-quickbooks.api.intuit.com"
+    : "https://quickbooks.api.intuit.com";
+}
+
+
 // Warm-instance FX cache: "GBP>USD" -> { rate, ts }
 const fxCache = new Map<string, { rate: number; ts: number }>();
 const FX_TTL_MS = 60 * 60 * 1000;
