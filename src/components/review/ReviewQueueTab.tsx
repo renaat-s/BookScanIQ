@@ -169,6 +169,34 @@ export function ReviewQueueTab() {
     [pending],
   );
 
+  // Monthly reset: approved / exported / rejected windows only show the current
+  // financial month. Older entries stay permanently in the Ledger Log (Audit tab).
+  const approvedThisMonth = useMemo(
+    () => approved.filter(isCurrentMonth),
+    [approved],
+  );
+  const rejectedThisMonth = useMemo(
+    () => rejected.filter(isCurrentMonth),
+    [rejected],
+  );
+
+  // Exported entries move out of Approved automatically 12 hours after export.
+  const { approvedList, exportedList } = useMemo(() => {
+    const now = Date.now();
+    const approvedList: ReviewEntry[] = [];
+    const exportedList: ReviewEntry[] = [];
+    for (const e of approvedThisMonth) {
+      const exportedAt = e.exported_at ? new Date(e.exported_at).getTime() : null;
+      if (exportedAt && !Number.isNaN(exportedAt) && now - exportedAt >= EXPORT_HOLD_MS) {
+        exportedList.push(e);
+      } else {
+        approvedList.push(e);
+      }
+    }
+    return { approvedList, exportedList };
+  }, [approvedThisMonth]);
+
+
   const onSelect = (id: string, checked: boolean) =>
     setSelected((prev) => {
       const next = new Set(prev);
