@@ -85,6 +85,31 @@ Deno.serve(async (req: Request) => {
       return json({ error: "No refresh_token returned by Intuit" }, 400);
     }
 
+    // 1b) Resolve the realm's home currency from CompanyInfo
+    const qbEnvironment = (Deno.env.get("QUICKBOOKS_ENVIRONMENT") ?? "production").toLowerCase();
+    const qbApiBaseUrl =
+      qbEnvironment === "sandbox"
+        ? "https://sandbox-quickbooks.api.intuit.com"
+        : "https://quickbooks.api.intuit.com";
+    let homeCurrency = "USD";
+    try {
+      const ciRes = await fetch(
+        `${qbApiBaseUrl}/v3/company/${realmId}/companyinfo/${realmId}?minorversion=73`,
+        {
+          headers: {
+            Authorization: `Bearer ${tokenJson.access_token}`,
+            Accept: "application/json",
+          },
+        },
+      );
+      const ciJson = await ciRes.json();
+      const code = ciJson?.CompanyInfo?.Currency?.code ?? ciJson?.CompanyInfo?.Country;
+      if (ciJson?.CompanyInfo?.Currency?.code) homeCurrency = String(ciJson.CompanyInfo.Currency.code).toUpperCase();
+      else console.warn("CompanyInfo currency missing", code);
+    } catch (e) {
+      console.error("CompanyInfo lookup failed:", e);
+    }
+
     // 2) Persist to user_credentials (atomic merge)
     const adminClient = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
     const { data: updated, error: updateErr } = await adminClient
@@ -92,6 +117,7 @@ Deno.serve(async (req: Request) => {
       .update({
         qb_realm_id: realmId,
         quickbooks_refresh_token: refreshToken,
+        qb_home_currency: homeCurrency,
       })
       .eq("user_id", userId)
       .select("user_id");
