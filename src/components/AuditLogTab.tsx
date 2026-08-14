@@ -17,6 +17,7 @@ import {
   BookOpen,
 } from "lucide-react";
 import { useLedgerLog } from "@/hooks/useLedgerLog";
+import { formatMoney } from "@/lib/currency";
 
 type FeedItem = {
   id: string;
@@ -272,8 +273,6 @@ const LedgerLogCard = () => {
       .slice(0, 100);
   }, [entries, query]);
 
-  const formatMoney = (n: number) =>
-    n.toLocaleString(undefined, { style: "currency", currency: "USD", maximumFractionDigits: 0 });
 
   return (
     <Card className="border-border/60">
@@ -351,7 +350,7 @@ const LedgerLogCard = () => {
                         {e.type}
                       </Badge>
                     </td>
-                    <td className="p-2 text-right tabular-nums font-medium">{formatMoney(e.amount)}</td>
+                    <td className="p-2 text-right tabular-nums font-medium">{formatMoney(e.amount, e.currency)}</td>
                     <td className="p-2">
                       {e.verified_present ? (
                         <span className="text-xs text-muted-foreground">In sheet</span>

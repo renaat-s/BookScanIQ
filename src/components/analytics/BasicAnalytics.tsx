@@ -5,9 +5,8 @@ import { Badge } from "@/components/ui/badge";
 import { AlertTriangle, CheckCircle2, FileText, TrendingUp, TrendingDown, Wallet, Receipt, ScanLine } from "lucide-react";
 import type { LedgerEntry } from "@/hooks/useLedgerLog";
 import type { ScanUsage } from "@/hooks/useScanUsage";
+import { dominantCurrency, formatMoney } from "@/lib/currency";
 
-const formatMoney = (n: number) =>
-  n.toLocaleString(undefined, { style: "currency", currency: "USD", maximumFractionDigits: 0 });
 
 interface Props {
   entries: LedgerEntry[];
@@ -51,6 +50,9 @@ const BasicAnalytics = ({ entries, monthKey, usage }: Props) => {
   }, [monthEntries]);
 
   const recent = useMemo(() => entries.slice(0, 10), [entries]);
+
+  // Totals inherit the currency the entries were captured with on the Ledger Sheet.
+  const monthCurrency = useMemo(() => dominantCurrency(monthEntries), [monthEntries]);
 
   const usagePct = usage.percent;
   const usageColor = usage.atCap
@@ -102,7 +104,7 @@ const BasicAnalytics = ({ entries, monthKey, usage }: Props) => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-success tabular-nums">{formatMoney(totals.income)}</div>
+            <div className="text-2xl font-bold text-success tabular-nums">{formatMoney(totals.income, monthCurrency)}</div>
             <p className="text-xs text-muted-foreground">This month</p>
           </CardContent>
         </Card>
@@ -114,7 +116,7 @@ const BasicAnalytics = ({ entries, monthKey, usage }: Props) => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-destructive tabular-nums">{formatMoney(totals.expense)}</div>
+            <div className="text-2xl font-bold text-destructive tabular-nums">{formatMoney(totals.expense, monthCurrency)}</div>
             <p className="text-xs text-muted-foreground">This month</p>
           </CardContent>
         </Card>
@@ -127,7 +129,7 @@ const BasicAnalytics = ({ entries, monthKey, usage }: Props) => {
           </CardHeader>
           <CardContent>
             <div className={`text-2xl font-bold tabular-nums ${totals.net >= 0 ? "text-success" : "text-destructive"}`}>
-              {formatMoney(totals.net)}
+              {formatMoney(totals.net, monthCurrency)}
             </div>
             <p className="text-xs text-muted-foreground">This month</p>
           </CardContent>
@@ -208,7 +210,7 @@ const BasicAnalytics = ({ entries, monthKey, usage }: Props) => {
                       <div className="text-right shrink-0">
                         <p className="text-sm font-semibold tabular-nums">
                           {e.type === "income" ? "+" : e.type === "expense" ? "−" : ""}
-                          {formatMoney(e.amount)}
+                          {formatMoney(e.amount, e.currency)}
                         </p>
                         <Badge variant="outline" className={`text-[10px] gap-1 border-0 ${status.color}`}>
                           {status.icon}

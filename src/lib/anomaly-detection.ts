@@ -1,4 +1,5 @@
 import type { LedgerEntry } from "@/hooks/useLedgerLog";
+import { dominantCurrency, formatMoney } from "@/lib/currency";
 
 export type AlertKind = "duplicate" | "anomaly";
 export type AlertConfidence = "high" | "medium";
@@ -59,12 +60,8 @@ function daysApart(a: Date, b: Date): number {
   return Math.abs(a.getTime() - b.getTime()) / 86_400_000;
 }
 
-function fmtMoney(n: number): string {
-  return new Intl.NumberFormat("en-GB", {
-    style: "currency",
-    currency: "GBP",
-    maximumFractionDigits: 2,
-  }).format(n);
+function fmtMoney(n: number, currency?: string | null): string {
+  return formatMoney(n, currency);
 }
 
 function fmtDate(d: Date | null): string {
@@ -128,8 +125,8 @@ export function findDuplicates(entries: LedgerEntry[]): DetectedAlert[] {
         confidence: sameDay ? "high" : "medium",
         title: `Possible duplicate from ${vendorLabel}`,
         reason: sameDay
-          ? `${cluster.length} entries from ${vendorLabel} for ${fmtMoney(amount)} on the same date (${fmtDate(dates[0])}).`
-          : `${cluster.length} entries from ${vendorLabel} for ${fmtMoney(amount)} dated ${spread} day${spread === 1 ? "" : "s"} apart.`,
+          ? `${cluster.length} entries from ${vendorLabel} for ${fmtMoney(amount, first.currency)} on the same date (${fmtDate(dates[0])}).`
+          : `${cluster.length} entries from ${vendorLabel} for ${fmtMoney(amount, first.currency)} dated ${spread} day${spread === 1 ? "" : "s"} apart.`,
         entries: cluster,
       });
       cluster = [];
@@ -218,6 +215,7 @@ export function findAnomalies(
 
       const ratio = current / priorAvg;
       if (ratio >= SPIKE_MULTIPLIER && current - priorAvg >= MIN_ABS_DIFFERENCE) {
+        const groupCurrency = dominantCurrency(list);
         const involved = list.filter((e) => {
           const d = entryDate(e);
           return d && monthKey(d) === currentMonth;
@@ -227,7 +225,7 @@ export function findAnomalies(
           kind: "anomaly",
           confidence: ratio >= SPIKE_MULTIPLIER * 2 ? "high" : "medium",
           title: `${label} spend is unusually high`,
-          reason: `Spend with ${label} this month is ${fmtMoney(current)}, about ${ratio.toFixed(1)}x the ${priorKeys.length}-month average of ${fmtMoney(priorAvg)}.`,
+          reason: `Spend with ${label} this month is ${fmtMoney(current, groupCurrency)}, about ${ratio.toFixed(1)}x the ${priorKeys.length}-month average of ${fmtMoney(priorAvg, groupCurrency)}.`,
           entries: involved,
         });
       }
@@ -259,7 +257,7 @@ export function findAnomalies(
           kind: "anomaly",
           confidence: "high",
           title: `Unusually large charge from ${e.vendor || "Unknown vendor"}`,
-          reason: `This entry is ${fmtMoney(amount)}, roughly ${(amount / med).toFixed(1)}x the typical ${fmtMoney(med)} you normally see from this vendor.`,
+          reason: `This entry is ${fmtMoney(amount, e.currency)}, roughly ${(amount / med).toFixed(1)}x the typical ${fmtMoney(med, dominantCurrency(list, e.currency || undefined))} you normally see from this vendor.`,
           entries: [e],
         });
       }

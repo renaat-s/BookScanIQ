@@ -21,9 +21,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useReviewQueue, type ReviewEntry } from "@/hooks/useReviewQueue";
 import { getPlanByTier } from "@/lib/stripe-plans";
 import { useLowCogMode } from "@/contexts/LowCogModeContext";
+import { dominantCurrency, formatMoney } from "@/lib/currency";
 
-const formatMoney = (n: number) =>
-  new Intl.NumberFormat("en-GB", { style: "currency", currency: "GBP" }).format(n || 0);
 
 const formatDate = (raw: string | null) => {
   if (!raw) return "No date";
@@ -105,7 +104,7 @@ function EntryRow({
         </p>
       </div>
 
-      <div className="text-right font-semibold tabular-nums">{formatMoney(entry.amount)}</div>
+      <div className="text-right font-semibold tabular-nums">{formatMoney(entry.amount, entry.currency)}</div>
 
       {entry.drive_file_id && (
         <Button variant="ghost" size="sm" asChild>
@@ -261,7 +260,7 @@ export function ReviewQueueTab() {
         </Card>
         <Card className="p-4">
           <p className="text-xs text-muted-foreground">Value on hold</p>
-          <p className="text-2xl font-semibold mt-1">{formatMoney(pendingValue)}</p>
+          <p className="text-2xl font-semibold mt-1">{formatMoney(pendingValue, dominantCurrency(pending))}</p>
         </Card>
         <Card className="p-4">
           <p className="text-xs text-muted-foreground">Approved / exported / rejected</p>
