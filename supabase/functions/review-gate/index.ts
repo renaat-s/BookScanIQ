@@ -6,6 +6,28 @@ import { corsHeadersFor } from "../_shared/cors.ts";
 const json = (b: unknown, headers: Record<string, string>, s = 200) =>
   new Response(JSON.stringify(b), { status: s, headers: { ...headers, "Content-Type": "application/json" } });
 
+// Warm-instance FX cache: "GBP>USD" -> { rate, ts }
+const fxCache = new Map<string, { rate: number; ts: number }>();
+const FX_TTL_MS = 60 * 60 * 1000;
+
+async function getRate(from: string, to: string): Promise<number> {
+  const key = `${from}>${to}`;
+  const hit = fxCache.get(key);
+  if (hit && Date.now() - hit.ts < FX_TTL_MS) return hit.rate;
+  try {
+    const res = await fetch(`https://api.frankfurter.app/latest?from=${from}&to=${to}`);
+    const data = await res.json();
+    const rate = Number(data?.rates?.[to]);
+    if (!Number.isFinite(rate) || rate <= 0) throw new Error("bad rate");
+    fxCache.set(key, { rate, ts: Date.now() });
+    return rate;
+  } catch (e) {
+    console.error("FX lookup failed", key, e);
+    return 1.0;
+  }
+}
+
+
 Deno.serve(async (req) => {
   const corsHeaders = corsHeadersFor(req);
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
