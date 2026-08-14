@@ -98,21 +98,30 @@ Deno.serve(async (req) => {
         .is("exported_at", null)
         .order("entry_date", { ascending: true })
         .limit(500);
-      const qbEnvironment = (Deno.env.get("QUICKBOOKS_ENVIRONMENT") ?? "production").toLowerCase();
-      const qbApiBaseUrl =
-        qbEnvironment === "sandbox"
-          ? "https://sandbox-quickbooks.api.intuit.com"
-          : "https://quickbooks.api.intuit.com";
-
       // Fallback currency so n8n never receives a null/empty CurrencyRef.
       const { data: creds } = await admin
         .from("user_credentials")
-        .select("default_currency, qb_home_currency")
+        .select(
+          "default_currency, qb_home_currency, qb_environment, qb_realm_id, quickbooks_refresh_token",
+        )
         .eq("user_id", userId)
         .maybeSingle();
-      const credRow = creds as { default_currency?: string | null; qb_home_currency?: string | null } | null;
+      const credRow = creds as
+        | {
+            default_currency?: string | null;
+            qb_home_currency?: string | null;
+            qb_environment?: string | null;
+            qb_realm_id?: string | null;
+            quickbooks_refresh_token?: string | null;
+          }
+        | null;
       const defaultCurrency = (credRow?.default_currency || "GBP").toUpperCase();
       const homeCurrency = (credRow?.qb_home_currency || "USD").toUpperCase();
+
+      // Environment resolution: global QB_ENV override wins, then the per-user
+      // column, then the legacy QUICKBOOKS_ENVIRONMENT secret. Never hardcoded.
+      const qbEnvironment = resolveQbEnv(credRow?.qb_environment);
+      const qbApiBaseUrl = qbBaseUrl(qbEnvironment);
 
       const entries = await Promise.all(
         (data ?? []).map(async (e: Record<string, unknown>) => {
@@ -123,7 +132,17 @@ Deno.serve(async (req) => {
       );
 
       return json(
-        { dryRun, gateEnabled, qbEnvironment, qbApiBaseUrl, defaultCurrency, homeCurrency, entries },
+        {
+          dryRun,
+          gateEnabled,
+          qbEnvironment,
+          qbApiBaseUrl,
+          qbRealmId: credRow?.qb_realm_id ?? null,
+          qbRefreshToken: credRow?.quickbooks_refresh_token ?? null,
+          defaultCurrency,
+          homeCurrency,
+          entries,
+        },
         corsHeaders,
       );
     }
