@@ -12,9 +12,8 @@ import { AlertTriangle, TrendingUp, PieChart as PieIcon, RefreshCcw, ScanLine, C
 import type { LedgerEntry } from "@/hooks/useLedgerLog";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
+import { currencySymbol, dominantCurrency, formatMoney } from "@/lib/currency";
 
-const formatMoney = (n: number) =>
-  n.toLocaleString(undefined, { style: "currency", currency: "USD", maximumFractionDigits: 0 });
 
 // Smart axis tick: pick unit + precision based on magnitude so small values
 // aren't all rounded down to "$0k".

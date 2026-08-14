@@ -5,14 +5,13 @@ import { AlertTriangle, Copy, X } from "lucide-react";
 import type { DetectedAlert } from "@/lib/anomaly-detection";
 import { useLowCogMode } from "@/contexts/LowCogModeContext";
 import DriveLinkPreview from "@/components/DriveLinkPreview";
+import { formatMoney } from "@/lib/currency";
 
 interface AlertCardProps {
   alert: DetectedAlert;
   onDismiss: (alert: DetectedAlert) => void;
 }
 
-const formatMoney = (n: number) =>
-  new Intl.NumberFormat("en-GB", { style: "currency", currency: "GBP" }).format(n || 0);
 
 const formatDate = (raw: string | null) => {
   if (!raw) return "No date";
@@ -91,7 +90,7 @@ export function AlertCard({ alert, onDismiss }: AlertCardProps) {
                 </span>
               </div>
               <div className="flex items-center gap-3">
-                <span className="font-mono font-semibold">{formatMoney(Number(entry.amount))}</span>
+                <span className="font-mono font-semibold">{formatMoney(Number(entry.amount), entry.currency)}</span>
                 {entry.drive_file_id && (
                   <DriveLinkPreview
                     url={`https://drive.google.com/file/d/${entry.drive_file_id}/view`}
