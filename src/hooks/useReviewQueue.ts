@@ -19,6 +19,8 @@ export interface ReviewEntry {
   review_note: string | null;
   exported_at: string | null;
   created_at: string;
+  currency: string | null;
+  exchange_rate: number | null;
 }
 
 /**

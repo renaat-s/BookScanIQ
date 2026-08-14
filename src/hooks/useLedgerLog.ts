@@ -15,6 +15,8 @@ export interface LedgerEntry {
   source: string;
   verified_present: boolean;
   created_at: string;
+  currency: string | null;
+  exchange_rate: number | null;
 }
 
 interface UseLedgerLogOptions {

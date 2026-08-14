@@ -1,4 +1,5 @@
 import type { LedgerEntry } from "@/hooks/useLedgerLog";
+import { dominantCurrency, formatMoney } from "@/lib/currency";
 
 export type AlertKind = "duplicate" | "anomaly";
 export type AlertConfidence = "high" | "medium";
@@ -59,12 +60,8 @@ function daysApart(a: Date, b: Date): number {
   return Math.abs(a.getTime() - b.getTime()) / 86_400_000;
 }
 
-function fmtMoney(n: number): string {
-  return new Intl.NumberFormat("en-GB", {
-    style: "currency",
-    currency: "GBP",
-    maximumFractionDigits: 2,
-  }).format(n);
+function fmtMoney(n: number, currency?: string | null): string {
+  return formatMoney(n, currency);
 }
 
 function fmtDate(d: Date | null): string {
