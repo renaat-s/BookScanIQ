@@ -47,6 +47,7 @@ import {
   ShieldOff,
   Brain,
   Lock,
+  Info,
 } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { Switch } from '@/components/ui/switch';
