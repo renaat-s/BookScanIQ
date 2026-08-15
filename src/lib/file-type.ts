@@ -34,16 +34,16 @@ export function fileTypeLabel(value: unknown): string | null {
 export function fileTypeBadgeClass(value: unknown): string {
   switch (normalizeFileType(value)) {
     case "pdf":
-      return "bg-gradient-to-r from-violet-500 to-indigo-600 text-white border-transparent";
+      return "bg-gradient-to-r from-violet-500/90 to-indigo-600/90 text-white/95 border-transparent";
     case "jpeg":
-      return "bg-gradient-to-r from-violet-500 to-indigo-600 text-white border-transparent";
+      return "bg-gradient-to-r from-violet-500/90 to-indigo-600/90 text-white/95 border-transparent";
     case "png":
-      return "bg-sky-400 text-sky-950 border-transparent";
+      return "bg-gradient-to-r from-sky-400/90 to-blue-500/90 text-white/95 border-transparent";
     case "heic":
-      return "bg-sky-400 text-sky-950 border-transparent";
+      return "bg-gradient-to-r from-sky-400/90 to-blue-500/90 text-white/95 border-transparent";
     case "html":
-      return "bg-sky-400 text-sky-950 border-transparent";
+      return "bg-gradient-to-r from-sky-400/90 to-blue-500/90 text-white/95 border-transparent";
     default:
-      return "bg-muted text-muted-foreground border-border";
+      return "bg-muted/80 text-muted-foreground border-border";
   }
 }
