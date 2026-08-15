@@ -26,11 +26,11 @@ const DOC_LABELS: Record<string, string> = {
   unknown: "Unknown file",
 };
 const DOC_COLORS: Record<string, string> = {
-  pdf: "hsl(var(--destructive))",
-  jpeg: "hsl(var(--primary))",
-  png: "hsl(var(--accent))",
-  heic: "hsl(var(--brand-accent))",
-  html: "hsl(var(--warning, var(--muted-foreground)))",
+  pdf: "hsl(258 90% 66%)",
+  jpeg: "hsl(258 90% 66%)",
+  png: "hsl(199 89% 48%)",
+  heic: "hsl(199 89% 48%)",
+  html: "hsl(199 89% 48%)",
   unknown: "hsl(var(--muted-foreground))",
 };
 
