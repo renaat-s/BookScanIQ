@@ -22,6 +22,8 @@ import { useReviewQueue, type ReviewEntry } from "@/hooks/useReviewQueue";
 import { getPlanByTier } from "@/lib/stripe-plans";
 import { useLowCogMode } from "@/contexts/LowCogModeContext";
 import { dominantCurrency, formatMoney } from "@/lib/currency";
+import { fileTypeBadgeClass, fileTypeLabel } from "@/lib/file-type";
+
 
 
 const formatDate = (raw: string | null) => {
