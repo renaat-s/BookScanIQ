@@ -93,9 +93,16 @@ function EntryRow({
           >
             {isIncome ? "Income" : isUncategorized ? "Uncategorized" : "Expense"}
           </Badge>
+          <Badge
+            variant="outline"
+            className={`text-[10px] ${fileTypeBadgeClass(entry.document_type)}`}
+          >
+            {fileTypeLabel(entry.document_type) ?? "Unknown file"}
+          </Badge>
           {entry.exported_at && (
             <Badge variant="outline" className="text-[10px]">Exported</Badge>
           )}
+
         </div>
         <p className="text-xs text-muted-foreground mt-0.5">
           {formatDate(entry.entry_date)}
