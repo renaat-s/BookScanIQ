@@ -50,9 +50,9 @@ const BasicAnalytics = ({ entries, monthKey, usage }: Props) => {
   }, [monthEntries]);
 
   const byType = useMemo(() => {
-    const map: Record<string, number> = { invoice: 0, receipt: 0, bill: 0, other: 0 };
+    const map: Record<string, number> = { pdf: 0, jpeg: 0, png: 0, heic: 0, unknown: 0 };
     monthEntries.forEach((e) => {
-      const t = (e.document_type || "other") as string;
+      const t = normalizeFileType(e.document_type) ?? "unknown";
       map[t] = (map[t] ?? 0) + 1;
     });
     return map;
