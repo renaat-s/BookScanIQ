@@ -41,6 +41,8 @@ export function fileTypeBadgeClass(value: unknown): string {
       return "bg-violet-500/10 text-violet-500 border-violet-500/30";
     case "heic":
       return "bg-amber-500/10 text-amber-500 border-amber-500/30";
+    case "html":
+      return "bg-emerald-500/10 text-emerald-500 border-emerald-500/30";
     default:
       return "bg-muted text-muted-foreground border-border";
   }
