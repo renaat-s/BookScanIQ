@@ -179,7 +179,7 @@ const BasicAnalytics = ({ entries, monthKey, usage }: Props) => {
                     <div key={t} className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <span className="w-2.5 h-2.5 rounded-full" style={{ background: DOC_COLORS[t] }} />
-                        <span className="capitalize text-muted-foreground">{t}</span>
+                        <span className="text-muted-foreground">{DOC_LABELS[t]}</span>
                       </div>
                       <span className="font-semibold tabular-nums">{byType[t]}</span>
                     </div>
