@@ -16,12 +16,13 @@ interface Props {
 }
 
 // Mirrors the canonical file types shown as badges in the Review tab.
-const DOC_TYPES = ["pdf", "jpeg", "png", "heic", "unknown"] as const;
+const DOC_TYPES = ["pdf", "jpeg", "png", "heic", "html", "unknown"] as const;
 const DOC_LABELS: Record<string, string> = {
   pdf: "PDF",
   jpeg: "JPEG/JPG",
   png: "PNG",
   heic: "HEIC/HEIF",
+  html: "HTML",
   unknown: "Unknown file",
 };
 const DOC_COLORS: Record<string, string> = {
@@ -29,6 +30,7 @@ const DOC_COLORS: Record<string, string> = {
   jpeg: "hsl(var(--primary))",
   png: "hsl(var(--accent))",
   heic: "hsl(var(--brand-accent))",
+  html: "hsl(var(--warning, var(--muted-foreground)))",
   unknown: "hsl(var(--muted-foreground))",
 };
 
@@ -51,7 +53,7 @@ const BasicAnalytics = ({ entries, monthKey, usage }: Props) => {
   }, [monthEntries]);
 
   const byType = useMemo(() => {
-    const map: Record<string, number> = { pdf: 0, jpeg: 0, png: 0, heic: 0, unknown: 0 };
+    const map: Record<string, number> = { pdf: 0, jpeg: 0, png: 0, heic: 0, html: 0, unknown: 0 };
     monthEntries.forEach((e) => {
       const t = normalizeFileType(e.document_type) ?? "unknown";
       map[t] = (map[t] ?? 0) + 1;

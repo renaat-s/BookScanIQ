@@ -94,8 +94,9 @@ function extractDriveFileId(v: unknown): string | null {
 
 
 // document_type now carries the *file type* of the source attachment so the
-// n8n backend can branch on it. Only these four are supported end-to-end.
-type DocFileType = "pdf" | "jpeg" | "png" | "heic";
+// n8n backend can branch on it. PDF/JPEG/PNG/HEIC are the processable
+// attachment types; "html" marks a captured email body (not QB-exportable).
+type DocFileType = "pdf" | "jpeg" | "png" | "heic" | "html";
 
 function fileTypeFromText(v: unknown): DocFileType | null {
   const s = String(v ?? "").toLowerCase();
@@ -104,6 +105,7 @@ function fileTypeFromText(v: unknown): DocFileType | null {
   if (s.includes("jpeg") || s.includes("jpg")) return "jpeg";
   if (s.includes("png")) return "png";
   if (s.includes("heic") || s.includes("heif")) return "heic";
+  if (s.includes("html") || s.includes(".htm")) return "html";
   return null;
 }
 

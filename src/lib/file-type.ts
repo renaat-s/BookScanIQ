@@ -2,16 +2,17 @@
  * Canonical document file types InvoiceIQ can process end-to-end.
  * The ledger stores the lowercase key; the UI renders the label.
  */
-export type DocFileType = "pdf" | "jpeg" | "png" | "heic";
+export type DocFileType = "pdf" | "jpeg" | "png" | "heic" | "html";
 
 const LABELS: Record<DocFileType, string> = {
   pdf: "PDF",
   jpeg: "JPEG/JPG",
   png: "PNG",
   heic: "HEIC/HEIF",
+  html: "HTML",
 };
 
-/** Normalises any stored/document hint into one of the four supported keys. */
+/** Normalises any stored/document hint into one of the supported keys. */
 export function normalizeFileType(value: unknown): DocFileType | null {
   const s = String(value ?? "").toLowerCase();
   if (!s) return null;
@@ -19,6 +20,7 @@ export function normalizeFileType(value: unknown): DocFileType | null {
   if (s.includes("jpeg") || s.includes("jpg")) return "jpeg";
   if (s.includes("png")) return "png";
   if (s.includes("heic") || s.includes("heif")) return "heic";
+  if (s.includes("html") || s.includes("htm")) return "html";
   return null;
 }
 
@@ -39,6 +41,8 @@ export function fileTypeBadgeClass(value: unknown): string {
       return "bg-violet-500/10 text-violet-500 border-violet-500/30";
     case "heic":
       return "bg-amber-500/10 text-amber-500 border-amber-500/30";
+    case "html":
+      return "bg-emerald-500/10 text-emerald-500 border-emerald-500/30";
     default:
       return "bg-muted text-muted-foreground border-border";
   }
