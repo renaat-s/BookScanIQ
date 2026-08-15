@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { useLedgerLog } from "@/hooks/useLedgerLog";
 import { formatMoney } from "@/lib/currency";
+import { fileTypeBadgeClass, fileTypeLabel } from "@/lib/file-type";
 
 type FeedItem = {
   id: string;
@@ -323,7 +324,7 @@ const LedgerLogCard = () => {
                   <th className="p-2 font-medium">Month</th>
                   <th className="p-2 font-medium">Date</th>
                   <th className="p-2 font-medium">Vendor</th>
-                  <th className="p-2 font-medium">Category</th>
+                  <th className="p-2 font-medium">File</th>
                   <th className="p-2 font-medium">Type</th>
                   <th className="p-2 font-medium text-right">Amount</th>
                   <th className="p-2 font-medium">Status</th>
@@ -335,7 +336,11 @@ const LedgerLogCard = () => {
                     <td className="p-2 tabular-nums text-xs text-muted-foreground">{e.month}</td>
                     <td className="p-2 text-xs">{e.entry_date ?? "-"}</td>
                     <td className="p-2 truncate max-w-[180px]">{e.vendor || "-"}</td>
-                    <td className="p-2 text-muted-foreground truncate max-w-[140px]">{e.category || "-"}</td>
+                    <td className="p-2">
+                      <Badge variant="outline" className={`text-[10px] ${fileTypeBadgeClass(e.document_type)}`}>
+                        {fileTypeLabel(e.document_type) ?? "Unknown file"}
+                      </Badge>
+                    </td>
                     <td className="p-2">
                       <Badge
                         variant="outline"

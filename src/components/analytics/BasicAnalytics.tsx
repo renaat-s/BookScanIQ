@@ -6,6 +6,7 @@ import { AlertTriangle, CheckCircle2, FileText, TrendingUp, TrendingDown, Wallet
 import type { LedgerEntry } from "@/hooks/useLedgerLog";
 import type { ScanUsage } from "@/hooks/useScanUsage";
 import { dominantCurrency, formatMoney } from "@/lib/currency";
+import { normalizeFileType } from "@/lib/file-type";
 
 
 interface Props {
@@ -14,12 +15,21 @@ interface Props {
   usage: ScanUsage;
 }
 
-const DOC_TYPES = ["invoice", "receipt", "bill", "other"] as const;
+// Mirrors the canonical file types shown as badges in the Review tab.
+const DOC_TYPES = ["pdf", "jpeg", "png", "heic", "unknown"] as const;
+const DOC_LABELS: Record<string, string> = {
+  pdf: "PDF",
+  jpeg: "JPEG/JPG",
+  png: "PNG",
+  heic: "HEIC/HEIF",
+  unknown: "Unknown file",
+};
 const DOC_COLORS: Record<string, string> = {
-  invoice: "hsl(var(--primary))",
-  receipt: "hsl(var(--accent))",
-  bill: "hsl(var(--brand-accent))",
-  other: "hsl(var(--muted-foreground))",
+  pdf: "hsl(var(--destructive))",
+  jpeg: "hsl(var(--primary))",
+  png: "hsl(var(--accent))",
+  heic: "hsl(var(--brand-accent))",
+  unknown: "hsl(var(--muted-foreground))",
 };
 
 const BasicAnalytics = ({ entries, monthKey, usage }: Props) => {
@@ -41,9 +51,9 @@ const BasicAnalytics = ({ entries, monthKey, usage }: Props) => {
   }, [monthEntries]);
 
   const byType = useMemo(() => {
-    const map: Record<string, number> = { invoice: 0, receipt: 0, bill: 0, other: 0 };
+    const map: Record<string, number> = { pdf: 0, jpeg: 0, png: 0, heic: 0, unknown: 0 };
     monthEntries.forEach((e) => {
-      const t = (e.document_type || "other") as string;
+      const t = normalizeFileType(e.document_type) ?? "unknown";
       map[t] = (map[t] ?? 0) + 1;
     });
     return map;
@@ -169,7 +179,7 @@ const BasicAnalytics = ({ entries, monthKey, usage }: Props) => {
                     <div key={t} className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <span className="w-2.5 h-2.5 rounded-full" style={{ background: DOC_COLORS[t] }} />
-                        <span className="capitalize text-muted-foreground">{t}</span>
+                        <span className="text-muted-foreground">{DOC_LABELS[t]}</span>
                       </div>
                       <span className="font-semibold tabular-nums">{byType[t]}</span>
                     </div>
