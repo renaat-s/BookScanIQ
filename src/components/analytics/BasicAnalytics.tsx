@@ -6,6 +6,7 @@ import { AlertTriangle, CheckCircle2, FileText, TrendingUp, TrendingDown, Wallet
 import type { LedgerEntry } from "@/hooks/useLedgerLog";
 import type { ScanUsage } from "@/hooks/useScanUsage";
 import { dominantCurrency, formatMoney } from "@/lib/currency";
+import { normalizeFileType } from "@/lib/file-type";
 
 
 interface Props {
