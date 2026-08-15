@@ -1,0 +1,1 @@
+UPDATE public.ledger_entries SET document_type = NULL WHERE document_type IS NOT NULL AND lower(document_type) NOT IN ('pdf','jpeg','png','heic');
