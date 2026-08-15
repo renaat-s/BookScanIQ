@@ -14,12 +14,21 @@ interface Props {
   usage: ScanUsage;
 }
 
-const DOC_TYPES = ["invoice", "receipt", "bill", "other"] as const;
+// Mirrors the canonical file types shown as badges in the Review tab.
+const DOC_TYPES = ["pdf", "jpeg", "png", "heic", "unknown"] as const;
+const DOC_LABELS: Record<string, string> = {
+  pdf: "PDF",
+  jpeg: "JPEG/JPG",
+  png: "PNG",
+  heic: "HEIC/HEIF",
+  unknown: "Unknown file",
+};
 const DOC_COLORS: Record<string, string> = {
-  invoice: "hsl(var(--primary))",
-  receipt: "hsl(var(--accent))",
-  bill: "hsl(var(--brand-accent))",
-  other: "hsl(var(--muted-foreground))",
+  pdf: "hsl(var(--destructive))",
+  jpeg: "hsl(var(--primary))",
+  png: "hsl(var(--accent))",
+  heic: "hsl(var(--brand-accent))",
+  unknown: "hsl(var(--muted-foreground))",
 };
 
 const BasicAnalytics = ({ entries, monthKey, usage }: Props) => {
