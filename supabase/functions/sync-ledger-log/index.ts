@@ -287,7 +287,7 @@ Deno.serve(async (req) => {
         amount: Math.abs(amt),
         vendor: vendor || null,
         currency,
-        document_type: colIdx.docType >= 0 ? inferDocumentType(r[colIdx.docType]) : inferDocumentType(vendor),
+        document_type: fileTypeFromRow(r),
         drive_file_id: fileId,
         source: "sheet_sync",
         sheet_row_hash: hash,
@@ -295,6 +295,19 @@ Deno.serve(async (req) => {
         last_seen_at: new Date().toISOString(),
       });
     }
+
+    // Any row whose sheet cells gave no filename hint gets resolved against
+    // Drive metadata (mimeType / name), in small concurrent batches.
+    const needsLookup = upserts.filter((u) => !u.document_type && u.drive_file_id);
+    for (let i = 0; i < needsLookup.length; i += 8) {
+      const batch = needsLookup.slice(i, i + 8);
+      await Promise.all(
+        batch.map(async (u) => {
+          u.document_type = await fileTypeFromDrive(u.drive_file_id as string, accessToken);
+        }),
+      );
+    }
+
 
     // Upsert in batches. New rows carry a review_status; existing rows omit it
     // so a user's approve/reject decision is never overwritten by a re-sync.
