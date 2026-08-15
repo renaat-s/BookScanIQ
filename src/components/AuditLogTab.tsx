@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { useLedgerLog } from "@/hooks/useLedgerLog";
 import { formatMoney } from "@/lib/currency";
+import { fileTypeBadgeClass, fileTypeLabel } from "@/lib/file-type";
 
 type FeedItem = {
   id: string;
