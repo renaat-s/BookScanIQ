@@ -93,13 +93,44 @@ function extractDriveFileId(v: unknown): string | null {
 }
 
 
-function inferDocumentType(v: unknown): string {
+// document_type now carries the *file type* of the source attachment so the
+// n8n backend can branch on it. Only these four are supported end-to-end.
+type DocFileType = "pdf" | "jpeg" | "png" | "heic";
+
+function fileTypeFromText(v: unknown): DocFileType | null {
   const s = String(v ?? "").toLowerCase();
-  if (s.includes("invoice")) return "invoice";
-  if (s.includes("receipt")) return "receipt";
-  if (s.includes("bill")) return "bill";
-  return "other";
+  if (!s) return null;
+  if (s.includes("pdf")) return "pdf";
+  if (s.includes("jpeg") || s.includes("jpg")) return "jpeg";
+  if (s.includes("png")) return "png";
+  if (s.includes("heic") || s.includes("heif")) return "heic";
+  return null;
 }
+
+/** Scans every cell of a sheet row for a filename / mime hint. */
+function fileTypeFromRow(row: unknown[]): DocFileType | null {
+  for (const cell of row) {
+    const hit = fileTypeFromText(cell);
+    if (hit) return hit;
+  }
+  return null;
+}
+
+/** Resolves a Drive file's mime type / name when the sheet gives no hint. */
+async function fileTypeFromDrive(fileId: string, accessToken: string): Promise<DocFileType | null> {
+  try {
+    const res = await fetch(
+      `https://www.googleapis.com/drive/v3/files/${encodeURIComponent(fileId)}?fields=name,mimeType&supportsAllDrives=true`,
+      { headers: { Authorization: `Bearer ${accessToken}` } },
+    );
+    if (!res.ok) return null;
+    const meta = await res.json();
+    return fileTypeFromText(meta?.mimeType) ?? fileTypeFromText(meta?.name);
+  } catch (_e) {
+    return null;
+  }
+}
+
 
 Deno.serve(async (req) => {
   const corsHeaders = corsHeadersFor(req);
@@ -256,7 +287,7 @@ Deno.serve(async (req) => {
         amount: Math.abs(amt),
         vendor: vendor || null,
         currency,
-        document_type: colIdx.docType >= 0 ? inferDocumentType(r[colIdx.docType]) : inferDocumentType(vendor),
+        document_type: fileTypeFromRow(r),
         drive_file_id: fileId,
         source: "sheet_sync",
         sheet_row_hash: hash,
@@ -264,6 +295,19 @@ Deno.serve(async (req) => {
         last_seen_at: new Date().toISOString(),
       });
     }
+
+    // Any row whose sheet cells gave no filename hint gets resolved against
+    // Drive metadata (mimeType / name), in small concurrent batches.
+    const needsLookup = upserts.filter((u) => !u.document_type && u.drive_file_id);
+    for (let i = 0; i < needsLookup.length; i += 8) {
+      const batch = needsLookup.slice(i, i + 8);
+      await Promise.all(
+        batch.map(async (u) => {
+          u.document_type = await fileTypeFromDrive(u.drive_file_id as string, accessToken);
+        }),
+      );
+    }
+
 
     // Upsert in batches. New rows carry a review_status; existing rows omit it
     // so a user's approve/reject decision is never overwritten by a re-sync.

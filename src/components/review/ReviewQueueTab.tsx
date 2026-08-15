@@ -22,6 +22,8 @@ import { useReviewQueue, type ReviewEntry } from "@/hooks/useReviewQueue";
 import { getPlanByTier } from "@/lib/stripe-plans";
 import { useLowCogMode } from "@/contexts/LowCogModeContext";
 import { dominantCurrency, formatMoney } from "@/lib/currency";
+import { fileTypeBadgeClass, fileTypeLabel } from "@/lib/file-type";
+
 
 
 const formatDate = (raw: string | null) => {
@@ -93,9 +95,16 @@ function EntryRow({
           >
             {isIncome ? "Income" : isUncategorized ? "Uncategorized" : "Expense"}
           </Badge>
+          <Badge
+            variant="outline"
+            className={`text-[10px] ${fileTypeBadgeClass(entry.document_type)}`}
+          >
+            {fileTypeLabel(entry.document_type) ?? "Unknown file"}
+          </Badge>
           {entry.exported_at && (
             <Badge variant="outline" className="text-[10px]">Exported</Badge>
           )}
+
         </div>
         <p className="text-xs text-muted-foreground mt-0.5">
           {formatDate(entry.entry_date)}
