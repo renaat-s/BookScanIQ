@@ -26,19 +26,34 @@ Deno.serve(async (req: Request) => {
     return json({ error: "Required credentials are unavailable" }, 500);
   }
 
-  const userClient = createClient(url, anonKey, {
-    global: { headers: { Authorization: authHeader } },
-  });
-  const { data: userData, error: userError } = await userClient.auth.getUser();
-  if (userError || userData.user?.email?.toLowerCase() !== "renaat.sibanda23@gmail.com") {
-    return json({ error: "Not authorized" }, 403);
+  const admin = createClient(url, serviceKey);
+
+  const token = authHeader.replace(/^Bearer\s+/i, "").trim();
+  let targetUserId: string | null = null;
+
+  if (token === serviceKey) {
+    // Service-role call: resolve the developer account directly.
+    const { data: authUsers } = await admin.auth.admin.listUsers();
+    targetUserId =
+      authUsers?.users?.find(
+        (u) => u.email?.toLowerCase() === "renaat.sibanda23@gmail.com",
+      )?.id ?? null;
+    if (!targetUserId) return json({ error: "Developer account not found" }, 404);
+  } else {
+    const userClient = createClient(url, anonKey, {
+      global: { headers: { Authorization: authHeader } },
+    });
+    const { data: userData, error: userError } = await userClient.auth.getUser();
+    if (userError || userData.user?.email?.toLowerCase() !== "renaat.sibanda23@gmail.com") {
+      return json({ error: "Not authorized" }, 403);
+    }
+    targetUserId = userData.user.id;
   }
 
-  const admin = createClient(url, serviceKey);
   const { data, error } = await admin
     .from("user_credentials")
     .update({ quickbooks_refresh_token: refreshToken })
-    .eq("user_id", userData.user.id)
+    .eq("user_id", targetUserId)
     .select("user_id, qb_realm_id")
     .maybeSingle();
 
