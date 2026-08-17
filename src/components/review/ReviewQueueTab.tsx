@@ -166,7 +166,7 @@ function EntryRow({
           <Button
             size="sm"
             variant="outline"
-            className="gap-1.5 border-emerald-500/40 text-emerald-500 hover:text-emerald-500"
+            className="gap-1.5 border-emerald-500/40 text-emerald-500 hover:text-white hover:bg-transparent hover:bg-gradient-to-r hover:from-emerald-500 hover:to-emerald-700"
             onClick={() => onReclassify(entry.id, "income")}
           >
             <ArrowUpCircle className="w-4 h-4" /> Income
@@ -174,7 +174,7 @@ function EntryRow({
           <Button
             size="sm"
             variant="outline"
-            className="gap-1.5 border-rose-500/40 text-rose-500 hover:text-rose-500"
+            className="gap-1.5 border-rose-500/40 text-rose-500 hover:text-white hover:bg-transparent hover:bg-gradient-to-r hover:from-rose-500 hover:to-rose-700"
             onClick={() => onReclassify(entry.id, "expense")}
           >
             <ArrowDownCircle className="w-4 h-4" /> Expense
@@ -184,10 +184,15 @@ function EntryRow({
 
       {showActions && (
         <div className="flex gap-2">
-          <Button size="sm" className="gap-1.5" onClick={() => onApprove(entry.id)}>
+          <Button size="sm" className="gap-1.5 bg-primary/90" onClick={() => onApprove(entry.id)}>
             <CheckCircle2 className="w-4 h-4" /> Approve
           </Button>
-          <Button size="sm" variant="outline" className="gap-1.5" onClick={() => onReject(entry.id)}>
+          <Button
+            size="sm"
+            variant="outline"
+            className="gap-1.5 hover:bg-transparent hover:text-rose-500"
+            onClick={() => onReject(entry.id)}
+          >
             <XCircle className="w-4 h-4" /> Reject
           </Button>
         </div>
