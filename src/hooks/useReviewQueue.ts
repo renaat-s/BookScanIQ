@@ -21,6 +21,7 @@ export interface ReviewEntry {
   created_at: string;
   currency: string | null;
   exchange_rate: number | null;
+  original_type: string | null;
 }
 
 /**
@@ -102,13 +103,58 @@ export function useReviewQueue() {
       if (!user) return;
       setWorking(true);
       const previous = entries;
-      setEntries((prev) => prev.map((e) => (e.id === id ? { ...e, type } : e)));
+      const current = entries.find((e) => e.id === id);
+      const originalType = current?.original_type ?? current?.type ?? null;
+      setEntries((prev) =>
+        prev.map((e) => (e.id === id ? { ...e, type, original_type: originalType } : e)),
+      );
       const { error } = await supabase
         .from("ledger_entries")
-        .update({ type })
+        .update({ type, original_type: originalType })
         .eq("user_id", user.id)
         .eq("id", id);
       if (error) setEntries(previous);
+      setWorking(false);
+    },
+    [user, entries],
+  );
+
+  /**
+   * Send rejected entries back to Pending and revert their designation to the
+   * original one captured before any re-classification.
+   */
+  const restoreEntries = useCallback(
+    async (ids: string[]) => {
+      if (!user || ids.length === 0) return;
+      setWorking(true);
+      const previous = entries;
+      const targets = entries.filter((e) => ids.includes(e.id));
+      setEntries((prev) =>
+        prev.map((e) =>
+          ids.includes(e.id)
+            ? {
+                ...e,
+                review_status: "pending" as ReviewStatus,
+                reviewed_at: null,
+                type: e.original_type ?? e.type,
+              }
+            : e,
+        ),
+      );
+      const results = await Promise.all(
+        targets.map((e) =>
+          supabase
+            .from("ledger_entries")
+            .update({
+              review_status: "pending",
+              reviewed_at: null,
+              type: e.original_type ?? e.type,
+            })
+            .eq("user_id", user.id)
+            .eq("id", e.id),
+        ),
+      );
+      if (results.some((r) => r.error)) setEntries(previous);
       setWorking(false);
     },
     [user, entries],
@@ -138,6 +184,7 @@ export function useReviewQueue() {
     toggleQueue,
     setStatus,
     setEntryType,
+    restoreEntries,
     refetch: fetchAll,
   };
 }

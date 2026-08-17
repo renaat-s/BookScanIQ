@@ -195,6 +195,7 @@ export type Database = {
           id: string
           last_seen_at: string
           month: string
+          original_type: string | null
           review_note: string | null
           review_status: string
           reviewed_at: string | null
@@ -219,6 +220,7 @@ export type Database = {
           id?: string
           last_seen_at?: string
           month: string
+          original_type?: string | null
           review_note?: string | null
           review_status?: string
           reviewed_at?: string | null
@@ -243,6 +245,7 @@ export type Database = {
           id?: string
           last_seen_at?: string
           month?: string
+          original_type?: string | null
           review_note?: string | null
           review_status?: string
           reviewed_at?: string | null

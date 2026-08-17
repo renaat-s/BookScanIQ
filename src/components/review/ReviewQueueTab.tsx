@@ -20,6 +20,7 @@ import {
   ExternalLink,
   Lock,
   RefreshCw,
+  RotateCcw,
   Undo2,
   XCircle,
 
@@ -59,6 +60,7 @@ function EntryRow({
   onApprove,
   onReject,
   onUnapprove,
+  onRestore,
   onReclassify,
   showActions,
 }: {
@@ -68,6 +70,7 @@ function EntryRow({
   onApprove: (id: string) => void;
   onReject: (id: string) => void;
   onUnapprove?: (id: string) => void;
+  onRestore?: (id: string) => void;
   onReclassify?: (id: string, type: "income" | "expense") => void;
   showActions: boolean;
 }) {
@@ -149,6 +152,17 @@ function EntryRow({
         </Button>
       )}
 
+      {onRestore && (
+        <Button
+          size="sm"
+          variant="outline"
+          className="gap-1.5 hover:bg-transparent hover:text-primary"
+          onClick={() => onRestore(entry.id)}
+        >
+          <RotateCcw className="w-4 h-4" /> Restore
+        </Button>
+      )}
+
       {onReclassify && isUncategorized && (
         <div className="flex flex-wrap items-center gap-2">
           <TooltipProvider delayDuration={100}>
@@ -215,6 +229,7 @@ export function ReviewQueueTab() {
     toggleQueue,
     setStatus,
     setEntryType,
+    restoreEntries,
     refetch,
   } = useReviewQueue();
   const [selected, setSelected] = useState<Set<string>>(new Set());
@@ -447,8 +462,9 @@ export function ReviewQueueTab() {
                 entry={e}
                 selected={false}
                 onSelect={onSelect}
-                onApprove={(id) => setStatus([id], "approved")}
+                onApprove={() => undefined}
                 onReject={() => undefined}
+                onRestore={(id) => restoreEntries([id])}
                 showActions={false}
               />
             ))
