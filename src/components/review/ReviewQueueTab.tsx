@@ -7,6 +7,8 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
+  ArrowDownCircle,
+  ArrowUpCircle,
   CheckCircle2,
   Clock,
   ExternalLink,
@@ -139,6 +141,28 @@ function EntryRow({
         >
           <Undo2 className="w-4 h-4" /> Move to pending
         </Button>
+      )}
+
+      {onReclassify && isUncategorized && (
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-xs text-muted-foreground">Re-classify:</span>
+          <Button
+            size="sm"
+            variant="outline"
+            className="gap-1.5 border-emerald-500/40 text-emerald-500 hover:text-emerald-500"
+            onClick={() => onReclassify(entry.id, "income")}
+          >
+            <ArrowUpCircle className="w-4 h-4" /> Income
+          </Button>
+          <Button
+            size="sm"
+            variant="outline"
+            className="gap-1.5 border-rose-500/40 text-rose-500 hover:text-rose-500"
+            onClick={() => onReclassify(entry.id, "expense")}
+          >
+            <ArrowDownCircle className="w-4 h-4" /> Expense
+          </Button>
+        </div>
       )}
 
       {showActions && (
