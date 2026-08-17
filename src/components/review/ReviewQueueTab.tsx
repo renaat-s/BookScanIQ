@@ -43,7 +43,13 @@ const formatDate = (raw: string | null) => {
     : d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
 };
 
+// Approved entries carrying an "Exported" badge move to the Exported window
+// 12 hours after export, then clear out of it 24 hours after arriving.
 const EXPORT_HOLD_MS = 12 * 60 * 60 * 1000;
+const EXPORTED_WINDOW_MS = 24 * 60 * 60 * 1000;
+// Rejected entries clear out of the Rejected window 24 hours after rejection.
+const REJECTED_WINDOW_MS = 24 * 60 * 60 * 1000;
+const TICK_MS = 60 * 1000;
 
 const isCurrentMonth = (entry: ReviewEntry) => {
   const raw = entry.reviewed_at || entry.entry_date || entry.created_at;
