@@ -20,6 +20,7 @@ import {
   ExternalLink,
   Lock,
   RefreshCw,
+  RotateCcw,
   Undo2,
   XCircle,
 
@@ -148,6 +149,17 @@ function EntryRow({
           onClick={() => onUnapprove(entry.id)}
         >
           <Undo2 className="w-4 h-4" /> Move to pending
+        </Button>
+      )}
+
+      {onRestore && (
+        <Button
+          size="sm"
+          variant="outline"
+          className="gap-1.5 hover:bg-transparent hover:text-primary"
+          onClick={() => onRestore(entry.id)}
+        >
+          <RotateCcw className="w-4 h-4" /> Restore
         </Button>
       )}
 
