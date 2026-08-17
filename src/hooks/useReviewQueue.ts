@@ -96,6 +96,24 @@ export function useReviewQueue() {
     [user, entries],
   );
 
+  /** Re-classify an uncategorized entry as income or expense. */
+  const setEntryType = useCallback(
+    async (id: string, type: "income" | "expense") => {
+      if (!user) return;
+      setWorking(true);
+      const previous = entries;
+      setEntries((prev) => prev.map((e) => (e.id === id ? { ...e, type } : e)));
+      const { error } = await supabase
+        .from("ledger_entries")
+        .update({ type })
+        .eq("user_id", user.id)
+        .eq("id", id);
+      if (error) setEntries(previous);
+      setWorking(false);
+    },
+    [user, entries],
+  );
+
   const toggleQueue = useCallback(
     async (enabled: boolean) => {
       if (!user) return;
@@ -119,6 +137,7 @@ export function useReviewQueue() {
     queueEnabled,
     toggleQueue,
     setStatus,
+    setEntryType,
     refetch: fetchAll,
   };
 }

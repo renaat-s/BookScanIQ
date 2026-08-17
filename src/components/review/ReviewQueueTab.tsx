@@ -7,6 +7,8 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
+  ArrowDownCircle,
+  ArrowUpCircle,
   CheckCircle2,
   Clock,
   ExternalLink,
@@ -51,6 +53,7 @@ function EntryRow({
   onApprove,
   onReject,
   onUnapprove,
+  onReclassify,
   showActions,
 }: {
   entry: ReviewEntry;
@@ -59,6 +62,7 @@ function EntryRow({
   onApprove: (id: string) => void;
   onReject: (id: string) => void;
   onUnapprove?: (id: string) => void;
+  onReclassify?: (id: string, type: "income" | "expense") => void;
   showActions: boolean;
 }) {
 
@@ -139,6 +143,28 @@ function EntryRow({
         </Button>
       )}
 
+      {onReclassify && isUncategorized && (
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-xs text-muted-foreground">Re-classify:</span>
+          <Button
+            size="sm"
+            variant="outline"
+            className="gap-1.5 border-emerald-500/40 text-emerald-500 hover:text-emerald-500"
+            onClick={() => onReclassify(entry.id, "income")}
+          >
+            <ArrowUpCircle className="w-4 h-4" /> Income
+          </Button>
+          <Button
+            size="sm"
+            variant="outline"
+            className="gap-1.5 border-rose-500/40 text-rose-500 hover:text-rose-500"
+            onClick={() => onReclassify(entry.id, "expense")}
+          >
+            <ArrowDownCircle className="w-4 h-4" /> Expense
+          </Button>
+        </div>
+      )}
+
       {showActions && (
         <div className="flex gap-2">
           <Button size="sm" className="gap-1.5" onClick={() => onApprove(entry.id)}>
@@ -166,6 +192,7 @@ export function ReviewQueueTab() {
     queueEnabled,
     toggleQueue,
     setStatus,
+    setEntryType,
     refetch,
   } = useReviewQueue();
   const [selected, setSelected] = useState<Set<string>>(new Set());
@@ -334,6 +361,7 @@ export function ReviewQueueTab() {
                 onSelect={onSelect}
                 onApprove={(id) => setStatus([id], "approved")}
                 onReject={(id) => setStatus([id], "rejected")}
+                onReclassify={setEntryType}
                 showActions
               />
             ))
