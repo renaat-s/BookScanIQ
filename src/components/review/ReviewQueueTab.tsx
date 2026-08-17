@@ -475,10 +475,15 @@ export function ReviewQueueTab() {
         </TabsContent>
 
         <TabsContent value="rejected" className="space-y-3 m-0">
+          <p className="text-xs text-muted-foreground">
+            Rejected entries clear from this window 24 hours after rejection and stay
+            permanently in the Ledger Log under the Audit tab.
+          </p>
           {rejectedThisMonth.length === 0 ? (
             <p className="py-12 text-center text-sm text-muted-foreground">
               No rejected documents.
             </p>
+
           ) : (
             rejectedThisMonth.map((e) => (
               <EntryRow
