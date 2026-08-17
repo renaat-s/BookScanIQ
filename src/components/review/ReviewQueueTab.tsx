@@ -450,10 +450,15 @@ export function ReviewQueueTab() {
         </TabsContent>
 
         <TabsContent value="exported" className="space-y-3 m-0">
+          <p className="text-xs text-muted-foreground">
+            Entries clear from this window 24 hours after arriving and stay permanently in
+            the Ledger Log under the Audit tab.
+          </p>
           {exportedList.length === 0 ? (
             <p className="py-12 text-center text-sm text-muted-foreground">
               Nothing has been exported yet this month.
             </p>
+
           ) : (
             exportedList.slice(0, 100).map((e) => (
               <EntryRow
