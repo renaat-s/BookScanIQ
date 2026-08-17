@@ -184,6 +184,7 @@ export function useReviewQueue() {
     toggleQueue,
     setStatus,
     setEntryType,
+    restoreEntries,
     refetch: fetchAll,
   };
 }
