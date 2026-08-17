@@ -239,6 +239,12 @@ export function ReviewQueueTab() {
     refetch,
   } = useReviewQueue();
   const [selected, setSelected] = useState<Set<string>>(new Set());
+  // Ticking clock so the 12h / 24h window rollovers happen live, without a reload.
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => {
+    const id = setInterval(() => setNow(Date.now()), TICK_MS);
+    return () => clearInterval(id);
+  }, []);
 
   const unlocked = subscription.isDeveloper || Boolean(getPlanByTier(subscription.tier));
 
@@ -253,26 +259,33 @@ export function ReviewQueueTab() {
     () => approved.filter(isCurrentMonth),
     [approved],
   );
+  // Rejected entries clear from the window 24h after rejection; the Ledger Log keeps them.
   const rejectedThisMonth = useMemo(
-    () => rejected.filter(isCurrentMonth),
-    [rejected],
+    () =>
+      rejected.filter((e) => {
+        if (!isCurrentMonth(e)) return false;
+        const at = e.reviewed_at ? new Date(e.reviewed_at).getTime() : null;
+        if (!at || Number.isNaN(at)) return true;
+        return now - at < REJECTED_WINDOW_MS;
+      }),
+    [rejected, now],
   );
 
-  // Exported entries move out of Approved automatically 12 hours after export.
+  // Exported entries move out of Approved 12h after export, then clear from the
+  // Exported window 24h after arriving there.
   const { approvedList, exportedList } = useMemo(() => {
-    const now = Date.now();
     const approvedList: ReviewEntry[] = [];
     const exportedList: ReviewEntry[] = [];
     for (const e of approvedThisMonth) {
       const exportedAt = e.exported_at ? new Date(e.exported_at).getTime() : null;
       if (exportedAt && !Number.isNaN(exportedAt) && now - exportedAt >= EXPORT_HOLD_MS) {
-        exportedList.push(e);
+        if (now - exportedAt < EXPORT_HOLD_MS + EXPORTED_WINDOW_MS) exportedList.push(e);
       } else {
         approvedList.push(e);
       }
     }
     return { approvedList, exportedList };
-  }, [approvedThisMonth]);
+  }, [approvedThisMonth, now]);
 
 
   const onSelect = (id: string, checked: boolean) =>
