@@ -51,6 +51,7 @@ function EntryRow({
   onApprove,
   onReject,
   onUnapprove,
+  onReclassify,
   showActions,
 }: {
   entry: ReviewEntry;
@@ -59,6 +60,7 @@ function EntryRow({
   onApprove: (id: string) => void;
   onReject: (id: string) => void;
   onUnapprove?: (id: string) => void;
+  onReclassify?: (id: string, type: "income" | "expense") => void;
   showActions: boolean;
 }) {
 
