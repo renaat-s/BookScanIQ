@@ -192,6 +192,7 @@ export function ReviewQueueTab() {
     queueEnabled,
     toggleQueue,
     setStatus,
+    setEntryType,
     refetch,
   } = useReviewQueue();
   const [selected, setSelected] = useState<Set<string>>(new Set());
@@ -360,6 +361,7 @@ export function ReviewQueueTab() {
                 onSelect={onSelect}
                 onApprove={(id) => setStatus([id], "approved")}
                 onReject={(id) => setStatus([id], "rejected")}
+                onReclassify={setEntryType}
                 showActions
               />
             ))
