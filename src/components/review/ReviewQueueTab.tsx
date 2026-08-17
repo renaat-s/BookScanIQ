@@ -151,7 +151,18 @@ function EntryRow({
 
       {onReclassify && isUncategorized && (
         <div className="flex flex-wrap items-center gap-2">
-          <span className="text-xs text-muted-foreground">Re-classify:</span>
+          <TooltipProvider delayDuration={100}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span className="text-xs text-muted-foreground cursor-help">Re-classify:</span>
+              </TooltipTrigger>
+              <TooltipContent side="top" className="max-w-xs text-center">
+                <p>
+                  Have you reviewed this entry and want to change its classification? Re-classify it as "Expense" or "Income" before you approve it.
+                </p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
           <Button
             size="sm"
             variant="outline"
