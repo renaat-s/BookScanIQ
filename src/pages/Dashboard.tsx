@@ -420,7 +420,7 @@ const Dashboard = () => {
       XLSX.utils.book_append_sheet(wb, ws, "Ledger");
       XLSX.writeFile(
         wb,
-        `invoiceiq-ledger-${new Date().toISOString().slice(0, 10)}.xlsx`,
+        `bookscaniq-ledger-${new Date().toISOString().slice(0, 10)}.xlsx`,
       );
     } catch (e) {
       toast.error(
