@@ -58,7 +58,7 @@ if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders }
 
     const accessToken = await exchangeRefreshToken(creds.google_refresh_token);
 
-    // Verify the file is inside the user's InvoiceIQ directory tree before deleting.
+    // Verify the file is inside the user's BookScanIQ directory tree before deleting.
     // Walk up parents until we hit the root_folder_id or run out.
     if (creds.root_folder_id) {
       let currentId = fileId;
@@ -75,7 +75,7 @@ if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders }
         if (!parents.length) break;
         currentId = parents[0];
       }
-      if (!allowed) return json({ error: "File is outside the InvoiceIQ directory" }, 403);
+      if (!allowed) return json({ error: "File is outside the BookScanIQ directory" }, 403);
     }
 
     // Trash (safer than permanent delete — recoverable from Drive's bin).

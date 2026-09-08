@@ -1,6 +1,6 @@
 {
-  "name": "InvoiceIQ — AI Bookkeeping",
-  "short_name": "InvoiceIQ",
+  "name": "BookScanIQ — AI Bookkeeping",
+  "short_name": "BookScanIQ",
   "description": "AI-powered invoice processing and bookkeeping automation.",
   "start_url": "/dashboard",
   "scope": "/",

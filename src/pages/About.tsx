@@ -11,10 +11,10 @@ const About = () => {
   return (
     <div className="min-h-screen">
       <Helmet>
-        <title>About InvoiceIQ - Our Story & Mission</title>
-        <meta name="description" content="Learn about InvoiceIQ - built by an indie developer to solve real small business invoice management challenges. Discover our mission and values." />
-        <meta name="keywords" content="about InvoiceIQ, invoice automation story, small business solutions, indie developer" />
-        <link rel="canonical" href="https://invoiceiq.com/about" />
+        <title>About BookScanIQ - Our Story & Mission</title>
+        <meta name="description" content="Learn about BookScanIQ - built by an indie developer to solve real small business invoice management challenges. Discover our mission and values." />
+        <meta name="keywords" content="about BookScanIQ, invoice automation story, small business solutions, indie developer" />
+        <link rel="canonical" href="https://invoice-iq.com/about" />
       </Helmet>
       <Header />
       <main className="bg-gradient-subtle relative overflow-hidden">
@@ -46,7 +46,7 @@ const About = () => {
                   </div>
                   <div className="w-16 h-px bg-gradient-to-r from-transparent via-border to-transparent mx-auto" />
                   <p className="text-lg md:text-xl text-foreground/90 leading-[1.8] tracking-[-0.005em] font-light">
-                    Nanoclone Systems builds AI automation tools for real business workflows. Our flagship product, InvoiceIQ, automates invoice and receipt processing from email through to Xero and QuickBooks — turning a manual weekly chore into an automated pipeline. We focus on practical, secure integrations that deliver measurable time savings, not abstract promises.
+                    Nanoclone Systems builds AI automation tools for real business workflows. Our flagship product, BookScanIQ, automates invoice and receipt processing from email through to Xero and QuickBooks — turning a manual weekly chore into an automated pipeline. We focus on practical, secure integrations that deliver measurable time savings, not abstract promises.
                   </p>
                   <a
                     href="https://nanoclone.systems"

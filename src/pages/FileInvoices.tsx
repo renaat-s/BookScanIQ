@@ -156,8 +156,8 @@ const FileInvoices = () => {
     return (
       <>
         <Helmet>
-          <title>File Invoices | InvoiceIQ</title>
-          <meta name="description" content="File your invoices and log transactions securely with InvoiceIQ." />
+          <title>File Invoices | BookScanIQ</title>
+          <meta name="description" content="File your invoices and log transactions securely with BookScanIQ." />
         </Helmet>
         <div className="min-h-screen flex flex-col">
           <Header />
@@ -186,8 +186,8 @@ const FileInvoices = () => {
   return (
     <>
       <Helmet>
-        <title>File Invoices | InvoiceIQ</title>
-        <meta name="description" content="File your invoices and log transactions securely with InvoiceIQ." />
+        <title>File Invoices | BookScanIQ</title>
+        <meta name="description" content="File your invoices and log transactions securely with BookScanIQ." />
       </Helmet>
 
       <div className="min-h-screen flex flex-col">

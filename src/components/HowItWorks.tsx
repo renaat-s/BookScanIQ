@@ -8,7 +8,7 @@ const steps = [
   {
     icon: Mail,
     title: "Connect Your Email",
-    description: "Link your email with InvoiceIQ and the automation will detect all the receipts in your inbox."
+    description: "Link your email with BookScanIQ and the automation will detect all the receipts in your inbox."
   },
   {
     icon: Camera,
@@ -18,7 +18,7 @@ const steps = [
   {
     icon: MessageSquare,
     title: "Weekly Smart Review",
-    description: "Quick weekly prompts help clarify unclear expenses. Once answered, InvoiceIQ automatically resolves and categorizes them."
+    description: "Quick weekly prompts help clarify unclear expenses. Once answered, BookScanIQ automatically resolves and categorizes them."
   },
   {
     icon: Brain,
@@ -37,8 +37,8 @@ const HowItWorks = () => {
     <section id="how-it-works" className="py-20 bg-gradient-subtle">
       <div className="container mx-auto px-4 sm:px-6">
         <div className="text-center space-y-4 mb-16">
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold neon-cyber-text glitch-text" data-text="How InvoiceIQ Works" data-aos="zoom-in">
-            How <span className="text-gradient">InvoiceIQ</span> Works
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold neon-cyber-text glitch-text" data-text="How BookScanIQ Works" data-aos="zoom-in">
+            How <span className="text-gradient">BookScanIQ</span> Works
           </h2>
           <p className="text-lg md:text-xl text-foreground/80 max-w-3xl mx-auto leading-[1.8] tracking-[-0.005em] font-light">
             From collection to export in five seamless steps. Our AI handles the complexity 

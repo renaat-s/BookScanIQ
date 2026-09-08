@@ -8,9 +8,9 @@ const Pricing = () => {
   return (
     <div className="min-h-screen">
       <Helmet>
-        <title>Pricing - InvoiceIQ Plans & Packages</title>
-        <meta name="description" content="Choose the InvoiceIQ plan that fits your business. Starter, Professional, and Enterprise packages with AI-powered invoice automation." />
-        <meta name="keywords" content="InvoiceIQ pricing, invoice automation plans, subscription packages, AI invoice processing" />
+        <title>Pricing - BookScanIQ Plans & Packages</title>
+        <meta name="description" content="Choose the BookScanIQ plan that fits your business. Starter, Professional, and Enterprise packages with AI-powered invoice automation." />
+        <meta name="keywords" content="BookScanIQ pricing, invoice automation plans, subscription packages, AI invoice processing" />
         <link rel="canonical" href="https://invoice-iq.com/pricing" />
       </Helmet>
       <Header />

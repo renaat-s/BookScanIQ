@@ -46,7 +46,7 @@ const CookieConsent = () => {
       >
         <X className="w-4 h-4" />
       </button>
-      <h2 className="text-sm font-semibold text-foreground mb-1">Cookies on InvoiceIQ</h2>
+      <h2 className="text-sm font-semibold text-foreground mb-1">Cookies on BookScanIQ</h2>
       <p className="text-xs text-muted-foreground leading-relaxed pr-6">
         We use essential cookies to keep you signed in and to run the app. With your consent
         we also use a small number of non-essential cookies to improve performance. Read our{" "}

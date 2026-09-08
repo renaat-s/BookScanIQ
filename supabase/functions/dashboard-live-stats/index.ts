@@ -1,4 +1,4 @@
-// Live dashboard stats: counts Drive files in InvoiceIQ folder (recursively) and
+// Live dashboard stats: counts Drive files in BookScanIQ folder (recursively) and
 // sums current-month Income/Expense rows from the user's Bookkeeping spreadsheet.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
@@ -9,7 +9,7 @@ let corsHeaders: Record<string, string> = {};
 const json = (b: unknown, s = 200) =>
   new Response(JSON.stringify(b), { status: s, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
-// Count any real financial-document file routed into the InvoiceIQ directory.
+// Count any real financial-document file routed into the BookScanIQ directory.
 // Covers PDFs plus all common receipt/invoice image formats. Folders and Google
 // Workspace docs (Docs/Sheets/Slides) are excluded — only actual uploaded files.
 const COUNTED_MIMES = new Set([

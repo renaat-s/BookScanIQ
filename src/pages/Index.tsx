@@ -7,11 +7,11 @@ const Index = () => {
   const softwareJsonLd = {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
-    name: "InvoiceIQ",
+    name: "BookScanIQ",
     applicationCategory: "BusinessApplication",
     operatingSystem: "Web",
     description:
-      "InvoiceIQ, Automate your bookkeeping. AI-powered invoice processing with Google Drive, Xero, and QuickBooks integration.",
+      "BookScanIQ, Automate your bookkeeping. AI-powered invoice processing with Google Drive, Xero, and QuickBooks integration.",
     url: "https://invoice-iq.com/",
     offers: {
       "@type": "Offer",
@@ -23,10 +23,10 @@ const Index = () => {
   return (
     <div className="min-h-screen">
       <Helmet>
-        <title>InvoiceIQ - Automated Bookkeeping & AI Invoice Processing</title>
+        <title>BookScanIQ - Automated Bookkeeping & AI Invoice Processing</title>
         <meta
           name="description"
-          content="InvoiceIQ, Automate your bookkeeping. AI-powered invoice processing with Google Drive, Xero, and QuickBooks integration."
+          content="BookScanIQ, Automate your bookkeeping. AI-powered invoice processing with Google Drive, Xero, and QuickBooks integration."
         />
         <meta
           name="keywords"

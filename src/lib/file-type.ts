@@ -1,5 +1,5 @@
 /**
- * Canonical document file types InvoiceIQ can process end-to-end.
+ * Canonical document file types BookScanIQ can process end-to-end.
  * The ledger stores the lowercase key; the UI renders the label.
  */
 export type DocFileType = "pdf" | "jpeg" | "png" | "heic" | "html";

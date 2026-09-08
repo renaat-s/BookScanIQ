@@ -167,8 +167,8 @@ const DocumentCapture = () => {
   return (
     <>
       <Helmet>
-        <title>Capture Invoice - InvoiceIQ</title>
-        <meta name="description" content="Capture and upload invoices and receipts with InvoiceIQ's document capture tool" />
+        <title>Capture Invoice - BookScanIQ</title>
+        <meta name="description" content="Capture and upload invoices and receipts with BookScanIQ's document capture tool" />
       </Helmet>
 
       <div className="min-h-screen flex flex-col">

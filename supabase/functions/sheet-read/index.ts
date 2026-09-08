@@ -1,4 +1,4 @@
-// Sheet reader edge function — reads the user's InvoiceIQ ledger spreadsheet
+// Sheet reader edge function — reads the user's BookScanIQ ledger spreadsheet
 // using their google_refresh_token, and returns sheet metadata + values for a tab.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 

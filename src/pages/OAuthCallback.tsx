@@ -83,7 +83,7 @@ const OAuthCallback = ({ provider }: Props) => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-background px-6">
       <Helmet>
-        <title>Connecting {titleMap[provider]} – InvoiceIQ</title>
+        <title>Connecting {titleMap[provider]} – BookScanIQ</title>
       </Helmet>
       <Card className="max-w-md w-full border-2">
         <CardContent className="pt-8 pb-6 text-center space-y-4">

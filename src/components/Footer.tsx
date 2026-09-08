@@ -11,8 +11,8 @@ const Footer = () => {
         <div>
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <div className="flex items-center space-x-2">
-              <img src={logoImage} alt="InvoiceIQ Logo" className="w-8 h-8 rounded-lg" />
-              <span className="text-xl font-bold">InvoiceIQ</span>
+              <img src={logoImage} alt="BookScanIQ Logo" className="w-8 h-8 rounded-lg" />
+              <span className="text-xl font-bold">BookScanIQ</span>
             </div>
             
             <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-white/80">
@@ -27,13 +27,13 @@ const Footer = () => {
             </div>
             
             <p className="text-sm text-white/60">
-              © {new Date().getFullYear()} InvoiceIQ. All rights reserved.
+              © {new Date().getFullYear()} BookScanIQ. All rights reserved.
             </p>
           </div>
           
           {/* Developed by NANOCLONE Systems */}
           <div className="flex items-center justify-center space-x-3 mt-6 pt-6 border-t border-white/10">
-            <span className="text-sm text-white/70">InvoiceIQ - Developed by</span>
+            <span className="text-sm text-white/70">BookScanIQ - Developed by</span>
             <img src={nanocloneLogo} alt="NANOCLONE Systems" className="h-6 w-auto object-contain" />
           </div>
         </div>

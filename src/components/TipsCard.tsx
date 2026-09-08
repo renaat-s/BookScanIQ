@@ -6,11 +6,11 @@ import { Lightbulb, ChevronRight } from "lucide-react";
 const TIPS: { title: string; body: string }[] = [
   {
     title: "Forward receipts to your Gmail inbox",
-    body: "InvoiceIQ scans your Gmail for receipts and invoices. Forwarding vendor receipts to yourself ensures they get auto-filed.",
+    body: "BookScanIQ scans your Gmail for receipts and invoices. Forwarding vendor receipts to yourself ensures they get auto-filed.",
   },
   {
     title: "Use clear vendor names in your spreadsheet",
-    body: "Renaming a vendor in your Bookkeeping sheet teaches InvoiceIQ to use that exact label on every future invoice from that sender.",
+    body: "Renaming a vendor in your Bookkeeping sheet teaches BookScanIQ to use that exact label on every future invoice from that sender.",
   },
   {
     title: "Run a Backlog Scan once a quarter",
@@ -30,7 +30,7 @@ const TIPS: { title: string; body: string }[] = [
   },
   {
     title: "Folder names are your categories",
-    body: "InvoiceIQ files into Year › Month › Category folders. Rename or add subfolders in Drive to refine how your invoices get sorted.",
+    body: "BookScanIQ files into Year › Month › Category folders. Rename or add subfolders in Drive to refine how your invoices get sorted.",
   },
 ];
 

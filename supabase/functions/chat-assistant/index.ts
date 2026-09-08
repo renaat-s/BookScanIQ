@@ -95,7 +95,7 @@ if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders }
       });
     }
 
-    const systemPrompt = `You are an AI assistant for InvoiceIQ helping to extract and categorize receipt information. The user has uploaded a receipt/invoice that needs verification. Your primary goal is to identify the following markers:
+    const systemPrompt = `You are an AI assistant for BookScanIQ helping to extract and categorize receipt information. The user has uploaded a receipt/invoice that needs verification. Your primary goal is to identify the following markers:
 
 CRITICAL FIELDS (highest priority):
 - Amount of Money Spent (amount): The total cost on the receipt

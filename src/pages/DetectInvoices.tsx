@@ -277,7 +277,7 @@ const DetectInvoices = () => {
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-        <title>Detect Invoices - InvoiceIQ Email Receipt Detector</title>
+        <title>Detect Invoices - BookScanIQ Email Receipt Detector</title>
         <meta name="description" content="Connect your email inbox to automatically detect and process invoices with AI." />
       </Helmet>
       <Header />

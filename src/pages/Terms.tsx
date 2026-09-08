@@ -7,8 +7,8 @@ const Terms = () => {
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-        <title>Terms of Service - InvoiceIQ</title>
-        <meta name="description" content="InvoiceIQ Terms of Service: User agreements, subscription terms, AI accuracy disclaimers, and legal terms for using our invoice automation service." />
+        <title>Terms of Service - BookScanIQ</title>
+        <meta name="description" content="BookScanIQ Terms of Service: User agreements, subscription terms, AI accuracy disclaimers, and legal terms for using our invoice automation service." />
         <meta name="keywords" content="terms of service, user agreement, subscription terms, legal terms" />
         <link rel="canonical" href="https://invoice-iq.com/terms" />
       </Helmet>
@@ -45,12 +45,12 @@ const Terms = () => {
                 prose-ul:my-4">
                 <h2>1. Agreement to Terms</h2>
                 <p>
-                  By accessing or using InvoiceIQ ("Service"), you agree to be bound by these Terms of Service ("Terms"). If you do not agree to these Terms, please do not use the Service.
+                  By accessing or using BookScanIQ ("Service"), you agree to be bound by these Terms of Service ("Terms"). If you do not agree to these Terms, please do not use the Service.
                 </p>
 
                 <h2>2. Service Description</h2>
                 <p>
-                  InvoiceIQ is an automated invoice processing service that uses AI to extract and structure data from invoices, and automate payment tracking and reminders.
+                  BookScanIQ is an automated invoice processing service that uses AI to extract and structure data from invoices, and automate payment tracking and reminders.
                 </p>
 
                 <h2>3. User Accounts</h2>
@@ -122,7 +122,7 @@ const Terms = () => {
 
                 <h3>6.2 Our Intellectual Property</h3>
                 <ul>
-                  <li>InvoiceIQ owns all rights to the Service, software, and algorithms</li>
+                  <li>BookScanIQ owns all rights to the Service, software, and algorithms</li>
                   <li>You may not copy, modify, or distribute our software</li>
                   <li>Our brand name, logo, and content are protected by intellectual property laws</li>
                 </ul>
@@ -192,7 +192,7 @@ const Terms = () => {
 
                 <h2>11. Indemnification</h2>
                 <p>
-                  You agree to indemnify and hold InvoiceIQ harmless from any claims, losses, or damages arising from:
+                  You agree to indemnify and hold BookScanIQ harmless from any claims, losses, or damages arising from:
                 </p>
                 <ul>
                   <li>Your violation of these Terms</li>
@@ -227,7 +227,7 @@ const Terms = () => {
 
                 <h2>16. Entire Agreement</h2>
                 <p>
-                  These Terms, together with our Privacy Policy, constitute the entire agreement between you and InvoiceIQ.
+                  These Terms, together with our Privacy Policy, constitute the entire agreement between you and BookScanIQ.
                 </p>
 
                 <h2>17. Contact Information</h2>
@@ -240,7 +240,7 @@ const Terms = () => {
 
               <div className="mt-8 p-8 bg-gradient-to-br from-violet-500/10 via-card/60 to-fuchsia-500/10 backdrop-blur-sm border border-violet-500/20 rounded-3xl shadow-elegant text-center">
                 <p className="text-foreground font-light leading-relaxed max-w-2xl mx-auto">
-                  By using InvoiceIQ, you acknowledge that you have read, understood, and agree to be bound by these Terms of Service.
+                  By using BookScanIQ, you acknowledge that you have read, understood, and agree to be bound by these Terms of Service.
                 </p>
               </div>
             </div>
