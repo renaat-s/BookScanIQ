@@ -1,5 +1,5 @@
 /**
- * Stripe product & price IDs for each InvoiceIQ plan.
+ * Stripe product & price IDs for each BookScanIQ plan.
  * Keep this single source-of-truth for all checkout + subscription logic.
  */
 

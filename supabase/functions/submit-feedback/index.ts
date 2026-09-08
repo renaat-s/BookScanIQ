@@ -6,7 +6,7 @@ import { corsHeadersFor } from "../_shared/cors.ts";
 
 const DEFAULT_RECIPIENT = "info@invoice-iq.com";
 const PRIORITY_RECIPIENT = "priority@invoice-iq.com";
-const FROM = "InvoiceIQ Feedback <feedback@invoice-iq.com>";
+const FROM = "BookScanIQ Feedback <feedback@invoice-iq.com>";
 
 const DEVELOPER_EMAILS = [
   "renaat.sibanda@gmail.com",
@@ -99,7 +99,7 @@ Deno.serve(async (req) => {
         const tierLabel = tier.toUpperCase();
         const subjectPrefix = isPriority ? "[PRIORITY] " : "";
         const html = `
-          <h2>${isPriority ? "🚨 PRIORITY " : ""}New InvoiceIQ feedback</h2>
+          <h2>${isPriority ? "🚨 PRIORITY " : ""}New BookScanIQ feedback</h2>
           <p><strong>From:</strong> ${user.email ?? user.id}</p>
           <p><strong>Plan:</strong> ${tierLabel}</p>
           <p><strong>Sentiment:</strong> ${sentimentLabel}</p>

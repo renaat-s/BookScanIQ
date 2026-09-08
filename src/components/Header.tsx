@@ -77,11 +77,11 @@ const Header = () => {
           {/* LEFT: Brand */}
           <Link to="/" className="flex items-center space-x-2 min-w-0 group">
             <div className="relative">
-              <img src={logoImage} alt="InvoiceIQ Logo" className="w-8 h-8 rounded-lg shrink-0 relative z-10" />
+              <img src={logoImage} alt="BookScanIQ Logo" className="w-8 h-8 rounded-lg shrink-0 relative z-10" />
               <div className="absolute inset-0 rounded-lg bg-primary/40 blur-md opacity-0 group-hover:opacity-100 transition-opacity" />
             </div>
             <span className="text-lg sm:text-xl font-bold tracking-[0.18em] uppercase bg-gradient-to-r from-violet-500 to-violet-300 bg-clip-text text-transparent truncate">
-              InvoiceIQ
+              BookScanIQ
             </span>
           </Link>
 

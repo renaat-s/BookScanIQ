@@ -17,7 +17,7 @@ import CookieConsent from "./components/CookieConsent";
 
 // Lazy load all other routes
 const About = lazy(() => import("./pages/About"));
-const AboutInvoiceIQ = lazy(() => import("./pages/AboutInvoiceIQ"));
+const AboutBookScanIQ = lazy(() => import("./pages/AboutBookScanIQ"));
 const FAQ = lazy(() => import("./pages/FAQ"));
 const Compliance = lazy(() => import("./pages/Compliance"));
 const Privacy = lazy(() => import("./pages/Privacy"));
@@ -62,7 +62,7 @@ const App = () => (
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/about" element={<About />} />
-              <Route path="/about-invoiceiq" element={<AboutInvoiceIQ />} />
+              <Route path="/about-invoiceiq" element={<AboutBookScanIQ />} />
               <Route path="/faq" element={<FAQ />} />
               <Route path="/compliance" element={<Compliance />} />
               <Route path="/privacy" element={<Privacy />} />

@@ -7,12 +7,12 @@ const EULA = () => {
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-        <title>End User License Agreement (EULA) - InvoiceIQ</title>
+        <title>End User License Agreement (EULA) - BookScanIQ</title>
         <meta
           name="description"
-          content="InvoiceIQ End User License Agreement (EULA): License grant, permitted use, restrictions, third-party integrations (QuickBooks, Xero, Google), and liability terms."
+          content="BookScanIQ End User License Agreement (EULA): License grant, permitted use, restrictions, third-party integrations (QuickBooks, Xero, Google), and liability terms."
         />
-        <meta name="keywords" content="EULA, end user license agreement, software license, InvoiceIQ license" />
+        <meta name="keywords" content="EULA, end user license agreement, software license, BookScanIQ license" />
         <link rel="canonical" href="https://invoice-iq.com/eula" />
       </Helmet>
       <Header />
@@ -48,15 +48,15 @@ const EULA = () => {
                 <h2>1. Acceptance of Agreement</h2>
                 <p>
                   This End User License Agreement ("EULA" or "Agreement") is a legal contract between you ("User", "you")
-                  and InvoiceIQ, developed by NANOCLONE Systems ("InvoiceIQ", "we", "us"), governing your use of the
-                  InvoiceIQ software, web application, edge functions, and related services (collectively, the
+                  and BookScanIQ, developed by NANOCLONE Systems ("BookScanIQ", "we", "us"), governing your use of the
+                  BookScanIQ software, web application, edge functions, and related services (collectively, the
                   "Software"). By accessing, installing, or using the Software, you agree to be bound by this EULA. If you
                   do not agree, do not use the Software.
                 </p>
 
                 <h2>2. License Grant</h2>
                 <p>
-                  Subject to your compliance with this EULA and any active subscription, InvoiceIQ grants you a limited,
+                  Subject to your compliance with this EULA and any active subscription, BookScanIQ grants you a limited,
                   non-exclusive, non-transferable, non-sublicensable, revocable license to access and use the Software
                   solely for your internal business or personal bookkeeping purposes.
                 </p>
@@ -88,7 +88,7 @@ const EULA = () => {
                 </p>
                 <ul>
                   <li>
-                    <strong>Intuit QuickBooks:</strong> By connecting QuickBooks, you authorize InvoiceIQ to read and
+                    <strong>Intuit QuickBooks:</strong> By connecting QuickBooks, you authorize BookScanIQ to read and
                     write transaction, vendor, and account data on your behalf. Your use is also subject to the{" "}
                     <a
                       href="https://www.intuit.com/legal/terms/en-us/quickbooks/online/"
@@ -100,25 +100,25 @@ const EULA = () => {
                     .
                   </li>
                   <li>
-                    <strong>Xero:</strong> By connecting Xero, you authorize InvoiceIQ to access organization, contact,
+                    <strong>Xero:</strong> By connecting Xero, you authorize BookScanIQ to access organization, contact,
                     and invoice data via the Xero API, subject to Xero's developer and end-user terms.
                   </li>
                   <li>
-                    <strong>Google:</strong> By connecting Google, you grant InvoiceIQ scoped access to read invoice
-                    emails and store/organize files in your Google Drive. InvoiceIQ's use of Google APIs adheres to the
+                    <strong>Google:</strong> By connecting Google, you grant BookScanIQ scoped access to read invoice
+                    emails and store/organize files in your Google Drive. BookScanIQ's use of Google APIs adheres to the
                     Google API Services User Data Policy, including the Limited Use requirements.
                   </li>
                 </ul>
                 <p>
                   You may revoke any integration at any time from your account settings or directly from the third-party
-                  provider. InvoiceIQ is not responsible for the availability, behavior, or pricing of third-party
+                  provider. BookScanIQ is not responsible for the availability, behavior, or pricing of third-party
                   services.
                 </p>
 
                 <h2>6. Data Ownership</h2>
                 <p>
                   You retain ownership of all data you upload or sync through the Software ("User Data"). You grant
-                  InvoiceIQ a limited license to process User Data solely to provide the Service. We do not sell your
+                  BookScanIQ a limited license to process User Data solely to provide the Service. We do not sell your
                   data, train public AI models on your data, or share it with advertisers.
                 </p>
 
@@ -127,7 +127,7 @@ const EULA = () => {
                   The Software uses AI to extract and categorize invoice information. While we strive for high accuracy,
                   AI-generated output may contain errors. You are solely responsible for reviewing and verifying all
                   extracted data, categorizations, and accounting entries before relying on them for tax, financial, or
-                  legal purposes. InvoiceIQ is not a substitute for a qualified accountant or tax professional.
+                  legal purposes. BookScanIQ is not a substitute for a qualified accountant or tax professional.
                 </p>
 
                 <h2>8. Subscription, Fees, and Termination</h2>
@@ -153,7 +153,7 @@ const EULA = () => {
 
                 <h2>11. Limitation of Liability</h2>
                 <p>
-                  TO THE MAXIMUM EXTENT PERMITTED BY LAW, INVOICEIQ AND NANOCLONE SYSTEMS SHALL NOT BE LIABLE FOR ANY
+                  TO THE MAXIMUM EXTENT PERMITTED BY LAW, BOOKSCANIQ AND NANOCLONE SYSTEMS SHALL NOT BE LIABLE FOR ANY
                   INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, OR FOR ANY LOSS OF PROFITS, REVENUE,
                   DATA, OR GOODWILL ARISING OUT OF OR IN CONNECTION WITH YOUR USE OF THE SOFTWARE. OUR TOTAL AGGREGATE
                   LIABILITY SHALL NOT EXCEED THE AMOUNT YOU PAID US IN THE TWELVE (12) MONTHS PRECEDING THE CLAIM.
@@ -161,7 +161,7 @@ const EULA = () => {
 
                 <h2>12. Indemnification</h2>
                 <p>
-                  You agree to indemnify and hold harmless InvoiceIQ, NANOCLONE Systems, and their affiliates from any
+                  You agree to indemnify and hold harmless BookScanIQ, NANOCLONE Systems, and their affiliates from any
                   claims, damages, or expenses arising from your misuse of the Software or violation of this EULA.
                 </p>
 

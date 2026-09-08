@@ -8,14 +8,14 @@ import { Helmet } from "react-helmet-async";
 import adVideo from "@/assets/InvoiceIQ_AD_Captioned.mp4.asset.json";
 import adPoster from "@/assets/IIQ_Thumbnail.png.asset.json";
 
-const AboutInvoiceIQ = () => {
+const AboutBookScanIQ = () => {
   return (
     <div className="min-h-screen">
       <Helmet>
-        <title>About InvoiceIQ - What It Is & How It Works</title>
+        <title>About BookScanIQ - What It Is & How It Works</title>
         <meta
           name="description"
-          content="Learn what InvoiceIQ is and how the platform automates invoice capture, parsing, and bookkeeping with AI."
+          content="Learn what BookScanIQ is and how the platform automates invoice capture, parsing, and bookkeeping with AI."
         />
         <link rel="canonical" href="https://invoice-iq.com/about-invoiceiq" />
       </Helmet>
@@ -28,9 +28,9 @@ const AboutInvoiceIQ = () => {
             <div className="max-w-3xl mx-auto text-center">
               <h1
                 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight bg-gradient-to-r from-violet-600 via-purple-500 to-fuchsia-500 bg-clip-text text-transparent neon-cyber-text glitch-text"
-                data-text="About InvoiceIQ"
+                data-text="About BookScanIQ"
               >
-                About InvoiceIQ
+                About BookScanIQ
               </h1>
             </div>
           </div>
@@ -67,4 +67,4 @@ const AboutInvoiceIQ = () => {
   );
 };
 
-export default AboutInvoiceIQ;
+export default AboutBookScanIQ;

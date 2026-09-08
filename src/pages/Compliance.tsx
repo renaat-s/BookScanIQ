@@ -19,7 +19,7 @@ const sections = [
   {
     icon: FileCheck,
     title: "GDPR Compliance",
-    intro: "InvoiceIQ is fully GDPR compliant. We respect your privacy and give you complete control over your data.",
+    intro: "BookScanIQ is fully GDPR compliant. We respect your privacy and give you complete control over your data.",
     points: [
       "Right to access your data at any time",
       "Right to deletion, we permanently delete your data upon request",
@@ -67,8 +67,8 @@ const Compliance = () => {
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-        <title>Security & Compliance - InvoiceIQ Data Protection</title>
-        <meta name="description" content="InvoiceIQ security measures: AES-256 encryption, GDPR compliance, EU/UK data hosting, and enterprise-grade data protection for your financial information." />
+        <title>Security & Compliance - BookScanIQ Data Protection</title>
+        <meta name="description" content="BookScanIQ security measures: AES-256 encryption, GDPR compliance, EU/UK data hosting, and enterprise-grade data protection for your financial information." />
         <meta name="keywords" content="invoice security, GDPR compliance, data encryption, financial data protection, secure invoice processing" />
         <link rel="canonical" href="https://invoice-iq.com/compliance" />
       </Helmet>

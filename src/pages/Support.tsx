@@ -58,9 +58,9 @@ const Support = () => {
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-        <title>Support & Contact - InvoiceIQ</title>
-        <meta name="description" content="Get help with InvoiceIQ. Contact our support team for technical assistance, billing questions, or integration support." />
-        <meta name="keywords" content="InvoiceIQ support, contact, help, technical support, customer service" />
+        <title>Support & Contact - BookScanIQ</title>
+        <meta name="description" content="Get help with BookScanIQ. Contact our support team for technical assistance, billing questions, or integration support." />
+        <meta name="keywords" content="BookScanIQ support, contact, help, technical support, customer service" />
         <link rel="canonical" href="https://invoice-iq.com/support" />
       </Helmet>
       <Header />

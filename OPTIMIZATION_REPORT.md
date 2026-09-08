@@ -1,4 +1,4 @@
-# Code Optimization Report - InvoiceIQ
+# Code Optimization Report - BookScanIQ
 
 ## Date: 2025-12-15
 

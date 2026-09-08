@@ -172,7 +172,7 @@ const AuditLogTab = () => {
               Audit Log
             </CardTitle>
             <CardDescription>
-              Every action InvoiceIQ takes on your data, in plain English. You can clear past entries below, scans and invoices are kept intact.
+              Every action BookScanIQ takes on your data, in plain English. You can clear past entries below, scans and invoices are kept intact.
             </CardDescription>
           </div>
           <div className="flex items-center gap-2 w-full sm:w-auto">

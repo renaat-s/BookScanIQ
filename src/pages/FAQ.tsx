@@ -14,10 +14,10 @@ import CyberBackground from "@/components/CyberBackground";
 const faqs = [
   {
     question: "Do I need a technical team to use this?",
-    answer: "Not at all! InvoiceIQ is designed for non-technical users. Simply create your account, link your Email and our AI will handle the rest. No coding, no complex setup, just straightforward automation that works out of the box."
+    answer: "Not at all! BookScanIQ is designed for non-technical users. Simply create your account, link your Email and our AI will handle the rest. No coding, no complex setup, just straightforward automation that works out of the box."
   },
   {
-    question: "What happens if the InvoiceIQ can't identify my invoice's expenditure type?",
+    question: "What happens if the BookScanIQ can't identify my invoice's expenditure type?",
     answer: "If our AI can't identify the expenditure type of your invoice, you'll receive a notification on your dashboard. You can then manually review and categorize the invoice. Our smart algorithms learn from your corrections to improve future categorization accuracy."
   },
   {
@@ -25,12 +25,12 @@ const faqs = [
     answer: "Your financial data security is our top priority. We use bank-level encryption for all data in transit and at rest. Your invoice data is never sold or shared with third parties. We're GDPR compliant and host all data on secure EU/UK servers."
   },
   {
-    question: "Can I integrate InvoiceIQ with my accounting software?",
-    answer: "Yes! InvoiceIQ supports exports to popular accounting software platforms including Xero and QuickBooks. Our AI automation exports your resolved invoice data to Xero once it has successfully processed and verified it."
+    question: "Can I integrate BookScanIQ with my accounting software?",
+    answer: "Yes! BookScanIQ supports exports to popular accounting software platforms including Xero and QuickBooks. Our AI automation exports your resolved invoice data to Xero once it has successfully processed and verified it."
   },
   {
     question: "What file formats can I upload?",
-    answer: "InvoiceIQ accepts PDF and scanned documents. Our AI OCR technology can extract data from even poor-quality scans, mobile phone photos and embedded email data."
+    answer: "BookScanIQ accepts PDF and scanned documents. Our AI OCR technology can extract data from even poor-quality scans, mobile phone photos and embedded email data."
   },
   {
     question: "How does the AI extraction work?",
@@ -46,9 +46,9 @@ const FAQ = () => {
   return (
     <div className="min-h-screen">
       <Helmet>
-        <title>FAQ - InvoiceIQ Frequently Asked Questions</title>
-        <meta name="description" content="Find answers to common questions about InvoiceIQ invoice automation. Learn about integrations, security, pricing, AI accuracy, and more." />
-        <meta name="keywords" content="InvoiceIQ FAQ, invoice automation questions, integrations, security questions, pricing" />
+        <title>FAQ - BookScanIQ Frequently Asked Questions</title>
+        <meta name="description" content="Find answers to common questions about BookScanIQ invoice automation. Learn about integrations, security, pricing, AI accuracy, and more." />
+        <meta name="keywords" content="BookScanIQ FAQ, invoice automation questions, integrations, security questions, pricing" />
         <link rel="canonical" href="https://invoiceiq.com/faq" />
       </Helmet>
       <Header />
@@ -64,7 +64,7 @@ const FAQ = () => {
                 Frequently Asked Questions
               </h1>
               <p className="mt-6 text-lg text-muted-foreground font-light tracking-[-0.005em]">
-                Everything you need to know about InvoiceIQ, answered with clarity.
+                Everything you need to know about BookScanIQ, answered with clarity.
               </p>
             </div>
           </div>

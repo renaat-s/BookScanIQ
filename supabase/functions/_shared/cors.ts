@@ -1,4 +1,4 @@
-// Shared strict CORS helper for InvoiceIQ edge functions.
+// Shared strict CORS helper for BookScanIQ edge functions.
 // Reflects the request origin only when it appears in the allowlist.
 // Falls back to the canonical production origin so misconfigured clients
 // receive a deterministic (and safe) response.

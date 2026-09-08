@@ -47,7 +47,7 @@ const previewUrlFor = (f: DriveFile) =>
 
 const DriveBrowser = ({ rootFolderId }: { rootFolderId: string }) => {
   const [stack, setStack] = useState<{ id: string; name: string }[]>([
-    { id: rootFolderId, name: "InvoiceIQ" },
+    { id: rootFolderId, name: "BookScanIQ" },
   ]);
   const [data, setData] = useState<FolderResp | null>(null);
   const [loading, setLoading] = useState(false);
@@ -269,7 +269,7 @@ const DriveBrowser = ({ rootFolderId }: { rootFolderId: string }) => {
             <AlertDialogTitle>Delete this document?</AlertDialogTitle>
             <AlertDialogDescription>
               "{toDelete?.name}" will be moved to your Google Drive Trash and removed from the
-              InvoiceIQ directory. The Total Documents count will update on the next refresh.
+              BookScanIQ directory. The Total Documents count will update on the next refresh.
               You can restore it from Drive's Trash within 30 days.
             </AlertDialogDescription>
           </AlertDialogHeader>

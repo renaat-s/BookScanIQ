@@ -413,7 +413,7 @@ const Settings = () => {
       toast({
         title: 'Google Disconnected',
         description:
-          'InvoiceIQ no longer has access to your Gmail, Drive, or Sheets. You may also revoke access from your Google Account permissions page.',
+          'BookScanIQ no longer has access to your Gmail, Drive, or Sheets. You may also revoke access from your Google Account permissions page.',
       });
       await signOut();
     } catch (err) {
@@ -457,10 +457,10 @@ const Settings = () => {
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-        <title>Account Settings - InvoiceIQ</title>
+        <title>Account Settings - BookScanIQ</title>
         <meta
           name="description"
-          content="Manage your InvoiceIQ accounting integration settings."
+          content="Manage your BookScanIQ accounting integration settings."
         />
       </Helmet>
       <Header />
@@ -669,7 +669,7 @@ const Settings = () => {
                     </p>
                     <p className="text-sm text-muted-foreground">
                       QuickBooks can't accept invoices, receipts, or bills that are supplied as
-                      HTML documents. If InvoiceIQ exports an entry that came from an HTML
+                      HTML documents. If BookScanIQ exports an entry that came from an HTML
                       source, it won't appear inside QuickBooks afterwards — that's why some
                       exported entries may seem missing from your books.
                     </p>
@@ -822,7 +822,7 @@ const Settings = () => {
                 Privacy & Account Controls
               </CardTitle>
               <CardDescription>
-                Revoke Google access or permanently delete your InvoiceIQ
+                Revoke Google access or permanently delete your BookScanIQ
                 account and data. Read more in our{' '}
                 <a href="/privacy" className="text-violet-500 hover:underline">
                   Privacy Policy
@@ -835,7 +835,7 @@ const Settings = () => {
                 <div>
                   <h3 className="font-medium text-foreground">Disconnect Google</h3>
                   <p className="text-sm text-muted-foreground mt-1">
-                    Revokes InvoiceIQ's access to your Gmail, Drive, and Sheets. We will clear the stored Google refresh token and sign you out. You can also revoke access from your{' '}
+                    Revokes BookScanIQ's access to your Gmail, Drive, and Sheets. We will clear the stored Google refresh token and sign you out. You can also revoke access from your{' '}
                     <a
                       href="https://myaccount.google.com/permissions"
                       target="_blank"
@@ -862,7 +862,7 @@ const Settings = () => {
                     <AlertDialogHeader>
                       <AlertDialogTitle>Disconnect Google?</AlertDialogTitle>
                       <AlertDialogDescription>
-                        InvoiceIQ will no longer be able to scan your inbox or write to your Drive and Sheets. Files already saved in your own Google Drive will not be deleted. You will be signed out and can reconnect anytime.
+                        BookScanIQ will no longer be able to scan your inbox or write to your Drive and Sheets. Files already saved in your own Google Drive will not be deleted. You will be signed out and can reconnect anytime.
                       </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
@@ -877,7 +877,7 @@ const Settings = () => {
                 <div>
                   <h3 className="font-medium text-destructive">Delete My Account & Data</h3>
                   <p className="text-sm text-muted-foreground mt-1">
-                    Permanently deletes your InvoiceIQ profile, stored Google/Xero/QuickBooks tokens, scan history, and invoice metadata from our servers. This action is irreversible.
+                    Permanently deletes your BookScanIQ profile, stored Google/Xero/QuickBooks tokens, scan history, and invoice metadata from our servers. This action is irreversible.
                   </p>
                   <p className="text-sm text-muted-foreground mt-2">
                     <strong>Note:</strong> Files already saved into your own Google Drive and entries written into your own Google Sheets will <strong>not</strong> be deleted, they belong to you and remain in your Google account.
@@ -898,7 +898,7 @@ const Settings = () => {
                     <AlertDialogHeader>
                       <AlertDialogTitle>Delete your account permanently?</AlertDialogTitle>
                       <AlertDialogDescription>
-                        This will permanently remove your account and all associated data from InvoiceIQ's servers (profile, stored OAuth tokens, scan jobs, invoice metadata). It cannot be undone. Files in your own Google Drive will not be touched.
+                        This will permanently remove your account and all associated data from BookScanIQ's servers (profile, stored OAuth tokens, scan jobs, invoice metadata). It cannot be undone. Files in your own Google Drive will not be touched.
                       </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>

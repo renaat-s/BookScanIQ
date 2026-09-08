@@ -130,7 +130,7 @@ const SheetLedger = () => {
       <div className="flex items-center justify-between gap-2 flex-wrap">
         <Badge variant="outline" className="gap-1.5">
           <span className="w-1.5 h-1.5 rounded-full bg-success animate-pulse" />
-          Live · InvoiceIQ Ledger
+          Live · BookScanIQ Ledger
         </Badge>
         <div className="flex items-center gap-1">
           <Button
@@ -330,7 +330,7 @@ const SheetLedger = () => {
       )}
 
       <p className="text-xs text-muted-foreground">
-        Live · Streamed from your InvoiceIQ Ledger. Switch tabs, search, and paginate without leaving the dashboard.
+        Live · Streamed from your BookScanIQ Ledger. Switch tabs, search, and paginate without leaving the dashboard.
       </p>
     </div>
   );

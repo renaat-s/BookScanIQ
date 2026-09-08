@@ -7,7 +7,7 @@ const features = [
   {
     icon: Mail,
     title: "Automated Email Collection",
-    description: "InvoiceIQ automatically collects receipts from your email inbox, extracts the data, and sends them into the main workflow.",
+    description: "BookScanIQ automatically collects receipts from your email inbox, extracts the data, and sends them into the main workflow.",
     comingSoon: false
   },
   {
@@ -19,13 +19,13 @@ const features = [
   {
     icon: Camera,
     title: "Photo Upload & Conversion",
-    description: "Upload a photo of a receipt through the InvoiceIQ app, which then converts it to structured invoice data.",
+    description: "Upload a photo of a receipt through the BookScanIQ app, which then converts it to structured invoice data.",
     comingSoon: false
   },
   {
     icon: MessageSquare,
     title: "Smart Weekly Clarification",
-    description: "At the end of the week, InvoiceIQ asks you to clarify expense categories for receipts where the category couldn't be determined, then automatically resolves them.",
+    description: "At the end of the week, BookScanIQ asks you to clarify expense categories for receipts where the category couldn't be determined, then automatically resolves them.",
     comingSoon: true
   },
   {

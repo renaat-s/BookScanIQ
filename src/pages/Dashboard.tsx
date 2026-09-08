@@ -446,7 +446,7 @@ const Dashboard = () => {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <Helmet>
-        <title>Dashboard | InvoiceIQ</title>
+        <title>Dashboard | BookScanIQ</title>
         <meta name="description" content="View, verify and manage all your synced invoices in one place." />
       </Helmet>
       <Header />

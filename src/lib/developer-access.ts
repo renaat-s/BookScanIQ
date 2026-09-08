@@ -1,6 +1,6 @@
 /**
  * Developer / admin emails that bypass subscription paywalls
- * and have unrestricted free access to all InvoiceIQ features.
+ * and have unrestricted free access to all BookScanIQ features.
  */
 const DEVELOPER_EMAILS: string[] = [
   "renaat.sibanda@gmail.com",

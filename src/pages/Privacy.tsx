@@ -7,8 +7,8 @@ const Privacy = () => {
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-        <title>Privacy Policy - InvoiceIQ</title>
-        <meta name="description" content="InvoiceIQ Privacy Policy: How we collect, use, and protect your invoice and financial data. GDPR compliant with full transparency." />
+        <title>Privacy Policy - BookScanIQ</title>
+        <meta name="description" content="BookScanIQ Privacy Policy: How we collect, use, and protect your invoice and financial data. GDPR compliant with full transparency." />
         <meta name="keywords" content="privacy policy, data protection, GDPR, invoice data privacy" />
         <link rel="canonical" href="https://invoice-iq.com/privacy" />
       </Helmet>
@@ -45,7 +45,7 @@ const Privacy = () => {
                 prose-ul:my-4">
                 <h2>1. Introduction</h2>
                 <p>
-                  InvoiceIQ ("we," "our," or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our invoice processing service.
+                  BookScanIQ ("we," "our," or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our invoice processing service.
                 </p>
 
                 <h2>2. Information We Collect</h2>
@@ -77,14 +77,14 @@ const Privacy = () => {
 
                 <h2>4. Google API Services & OAuth Scopes</h2>
                 <p>
-                  When you sign in with Google, InvoiceIQ requests the following Google OAuth scopes. Each scope is used solely for the purpose described below, and InvoiceIQ's use and transfer of information received from Google APIs adheres to the <a href="https://developers.google.com/terms/api-services-user-data-policy" target="_blank" rel="noopener noreferrer">Google API Services User Data Policy</a>, including the Limited Use requirements.
+                  When you sign in with Google, BookScanIQ requests the following Google OAuth scopes. Each scope is used solely for the purpose described below, and BookScanIQ's use and transfer of information received from Google APIs adheres to the <a href="https://developers.google.com/terms/api-services-user-data-policy" target="_blank" rel="noopener noreferrer">Google API Services User Data Policy</a>, including the Limited Use requirements.
                 </p>
                 <ul>
                   <li><strong>gmail.readonly</strong> (<code>https://www.googleapis.com/auth/gmail.readonly</code>), Used to scan your inbox for invoice and receipt emails during Backlog Scans. We only read messages to identify and extract invoice data; we never modify, delete, or send email on your behalf using this scope.</li>
-                  <li><strong>drive.file</strong> (<code>https://www.googleapis.com/auth/drive.file</code>), Used to create and manage invoice files and folders that InvoiceIQ creates in your Google Drive. InvoiceIQ cannot access any other files in your Drive. InvoiceIQ uses the same scope to create and write to your personal transaction ledger spreadsheet.</li>
+                  <li><strong>drive.file</strong> (<code>https://www.googleapis.com/auth/drive.file</code>), Used to create and manage invoice files and folders that BookScanIQ creates in your Google Drive. BookScanIQ cannot access any other files in your Drive. BookScanIQ uses the same scope to create and write to your personal transaction ledger spreadsheet.</li>
                 </ul>
                 <p>
-                  We do not use Google user data for advertising, do not sell it, and do not allow humans to read it except (a) with your explicit consent, (b) for security investigations, or (c) to comply with applicable law. You may revoke InvoiceIQ's access at any time from your <a href="https://myaccount.google.com/permissions" target="_blank" rel="noopener noreferrer">Google Account permissions page</a> or by using the "Disconnect Google" option on your <a href="/settings">Settings page</a>.
+                  We do not use Google user data for advertising, do not sell it, and do not allow humans to read it except (a) with your explicit consent, (b) for security investigations, or (c) to comply with applicable law. You may revoke BookScanIQ's access at any time from your <a href="https://myaccount.google.com/permissions" target="_blank" rel="noopener noreferrer">Google Account permissions page</a> or by using the "Disconnect Google" option on your <a href="/settings">Settings page</a>.
                 </p>
 
                 <h2>5. Data Processing and AI</h2>
@@ -139,7 +139,7 @@ const Privacy = () => {
                   <li><strong>By email:</strong> Send a deletion request to <a href="mailto:info@invoice-iq.com">info@invoice-iq.com</a> from your account email and we will action it within 30 days.</li>
                 </ul>
                 <p>
-                  <strong>Important:</strong> Files that InvoiceIQ has saved into <em>your own</em> Google Drive and entries written into <em>your own</em> Google Sheets remain in your Google account and are not deleted by us, because they belong to you. You may delete them yourself at any time directly from Google Drive / Sheets.
+                  <strong>Important:</strong> Files that BookScanIQ has saved into <em>your own</em> Google Drive and entries written into <em>your own</em> Google Sheets remain in your Google account and are not deleted by us, because they belong to you. You may delete them yourself at any time directly from Google Drive / Sheets.
                 </p>
 
                 <h2>10. Cookies and Tracking</h2>
@@ -161,7 +161,7 @@ const Privacy = () => {
 
                 <h3>11.1 Sharing with Accounting Platforms</h3>
                 <p>
-                  InvoiceIQ may transmit invoice data (including vendor name, amount, date, and attached documents) to third-party accounting platforms such as Xero and QuickBooks, solely at the user's explicit request and only after the user has independently authenticated with those platforms. InvoiceIQ does not share data with any third party without the user's informed consent.
+                  BookScanIQ may transmit invoice data (including vendor name, amount, date, and attached documents) to third-party accounting platforms such as Xero and QuickBooks, solely at the user's explicit request and only after the user has independently authenticated with those platforms. BookScanIQ does not share data with any third party without the user's informed consent.
                 </p>
 
                 <h2>12. Children's Privacy</h2>

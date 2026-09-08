@@ -174,7 +174,7 @@ const RecurringScansCard = () => {
             <Lock className="w-5 h-5 text-violet-500" /> Recurring Auto-Scans
           </CardTitle>
           <CardDescription>
-            Let InvoiceIQ scan your inbox on a schedule so invoices file themselves. Available on
+            Let BookScanIQ scan your inbox on a schedule so invoices file themselves. Available on
             any paid plan.
           </CardDescription>
         </CardHeader>

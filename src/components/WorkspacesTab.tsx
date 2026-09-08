@@ -152,7 +152,7 @@ const WorkspacesTab = () => {
           Live Workspaces
         </CardTitle>
         <CardDescription className="text-xs">
-          View your Drive directory, Sheet ledger, and accounting transactions live, all without leaving InvoiceIQ.
+          View your Drive directory, Sheet ledger, and accounting transactions live, all without leaving BookScanIQ.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -178,7 +178,7 @@ const WorkspacesTab = () => {
               <NotConnected
                 icon={<FolderOpen className="w-8 h-8" />}
                 title="Drive directory not synced yet"
-                desc="Sync your workspace to browse your InvoiceIQ folder live here."
+                desc="Sync your workspace to browse your BookScanIQ folder live here."
                 cta="Sync workspace"
                 onClick={() => navigate("/detect-invoices")}
               />
@@ -193,7 +193,7 @@ const WorkspacesTab = () => {
               <NotConnected
                 icon={<FileSpreadsheet className="w-8 h-8" />}
                 title="Ledger spreadsheet not synced yet"
-                desc="Sync your workspace to view your InvoiceIQ Ledger live here."
+                desc="Sync your workspace to view your BookScanIQ Ledger live here."
                 cta="Sync workspace"
                 onClick={() => navigate("/detect-invoices")}
               />

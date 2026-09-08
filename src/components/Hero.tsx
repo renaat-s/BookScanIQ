@@ -11,7 +11,7 @@ import logoImage from "@/assets/InvoiceIQ_Logo.png";
 import ParticleField from "./LazyParticleField";
 import TiltCard from "./TiltCard";
 
-const SUBHEAD = "Stop wasting hours on manual invoice processing. InvoiceIQ's AI agent extracts, validates, and processes invoices with 99% accuracy, saving you time and eliminating costly errors.";
+const SUBHEAD = "Stop wasting hours on manual invoice processing. BookScanIQ's AI agent extracts, validates, and processes invoices with 99% accuracy, saving you time and eliminating costly errors.";
 
 
 const Hero = () => {
@@ -128,12 +128,12 @@ const Hero = () => {
           <TiltCard className="w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 rounded-xl shadow-2xl">
             <img
               src={logoImage}
-              alt="InvoiceIQ Logo"
+              alt="BookScanIQ Logo"
               className="w-full h-full rounded-xl"
             />
           </TiltCard>
           <span className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold bg-gradient-to-r from-indigo-500 via-purple-500 to-violet-500 bg-clip-text text-transparent [text-shadow:_0_4px_12px_rgb(139_92_246_/_0.4)] text-center">
-            InvoiceIQ
+            BookScanIQ
           </span>
         </div>
 
@@ -187,7 +187,7 @@ const Hero = () => {
                           : "Sync My Workspace"}
                   </Button>
                   <p className="text-sm text-muted-foreground max-w-md text-center">
-                    Securely sync InvoiceIQ with your Google workspace to unlock all features. We only access what we create, your other files stay private.
+                    Securely sync BookScanIQ with your Google workspace to unlock all features. We only access what we create, your other files stay private.
                   </p>
                 </div>
               ) : (

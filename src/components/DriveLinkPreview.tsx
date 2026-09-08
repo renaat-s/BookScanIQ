@@ -190,7 +190,7 @@ const DriveLinkPreview = ({ url, label }: Props) => {
                   {label || "Document preview"}
                 </span>
                 <span className="text-[11px] text-muted-foreground hidden sm:inline">
-                  · Rendered inside InvoiceIQ
+                  · Rendered inside BookScanIQ
                 </span>
               </div>
               <div className="flex items-center gap-1">
