@@ -4,9 +4,9 @@ import Stripe from "https://esm.sh/stripe@18.5.0";
 
 import { corsHeadersFor } from "../_shared/cors.ts";
 
-const DEFAULT_RECIPIENT = "info@invoice-iq.com";
-const PRIORITY_RECIPIENT = "priority@invoice-iq.com";
-const FROM = "BookScanIQ Feedback <feedback@invoice-iq.com>";
+const DEFAULT_RECIPIENT = "info@bookscaniq.com";
+const PRIORITY_RECIPIENT = "priority@bookscaniq.com";
+const FROM = "BookScanIQ Feedback <feedback@bookscaniq.com>";
 
 const DEVELOPER_EMAILS = [
   "renaat.sibanda@gmail.com",

@@ -4,8 +4,8 @@
 // receive a deterministic (and safe) response.
 
 const ALLOWED_ORIGINS = new Set<string>([
-  "https://invoice-iq.com",
-  "https://www.invoice-iq.com",
+  "https://bookscaniq.com",
+  "https://www.bookscaniq.com",
   "https://invoice-iq-ai.lovable.app",
   "https://id-preview--1c4d0974-fa17-4e5e-b337-5e7a8473b860.lovable.app",
   "http://localhost:8080",
@@ -28,7 +28,7 @@ export function corsHeadersFor(req: Request): Record<string, string> {
   const allowed =
     ALLOWED_ORIGINS.has(origin) || LOVABLE_PREVIEW.test(origin)
       ? origin
-      : "https://invoice-iq.com";
+      : "https://bookscaniq.com";
   return { ...BASE_HEADERS, "Access-Control-Allow-Origin": allowed };
 }
 

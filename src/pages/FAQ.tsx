@@ -49,7 +49,7 @@ const FAQ = () => {
         <title>FAQ - BookScanIQ Frequently Asked Questions</title>
         <meta name="description" content="Find answers to common questions about BookScanIQ invoice automation. Learn about integrations, security, pricing, AI accuracy, and more." />
         <meta name="keywords" content="BookScanIQ FAQ, invoice automation questions, integrations, security questions, pricing" />
-        <link rel="canonical" href="https://invoice-iq.com/faq" />
+        <link rel="canonical" href="https://bookscaniq.com/faq" />
       </Helmet>
       <Header />
       <main className="bg-background relative overflow-hidden">
