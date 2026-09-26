@@ -13,7 +13,7 @@ const EULA = () => {
           content="BookScanIQ End User License Agreement (EULA): License grant, permitted use, restrictions, third-party integrations (QuickBooks, Xero, Google), and liability terms."
         />
         <meta name="keywords" content="EULA, end user license agreement, software license, BookScanIQ license" />
-        <link rel="canonical" href="https://invoice-iq.com/eula" />
+        <link rel="canonical" href="https://bookscaniq.com/eula" />
       </Helmet>
       <Header />
       <main className="bg-gradient-subtle">

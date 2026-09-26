@@ -70,7 +70,7 @@ const Compliance = () => {
         <title>Security & Compliance - BookScanIQ Data Protection</title>
         <meta name="description" content="BookScanIQ security measures: AES-256 encryption, GDPR compliance, EU/UK data hosting, and enterprise-grade data protection for your financial information." />
         <meta name="keywords" content="invoice security, GDPR compliance, data encryption, financial data protection, secure invoice processing" />
-        <link rel="canonical" href="https://invoice-iq.com/compliance" />
+        <link rel="canonical" href="https://bookscaniq.com/compliance" />
       </Helmet>
       <Header />
       <main className="bg-gradient-subtle">
@@ -125,7 +125,7 @@ const Compliance = () => {
                   We're happy to provide additional security documentation or answer specific questions about our compliance measures.
                 </p>
                 <a
-                  href="mailto:info@invoice-iq.com"
+                  href="mailto:info@bookscaniq.com"
                   className="inline-block text-violet-500 hover:text-violet-400 transition-colors font-light"
                 >
                   Contact Security Team →

@@ -10,7 +10,7 @@ const Terms = () => {
         <title>Terms of Service - BookScanIQ</title>
         <meta name="description" content="BookScanIQ Terms of Service: User agreements, subscription terms, AI accuracy disclaimers, and legal terms for using our invoice automation service." />
         <meta name="keywords" content="terms of service, user agreement, subscription terms, legal terms" />
-        <link rel="canonical" href="https://invoice-iq.com/terms" />
+        <link rel="canonical" href="https://bookscaniq.com/terms" />
       </Helmet>
       <Header />
       <main className="bg-gradient-subtle">
@@ -233,8 +233,8 @@ const Terms = () => {
                 <h2>17. Contact Information</h2>
                 <p>For questions about these Terms:</p>
                 <ul>
-                  <li><strong>Email:</strong> info@invoice-iq.com</li>
-                  <li><strong>Support:</strong> info@invoice-iq.com</li>
+                  <li><strong>Email:</strong> info@bookscaniq.com</li>
+                  <li><strong>Support:</strong> info@bookscaniq.com</li>
                 </ul>
               </article>
 

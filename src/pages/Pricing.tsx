@@ -11,7 +11,7 @@ const Pricing = () => {
         <title>Pricing - BookScanIQ Plans & Packages</title>
         <meta name="description" content="Choose the BookScanIQ plan that fits your business. Starter, Professional, and Enterprise packages with AI-powered invoice automation." />
         <meta name="keywords" content="BookScanIQ pricing, invoice automation plans, subscription packages, AI invoice processing" />
-        <link rel="canonical" href="https://invoice-iq.com/pricing" />
+        <link rel="canonical" href="https://bookscaniq.com/pricing" />
       </Helmet>
       <Header />
       <main className="relative overflow-hidden">

@@ -1,6 +1,6 @@
-Contact: mailto:security@invoice-iq.com
+Contact: mailto:security@bookscaniq.com
 Contact: mailto:renaat.sibanda@gmail.com
 Expires: 2027-01-01T00:00:00.000Z
 Preferred-Languages: en
-Canonical: https://invoice-iq.com/.well-known/security.txt
-Policy: https://invoice-iq.com/compliance
+Canonical: https://bookscaniq.com/.well-known/security.txt
+Policy: https://bookscaniq.com/compliance

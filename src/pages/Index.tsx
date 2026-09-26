@@ -12,7 +12,7 @@ const Index = () => {
     operatingSystem: "Web",
     description:
       "BookScanIQ, Automate your bookkeeping. AI-powered invoice processing with Google Drive, Xero, and QuickBooks integration.",
-    url: "https://invoice-iq.com/",
+    url: "https://bookscaniq.com/",
     offers: {
       "@type": "Offer",
       price: "0",
@@ -32,7 +32,7 @@ const Index = () => {
           name="keywords"
           content="automated bookkeeping, invoice automation, AI invoice processing, Google Workspace, Xero, QuickBooks"
         />
-        <link rel="canonical" href="https://invoice-iq.com/" />
+        <link rel="canonical" href="https://bookscaniq.com/" />
         <script type="application/ld+json">
           {JSON.stringify(softwareJsonLd)}
         </script>

@@ -14,7 +14,7 @@ const About = () => {
         <title>About BookScanIQ - Our Story & Mission</title>
         <meta name="description" content="Learn about BookScanIQ - built by an indie developer to solve real small business invoice management challenges. Discover our mission and values." />
         <meta name="keywords" content="about BookScanIQ, invoice automation story, small business solutions, indie developer" />
-        <link rel="canonical" href="https://invoice-iq.com/about" />
+        <link rel="canonical" href="https://bookscaniq.com/about" />
       </Helmet>
       <Header />
       <main className="bg-gradient-subtle relative overflow-hidden">

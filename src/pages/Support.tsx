@@ -61,7 +61,7 @@ const Support = () => {
         <title>Support & Contact - BookScanIQ</title>
         <meta name="description" content="Get help with BookScanIQ. Contact our support team for technical assistance, billing questions, or integration support." />
         <meta name="keywords" content="BookScanIQ support, contact, help, technical support, customer service" />
-        <link rel="canonical" href="https://invoice-iq.com/support" />
+        <link rel="canonical" href="https://bookscaniq.com/support" />
       </Helmet>
       <Header />
       <main className="bg-gradient-subtle">
@@ -94,10 +94,10 @@ const Support = () => {
                       For general inquiries and support
                     </p>
                     <a
-                      href="mailto:info@invoice-iq.com"
+                      href="mailto:info@bookscaniq.com"
                       className="text-violet-500 hover:text-violet-400 transition-colors font-light text-sm"
                     >
-                      info@invoice-iq.com
+                      info@bookscaniq.com
                     </a>
                   </div>
 

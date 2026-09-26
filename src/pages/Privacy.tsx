@@ -10,7 +10,7 @@ const Privacy = () => {
         <title>Privacy Policy - BookScanIQ</title>
         <meta name="description" content="BookScanIQ Privacy Policy: How we collect, use, and protect your invoice and financial data. GDPR compliant with full transparency." />
         <meta name="keywords" content="privacy policy, data protection, GDPR, invoice data privacy" />
-        <link rel="canonical" href="https://invoice-iq.com/privacy" />
+        <link rel="canonical" href="https://bookscaniq.com/privacy" />
       </Helmet>
       <Header />
       <main className="bg-gradient-subtle">
@@ -136,7 +136,7 @@ const Privacy = () => {
                 <ul>
                   <li><strong>In-app:</strong> Go to <a href="/settings">Settings</a> and click <strong>"Delete My Account &amp; Data"</strong>. This permanently removes your profile, stored Google/Xero/QuickBooks tokens, scan history, and invoice metadata from our systems.</li>
                   <li><strong>Disconnect Google only:</strong> Use the <strong>"Disconnect Google"</strong> button on the <a href="/settings">Settings</a> page to revoke our access to your Gmail, Drive, and Sheets without deleting your account. You can also revoke access from your <a href="https://myaccount.google.com/permissions" target="_blank" rel="noopener noreferrer">Google Account permissions page</a>.</li>
-                  <li><strong>By email:</strong> Send a deletion request to <a href="mailto:info@invoice-iq.com">info@invoice-iq.com</a> from your account email and we will action it within 30 days.</li>
+                  <li><strong>By email:</strong> Send a deletion request to <a href="mailto:info@bookscaniq.com">info@bookscaniq.com</a> from your account email and we will action it within 30 days.</li>
                 </ul>
                 <p>
                   <strong>Important:</strong> Files that BookScanIQ has saved into <em>your own</em> Google Drive and entries written into <em>your own</em> Google Sheets remain in your Google account and are not deleted by us, because they belong to you. You may delete them yourself at any time directly from Google Drive / Sheets.
@@ -184,8 +184,8 @@ const Privacy = () => {
                   If you have questions about this Privacy Policy or want to exercise your data rights:
                 </p>
                 <ul>
-                  <li><strong>Email:</strong> info@invoice-iq.com</li>
-                  <li><strong>Data Protection Officer:</strong> info@invoice-iq.com</li>
+                  <li><strong>Email:</strong> info@bookscaniq.com</li>
+                  <li><strong>Data Protection Officer:</strong> info@bookscaniq.com</li>
                 </ul>
 
                 <h2>16. Legal Basis for Processing (GDPR)</h2>

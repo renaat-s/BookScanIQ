@@ -17,7 +17,7 @@ const AboutBookScanIQ = () => {
           name="description"
           content="Learn what BookScanIQ is and how the platform automates invoice capture, parsing, and bookkeeping with AI."
         />
-        <link rel="canonical" href="https://invoice-iq.com/about-invoiceiq" />
+        <link rel="canonical" href="https://bookscaniq.com/about-invoiceiq" />
       </Helmet>
       <Header />
       <main className="bg-gradient-subtle relative overflow-hidden">
