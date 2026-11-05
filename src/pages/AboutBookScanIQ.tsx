@@ -5,8 +5,8 @@ import HowItWorks from "@/components/HowItWorks";
 import TiltCard from "@/components/TiltCard";
 import CyberBackground from "@/components/CyberBackground";
 import { Helmet } from "react-helmet-async";
-import adVideo from "@/assets/InvoiceIQ_AD_Captioned.mp4.asset.json";
-import adPoster from "@/assets/IIQ_Thumbnail.png.asset.json";
+import adVideo from "@/assets/InvoiceIQ_AD_Captioned.mp4";
+import adPoster from "@/assets/IIQ_Thumbnail.png";
 
 const AboutBookScanIQ = () => {
   return (
@@ -42,8 +42,8 @@ const AboutBookScanIQ = () => {
               <div className="relative z-10">
                 <TiltCard className="rounded-2xl shadow-glow overflow-hidden">
                   <video
-                    src={adVideo.url}
-                    poster={adPoster.url}
+                    src={adVideo}
+                    poster={adPoster}
                     controls
                     playsInline
                     preload="metadata"
