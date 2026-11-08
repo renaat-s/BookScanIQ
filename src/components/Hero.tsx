@@ -125,19 +125,6 @@ const Hero = () => {
       <div className="absolute inset-0 pointer-events-none hero-grid-overlay opacity-60" aria-hidden="true" />
 
       <div className="container mx-auto px-4 sm:px-6 py-12 sm:py-20 relative z-10">
-        {/* Status chip — HUD readout above the brand */}
-        <div className="flex justify-center mb-8 sm:mb-10">
-          <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full border border-primary/40 bg-primary/5 backdrop-blur-sm shadow-[0_0_18px_hsl(var(--primary)/0.15)]">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-60" />
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-primary" />
-            </span>
-            <span className="font-mono text-[0.65rem] sm:text-xs uppercase tracking-[0.28em] text-primary">
-              AI Bookkeeping Engine · Online
-            </span>
-          </div>
-        </div>
-
         {/* Logo + Brand Name - Centered at Top */}
         <div className="flex flex-col items-center justify-center gap-4 mb-8 sm:mb-12">
           <TiltCard className="w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 rounded-2xl border border-primary/40 shadow-[0_0_35px_hsl(var(--primary)/0.35),0_0_80px_hsl(var(--accent)/0.2)] bg-card/60 backdrop-blur-md overflow-hidden">
