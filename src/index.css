@@ -7,7 +7,83 @@ All colors MUST be HSL.
 */
 
 @layer base {
-  :root {
+  /* ============================================================
+     CYBERPUNK DEFAULT THEME (2026-11 redesign)
+     Near-black blue surfaces + neon cyan primary + violet/magenta
+     accents. Dark is the DEFAULT brand presentation; the previous
+     light theme is preserved verbatim under `.light` for the toggle.
+     All values are HSL triplets consumed by tailwind.config.ts.
+     ============================================================ */
+  :root,
+  .dark {
+    --background: 230 45% 4%;
+    --foreground: 210 40% 96%;
+
+    --card: 230 40% 7%;
+    --card-foreground: 210 40% 96%;
+
+    --popover: 230 42% 6%;
+    --popover-foreground: 210 40% 96%;
+
+    --primary: 187 100% 50%;
+    --primary-foreground: 230 50% 6%;
+
+    --secondary: 230 30% 12%;
+    --secondary-foreground: 210 40% 92%;
+
+    --muted: 230 28% 12%;
+    --muted-foreground: 215 20% 65%;
+
+    --accent: 262 83% 70%;
+    --accent-foreground: 230 50% 8%;
+
+    --destructive: 0 84% 62%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 222 30% 18%;
+    --input: 222 30% 18%;
+    --ring: 187 100% 50%;
+
+    --radius: 0.75rem;
+
+    /* BookScanIQ Brand Colors — neon identity */
+    --brand-primary: 187 100% 55%;
+    --brand-secondary: 262 83% 70%;
+    --brand-accent: 187 100% 55%;
+    --light-indigo: 239 84% 92%;
+    --dark-indigo: 239 84% 75%;
+    --success: 152 76% 45%;
+    --success-foreground: 0 0% 100%;
+
+    /* Gradients — cyan → violet → magenta spectrum */
+    --gradient-primary: linear-gradient(135deg, hsl(187 100% 50%) 0%, hsl(262 83% 70%) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(187 100% 50%) 0%, hsl(262 83% 70%) 50%, hsl(312 100% 60%) 100%);
+    --gradient-indigo-dark: linear-gradient(135deg, hsl(239 84% 60%) 0%, hsl(230 45% 4%) 100%);
+    --gradient-subtle: linear-gradient(180deg, hsl(230 45% 4%) 0%, hsl(230 40% 6%) 100%);
+    --gradient-light-indigo: linear-gradient(135deg, hsl(239 70% 60%) 0%, hsl(267 57% 55%) 100%);
+    --gradient-header: linear-gradient(90deg, hsl(187 100% 50%) 0%, hsl(262 83% 70%) 100%);
+
+    /* Shadows — neon bloom instead of grey drop shadows */
+    --shadow-elegant: 0 10px 30px -10px hsl(187 100% 50% / 0.35);
+    --shadow-glow: 0 0 40px hsl(262 83% 70% / 0.35);
+    --shadow-indigo-glow: 0 0 40px hsl(187 100% 50% / 0.35);
+    --shadow-card: 0 4px 20px -4px hsl(0 0% 0% / 0.5);
+
+    /* Animation */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    --sidebar-background: 230 42% 6%;
+    --sidebar-foreground: 210 40% 96%;
+    --sidebar-primary: 187 100% 50%;
+    --sidebar-primary-foreground: 230 50% 6%;
+    --sidebar-accent: 230 30% 12%;
+    --sidebar-accent-foreground: 210 40% 96%;
+    --sidebar-border: 222 30% 18%;
+    --sidebar-ring: 187 100% 50%;
+  }
+
+  /* Legacy light theme — unchanged, available via the theme toggle */
+  .light {
     --background: 220 27% 98%;
     --foreground: 222 47% 11%;
 
@@ -36,9 +112,6 @@ All colors MUST be HSL.
     --input: 220 13% 91%;
     --ring: 221 83% 53%;
 
-    --radius: 0.75rem;
-
-    /* BookScanIQ Brand Colors */
     --brand-primary: 221 83% 53%;
     --brand-secondary: 267 57% 78%;
     --brand-accent: 200 98% 39%;
@@ -46,99 +119,27 @@ All colors MUST be HSL.
     --dark-indigo: 239 84% 25%;
     --success: 142 71% 45%;
     --success-foreground: 0 0% 100%;
-    
-    /* Gradients */
+
     --gradient-primary: linear-gradient(135deg, hsl(221 83% 53%) 0%, hsl(267 57% 78%) 100%);
     --gradient-hero: linear-gradient(135deg, hsl(221 83% 53%) 0%, hsl(267 57% 78%) 50%, hsl(200 98% 39%) 100%);
     --gradient-indigo-dark: linear-gradient(135deg, hsl(239 84% 67%) 0%, hsl(222 47% 11%) 100%);
     --gradient-subtle: linear-gradient(180deg, hsl(220 27% 98%) 0%, hsl(220 17% 96%) 100%);
     --gradient-light-indigo: linear-gradient(135deg, hsl(239 70% 60%) 0%, hsl(267 57% 55%) 100%);
     --gradient-header: linear-gradient(90deg, hsl(239 84% 67%) 0%, hsl(267 57% 78%) 100%);
-    
-    /* Shadows */
+
     --shadow-elegant: 0 10px 30px -10px hsl(221 83% 53% / 0.3);
     --shadow-glow: 0 0 40px hsl(267 57% 78% / 0.4);
     --shadow-indigo-glow: 0 0 40px hsl(239 84% 67% / 0.4);
     --shadow-card: 0 4px 20px -4px hsl(221 83% 53% / 0.1);
-    
-    /* Animation */
-    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
     --sidebar-ring: 217.2 91.2% 59.8%;
-  }
-
-  .dark {
-    /* Deep indigo-tinted dark surfaces (on-brand night mode) */
-    --background: 240 30% 7%;
-    --foreground: 220 25% 96%;
-
-    --card: 240 28% 10%;
-    --card-foreground: 220 25% 96%;
-
-    --popover: 240 30% 9%;
-    --popover-foreground: 220 25% 96%;
-
-    /* Keep brand indigo identical across modes — DO NOT change */
-    --primary: 221 83% 63%;
-    --primary-foreground: 0 0% 100%;
-
-    --secondary: 240 22% 16%;
-    --secondary-foreground: 220 25% 96%;
-
-    --muted: 240 22% 14%;
-    --muted-foreground: 220 15% 70%;
-
-    /* Brand violet accent preserved */
-    --accent: 267 57% 78%;
-    --accent-foreground: 240 30% 10%;
-
-    --destructive: 0 70% 55%;
-    --destructive-foreground: 0 0% 100%;
-
-    --border: 240 22% 18%;
-    --input: 240 22% 18%;
-    --ring: 221 83% 63%;
-
-    /* Brand tokens preserved — purple/indigo/violet stay constant */
-    --brand-primary: 221 83% 63%;
-    --brand-secondary: 267 57% 78%;
-    --brand-accent: 200 98% 55%;
-    --light-indigo: 239 84% 92%;
-    --dark-indigo: 239 84% 75%;
-    --success: 142 71% 50%;
-    --success-foreground: 0 0% 100%;
-
-    /* Page-background gradient swaps to deep indigo in night mode */
-    --gradient-subtle: linear-gradient(180deg, hsl(240 30% 7%) 0%, hsl(240 28% 10%) 100%);
-    /* Other brand gradients intentionally unchanged (preserved purple/indigo/violet) */
-
-    --shadow-elegant: 0 10px 30px -10px hsl(221 83% 53% / 0.55);
-    --shadow-glow: 0 0 40px hsl(267 57% 78% / 0.35);
-    --shadow-indigo-glow: 0 0 40px hsl(239 84% 67% / 0.5);
-    --shadow-card: 0 4px 20px -4px hsl(0 0% 0% / 0.5);
-
-    --sidebar-background: 240 30% 8%;
-    --sidebar-foreground: 220 25% 96%;
-    --sidebar-primary: 221 83% 63%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 22% 14%;
-    --sidebar-accent-foreground: 220 25% 96%;
-    --sidebar-border: 240 22% 18%;
-    --sidebar-ring: 221 83% 63%;
   }
 }
 
@@ -296,6 +297,15 @@ All colors MUST be HSL.
       0 0 0 1px rgba(0, 240, 255, 0.15),
       0 0 18px rgba(0, 240, 255, 0.25),
       0 0 36px rgba(255, 0, 229, 0.18);
+  }
+
+  /* Static gradient-mesh aurora — zero animation, zero runtime cost.
+     Soft radial stops (no CSS blur filter) keep it GPU-cheap. */
+  .cyber-aurora {
+    background:
+      radial-gradient(ellipse 60% 45% at 18% 12%, hsl(187 100% 50% / 0.13), transparent 70%),
+      radial-gradient(ellipse 55% 45% at 82% 18%, hsl(262 83% 65% / 0.15), transparent 70%),
+      radial-gradient(ellipse 55% 40% at 50% 95%, hsl(312 100% 55% / 0.09), transparent 70%);
   }
 
   /* Hero grid / scanline overlay */

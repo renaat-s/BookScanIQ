@@ -117,22 +117,37 @@ const Hero = () => {
 
   return (
     <section className="relative min-h-screen flex items-center bg-gradient-subtle overflow-hidden">
+      {/* Static gradient-mesh aurora (CSS only, no runtime cost) */}
+      <div className="absolute inset-0 pointer-events-none cyber-aurora" aria-hidden="true" />
       {/* 3D particle background */}
       <ParticleField />
       {/* Subtle scanline / grid overlay */}
       <div className="absolute inset-0 pointer-events-none hero-grid-overlay opacity-60" aria-hidden="true" />
 
       <div className="container mx-auto px-4 sm:px-6 py-12 sm:py-20 relative z-10">
+        {/* Status chip — HUD readout above the brand */}
+        <div className="flex justify-center mb-8 sm:mb-10">
+          <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full border border-primary/40 bg-primary/5 backdrop-blur-sm shadow-[0_0_18px_hsl(var(--primary)/0.15)]">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-60" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-primary" />
+            </span>
+            <span className="font-mono text-[0.65rem] sm:text-xs uppercase tracking-[0.28em] text-primary">
+              AI Bookkeeping Engine · Online
+            </span>
+          </div>
+        </div>
+
         {/* Logo + Brand Name - Centered at Top */}
         <div className="flex flex-col items-center justify-center gap-4 mb-8 sm:mb-12">
-          <TiltCard className="w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 rounded-xl shadow-2xl">
+          <TiltCard className="w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 rounded-2xl border border-primary/40 shadow-[0_0_35px_hsl(var(--primary)/0.35),0_0_80px_hsl(var(--accent)/0.2)] bg-card/60 backdrop-blur-md overflow-hidden">
             <img
               src={logoImage}
               alt="BookScanIQ Logo"
-              className="w-full h-full rounded-xl"
+              className="w-full h-full rounded-2xl"
             />
           </TiltCard>
-          <span className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold bg-gradient-to-r from-indigo-500 via-purple-500 to-violet-500 bg-clip-text text-transparent [text-shadow:_0_4px_12px_rgb(139_92_246_/_0.4)] text-center">
+          <span className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-wide bg-gradient-to-r from-cyan-300 via-violet-400 to-fuchsia-400 bg-clip-text text-transparent [text-shadow:_0_0_30px_rgb(0_229_255_/_0.25)] text-center">
             BookScanIQ
           </span>
         </div>
@@ -169,7 +184,7 @@ const Hero = () => {
                   <Button
                     variant="hero"
                     size="lg"
-                    className="shadow-elegant neon-glow-box"
+                    className="shadow-elegant neon-glow-box btn-cyber"
                     onClick={handleInstallDirectory}
                     disabled={installing || checkingStatus}
                   >
@@ -212,7 +227,7 @@ const Hero = () => {
                   )}
 
                   <Link to="/dashboard">
-                    <Button variant="hero" size="lg" className="shadow-elegant neon-glow-box">
+                    <Button variant="hero" size="lg" className="shadow-elegant neon-glow-box btn-cyber">
                       <LayoutDashboard className="w-5 h-5 mr-2" />
                       Open Your Portal
                     </Button>
@@ -224,18 +239,18 @@ const Hero = () => {
               )}
             </div>
 
-            <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 pt-4">
-              <div className="flex items-center space-x-2">
-                <Shield className="w-5 h-5 text-brand-accent" />
-                <span className="text-sm text-muted-foreground">99% Accuracy</span>
+            <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 pt-6">
+              <div className="flex items-center gap-2.5 px-4 py-2 rounded-md border border-primary/25 bg-primary/5">
+                <Shield className="w-4 h-4 text-primary" />
+                <span className="font-mono text-xs uppercase tracking-[0.18em] text-foreground/80">99% Accuracy</span>
               </div>
-              <div className="flex items-center space-x-2">
-                <TrendingUp className="w-5 h-5 text-brand-accent" />
-                <span className="text-sm text-muted-foreground">80% Time Saved</span>
+              <div className="flex items-center gap-2.5 px-4 py-2 rounded-md border border-primary/25 bg-primary/5">
+                <TrendingUp className="w-4 h-4 text-primary" />
+                <span className="font-mono text-xs uppercase tracking-[0.18em] text-foreground/80">80% Time Saved</span>
               </div>
-              <div className="flex items-center space-x-2">
-                <Zap className="w-5 h-5 text-brand-accent" />
-                <span className="text-sm text-muted-foreground">5min Setup</span>
+              <div className="flex items-center gap-2.5 px-4 py-2 rounded-md border border-primary/25 bg-primary/5">
+                <Zap className="w-4 h-4 text-primary" />
+                <span className="font-mono text-xs uppercase tracking-[0.18em] text-foreground/80">5min Setup</span>
               </div>
             </div>
           </div>

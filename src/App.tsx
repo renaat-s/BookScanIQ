@@ -51,7 +51,7 @@ const PageLoader = () => (
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <HelmetProvider>
-      <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} storageKey="invoiceiq-theme">
+      <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} storageKey="invoiceiq-theme">
         <AuthProvider>
           <LowCogModeProvider>
           <TooltipProvider>
