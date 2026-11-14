@@ -36,12 +36,47 @@ Deno.serve(async (req) => {
   }
 
   try {
+    // Auth contract (enforced before any work): n8n sends x-workflow-secret;
+    // the dashboard's ScanProgressCard sends the user's JWT. Anything else
+    // gets 401 — the endpoint uses the service role, so it must never be open.
+    const workflowSecret = Deno.env.get('N8N_WEBHOOK_SECRET');
+    const providedSecret = req.headers.get('x-workflow-secret');
+    const authHeader = req.headers.get('Authorization');
+    const isWorkflowCaller = Boolean(
+      workflowSecret && providedSecret && providedSecret === workflowSecret,
+    );
+
+    let callerUserId: string | null = null;
+    if (!isWorkflowCaller && authHeader) {
+      const userClient = createClient(
+        Deno.env.get('SUPABASE_URL') ?? '',
+        Deno.env.get('SUPABASE_ANON_KEY') ?? '',
+        { global: { headers: { Authorization: authHeader } } },
+      );
+      const { data: userData, error: userError } = await userClient.auth.getUser();
+      if (!userError && userData.user) callerUserId = userData.user.id;
+    }
+
+    if (!isWorkflowCaller && !callerUserId) {
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
+      );
+    }
+
     const supabaseClient = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
     );
 
-    const { jobId, status, totalEmails, processedEmails, invoicesFound, errorMessage, invoices } = await req.json() as ProgressUpdate;
+    const body = (await req.json().catch(() => null)) as ProgressUpdate | null;
+    if (!body) {
+      return new Response(
+        JSON.stringify({ error: 'Invalid JSON body' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
+      );
+    }
+    const { jobId, status, totalEmails, processedEmails, invoicesFound, errorMessage, invoices } = body;
 
     if (!jobId) {
       console.error('Missing required jobId field');
@@ -76,6 +111,14 @@ Deno.serve(async (req) => {
       return new Response(
         JSON.stringify({ error: 'Failed to update scan job', details: jobError.message }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // A JWT caller may only touch their own job; the workflow secret may touch any.
+    if (!isWorkflowCaller && jobData.user_id !== callerUserId) {
+      return new Response(
+        JSON.stringify({ error: 'Not authorized for this job' }),
+        { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 

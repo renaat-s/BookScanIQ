@@ -36,11 +36,21 @@ if (req.method === 'OPTIONS') {
     // Use service role to delete the user (cascades to profiles via RLS/triggers)
     const adminClient = createClient(supabaseUrl, serviceRoleKey);
 
-    // Delete all user data before removing the auth user
-    await adminClient.from('invoices').delete().eq('user_id', user.id);
-    await adminClient.from('user_credentials').delete().eq('user_id', user.id);
-    await adminClient.from('profiles').delete().eq('user_id', user.id);
-    await adminClient.from('scan_jobs').delete().eq('user_id', user.id);
+    // Delete all user data before removing the auth user.
+    // Every public table with a user_id column must be listed here: some lack an
+    // ON DELETE CASCADE to auth.users (ledger_entries orphaned 59 rows in Q17).
+    // Children first; failures are logged but don't block the account deletion.
+    const wipe = async (table: string) => {
+      const { error } = await adminClient.from(table).delete().eq('user_id', user.id);
+      if (error) console.error(`Failed to delete ${table} rows:`, error.message);
+    };
+    await wipe('ledger_entries');
+    await wipe('invoices');
+    await wipe('audit_events');
+    await wipe('scan_schedules');
+    await wipe('scan_jobs');
+    await wipe('user_credentials');
+    await wipe('profiles');
 
     // Delete the auth user
     const { error: deleteError } = await adminClient.auth.admin.deleteUser(user.id);

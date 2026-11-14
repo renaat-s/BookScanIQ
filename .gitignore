@@ -27,3 +27,6 @@ dist-ssr
 secrets.env*
 *.secrets
 
+# Supabase CLI local state (never commit)
+supabase/.temp/
+

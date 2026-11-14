@@ -10,6 +10,9 @@ verify_jwt = true
 verify_jwt = true
 
 [functions.update-scan-progress]
+# Gateway open by design: auth is enforced in code (x-workflow-secret for n8n,
+# user JWT + job-ownership check for the dashboard). Keep verify_jwt=false so
+# the secret-only n8n path isn't rejected at the gateway.
 verify_jwt = false
 
 [functions.file-invoice]
