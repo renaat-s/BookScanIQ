@@ -29,7 +29,7 @@ Live node counts (pulled from the cloud 2026-10-05):
 |---|---|---|---|---|
 | Invoice IQ V4 (orchestrator) | **106** | active ⚠️ testing needed | stale copies — §4.1 | http://145.241.204.2:5678/workflow/8U4xYx0pgNYDLmWtqn1HE |
 | Branch G Worker (backlog sub-workflow) | **23** | active ✅ | legacy dir `Branch G Worker.json` (**matches live exactly**) | http://145.241.204.2:5678/workflow/y357XGcddfmO51Ohs836U |
-| InvoiceIQ Approved Export Sweep ("Sweep") | **47** | active ✅ | exported 2026-10-05 → `%TEMP%\opencode\live-export\` | http://145.241.204.2:5678/workflow/tvZzpbY5aG29rrfQ |
+| InvoiceIQ Approved Export Sweep ("Sweep") | **48** | active ✅ | exported 2026-10-05 → `%TEMP%\opencode\live-export\` (stale — 47 nodes pre-fix) | http://145.241.204.2:5678/workflow/tvZzpbY5aG29rrfQ |
 
 The Sweep is the repaired version from the runbooks: S0–S10 all present, `G1.6A/B/C` token
 refresh copied in, plus `IF: S9 Both Pushes OK?`, `IF: Dry Run?`, `I2C QB Account Resolver`,
@@ -697,11 +697,29 @@ Credits topped up, but "an additional issue persisted" - user deferred; revisit 
   - **Launch gotcha reconfirmed:** `Start-Process -ArgumentList` must use
     `-WorkingDirectory` + relative `-File .\script.ps1` (spaced absolute paths silently fail);
     verify with `Get-CimInstance Win32_Process` + session id.
-- **Still open (see answers doc Q67):** Q13 info@ mail untested; Q25 Gemini 402 (owner tops up →
-  retest); Q52 real-invoice E2E leg (+ the QB/Xero write-export it implies); Q56 auth-email custom
-  SMTP off; Q57 chat/12h-24h auto-clear/exchange-rate untested; n8n Sweep rotated-token persistence
-  fix (0 PATCH nodes — needs owner approval) + n8n encryption-key rotation (Phase E); tagger dead
-  code + `cdn.gpteng.co` CSP entry (Phase E); commit/push AGENTS.md + answers-doc housekeeping.
+- **Q25 CLOSED 2026-11-15 ✅** — chat-assistant live test 200 "Q25 test reply OK". Two root
+  causes: (1) project `bookscaniq` billed to unfunded `014657-…` → changed billing to
+  `014DB6-2AA3A4-FCF484` (£4 prepay + £220.76 welcome credit expiring Dec 14 2026; Billing
+  Account User grant to sibanda done first); (2) Google retired `gemini-2.5-flash` for new
+  users (404) → model bumped to `gemini-3.8-flash`, redeployed (owner-approved --yes).
+- **Still open (see answers doc Q67):** Q13 info@ test email SENT 2026-11-15 (Resend id
+  `01a1e043…`) — awaiting owner receipt confirmation; Q52 **deferred by owner 2026-11-15** (OpenAI
+  `429 credit_balance_exhausted` — live probe from VM; scans only write junk "Unknown Vendor/0"
+  rows until topped up; blocks Q47 write-export too); Q56 auth-email custom
+  SMTP off; Q57 12h-24h auto-clear/exchange-rate untested (chat leg now done); n8n
+  encryption-key rotation (Phase E); tagger dead code + `cdn.gpteng.co` CSP entry (Phase E);
+  commit/push AGENTS.md + answers-doc housekeeping.
+- **Sweep rotated-token fix APPLIED 2026-11-15 (owner-approved) + fix2 2026-11-16:** added
+  fail-open `S4.1 Sync Tokens to Supabase` after `S4 Consolidate Tokens` (Sweep 47→48 nodes,
+  0 existing nodes modified, only `S4 → S5` rewired to `S4 → S4.1 → S5`; V4 106 + Branch G 23
+  byte-identical). First run (exec 2088, 2026-11-16 05:00, run `success`) showed S4.1 → HTTP 401:
+  my build omitted `parameters.sendHeaders = true`, so n8n sent no headers → no `apikey` → 401.
+  Fail-open contained it (zero downstream impact). **fix2 applied 2026-11-16 10:57Z** (only S4.1
+  modified, connections untouched, both surfaces 48 nodes, healthz=200 in 21s). Final export diff
+  ORIGINAL→FINAL verified: only S4.1 added; S4.1 now matches proven S3 config. **Pending: confirm
+  2026-11-17 05:00 run shows S4.1 2xx** (then rollback backup `~/sweep_fix_backup_20261115/` can
+  be retired).
 - **Phase E gate:** checklist hand-back to Lovable + observation window (cron jobid 3 hourly :05
-  sustained success, Sweep next 05:00) — then retire Lovable + rotate keys per plan in Q65.
+  sustained success + Sweep 05:00 runs, incl. **2026-11-17 05:00 confirming S4.1 returns 2xx**) —
+  then retire Lovable + rotate keys per plan in Q65.
 
