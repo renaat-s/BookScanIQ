@@ -702,8 +702,8 @@ Credits topped up, but "an additional issue persisted" - user deferred; revisit 
   `014DB6-2AA3A4-FCF484` (£4 prepay + £220.76 welcome credit expiring Dec 14 2026; Billing
   Account User grant to sibanda done first); (2) Google retired `gemini-2.5-flash` for new
   users (404) → model bumped to `gemini-3.8-flash`, redeployed (owner-approved --yes).
-- **Still open (see answers doc Q67):** Q13 info@ test email SENT 2026-11-15 (Resend id
-  `01a1e043…`) — awaiting owner receipt confirmation; Q52 **deferred by owner 2026-11-15** (OpenAI
+- **Still open (see answers doc Q67):** Q13 **CLOSED 2026-11-16 ✅** — owner confirmed the test
+  email landed in the `info@` inbox at 5:31 PM 2026-11-15 (not spam); Q52 **deferred by owner 2026-11-15** (OpenAI
   `429 credit_balance_exhausted` — live probe from VM; scans only write junk "Unknown Vendor/0"
   rows until topped up; blocks Q47 write-export too); Q56 auth-email custom
   SMTP off; Q57 12h-24h auto-clear/exchange-rate untested (chat leg now done); n8n
