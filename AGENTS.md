@@ -716,10 +716,12 @@ Credits topped up, but "an additional issue persisted" - user deferred; revisit 
   my build omitted `parameters.sendHeaders = true`, so n8n sent no headers → no `apikey` → 401.
   Fail-open contained it (zero downstream impact). **fix2 applied 2026-11-16 10:57Z** (only S4.1
   modified, connections untouched, both surfaces 48 nodes, healthz=200 in 21s). Final export diff
-  ORIGINAL→FINAL verified: only S4.1 added; S4.1 now matches proven S3 config. **Pending: confirm
-  2026-11-17 05:00 run shows S4.1 2xx** (then rollback backup `~/sweep_fix_backup_20261115/` can
-  be retired).
-- **Phase E gate:** checklist hand-back to Lovable + observation window (cron jobid 3 hourly :05
-  sustained success + Sweep 05:00 runs, incl. **2026-11-17 05:00 confirming S4.1 returns 2xx**) —
-  then retire Lovable + rotate keys per plan in Q65.
+  ORIGINAL→FINAL verified: only S4.1 added; S4.1 now matches proven S3 config.
+  **GATE 1 PASSED 2026-11-17 ✅** — exec 2089 `success`, **S4.1 = 204 No Content**, 12/12 Sweep
+  runs success, zero errors since fix2. (Note: `invalid_grant` on G1.6B/G1.6C refresh nodes =
+  **owner explanation 2026-11-17: Xero/QB refresh tokens just hadn't been renewed** — expected,
+  not a defect, no action.) Rollback backup `~/sweep_fix_backup_20261115/` now safe to retire.
+- **Phase E gate — GATE 1 CLEARED 2026-11-17 ✅:** Sweep 05:00 run confirmed (exec 2089 success,
+  S4.1=204). Checklist hand-back to Lovable + observation window for cron jobid 3 (hourly :05)
+  sustained success remain; then retire Lovable + rotate keys per plan in Q65.
 
