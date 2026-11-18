@@ -729,15 +729,14 @@ Credits topped up, but "an additional issue persisted" - user deferred; revisit 
     (2026-11-18 05:00) success. Verified 2026-11-18.
   - **Lovable final review RECEIVED 2026-11-18** (`Downloads\BookScanIQ-Lovable-Final-Review.md`):
     accepted Gates 1+2 + Q17/Q24/Q25/Q64; **disputed Q45 — upheld, our answer was wrong**
-    (4 edge fns refresh+persist tokens → 3 concurrent writers; options (a) app read-only /
-    (b) CAS lock → **owner decision pending**); corrected Q63 (DNS-to-old-stack fallback dead);
-    **6 retirement conditions now gate old-backend retirement**: Q45 fixed · Q52 E2E passes ·
-    old-DB final export + row-count compare · fresh backup restore-tested · Lovable preview
-    callbacks removed (Google/Xero/Intuit) · old service-role key rotated. Also flagged:
-    **n8n encryption-key rotation now (not Phase E)**, fresh backup + test restore, leftover
-    secrets on disk (`n8n-inventory/`, `dump-full.sql`, VM JSONs), Q22/Q26 evidence attach,
-    confirm QB production realm was intentional.
-  - **Remaining:** work Lovable's 6 retirement conditions → then retire Lovable + rotate keys
-    per plan in Q65. Rollback backup `~/sweep_fix_backup_20261115/` still awaiting
-    owner delete/keep decision.
+    (4 edge fns refresh+persist tokens → 3 concurrent writers) → **owner chose fix (a) 2026-11-18:
+    app read-only, n8n sole renewer** (additive webhook design, diff pending approval); corrected
+    Q63 (DNS-to-old-stack fallback dead). **6 retirement conditions gate old-backend retirement**
+    (answers doc §16 has the live checklist): Q45 fixed · Q52 E2E · old-DB final export + row-count
+    compare · fresh backup restore-tested (**owner: do last**) · Lovable preview callbacks removed
+    (Google/Xero/Intuit) · old service-role key rotated. Owner decisions 2026-11-18: QB production
+    = intentional ✅; VM rollback backup `~/sweep_fix_backup_20261115/` **deleted** (1.3 MB,
+    healthz=200 after); n8n encryption-key rotation = **final security pass** (not a Lovable item).
+    ⚠ All 7 `Downloads\BookScanIQ-*.md` docs were batch-deleted 15:08 + restored from Recycle Bin
+    same day (never git-tracked — consider committing or backing up).
 
