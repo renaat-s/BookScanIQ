@@ -721,7 +721,12 @@ Credits topped up, but "an additional issue persisted" - user deferred; revisit 
   runs success, zero errors since fix2. (Note: `invalid_grant` on G1.6B/G1.6C refresh nodes =
   **owner explanation 2026-11-17: Xero/QB refresh tokens just hadn't been renewed** — expected,
   not a defect, no action.) Rollback backup `~/sweep_fix_backup_20261115/` now safe to retire.
-- **Phase E gate — GATE 1 CLEARED 2026-11-17 ✅:** Sweep 05:00 run confirmed (exec 2089 success,
-  S4.1=204). Checklist hand-back to Lovable + observation window for cron jobid 3 (hourly :05)
-  sustained success remain; then retire Lovable + rotate keys per plan in Q65.
+- **Phase E gate — GATES 1 + 2 CLEARED 2026-11-18 ✅:**
+  - **Gate 1 (Sweep fix):** exec 2089 success, S4.1=204 (2026-11-17).
+  - **Gate 2 (cron window):** `cron.job_run_details` jobid 3 = **72/72 runs succeeded** over 72h
+    (2026-11-15 14:05 → 2026-11-18 13:05 UTC, 0 failed, 0 odd messages); edge logs hourly :05
+    all HTTP 200 Nov 16–18; zero function-edge errors; contract 200/401/401; Sweep exec 2090
+    (2026-11-18 05:00) success. Verified 2026-11-18.
+  - **Remaining:** checklist hand-back to Lovable → then retire Lovable + rotate old service-role
+    key + tagger/`cdn.gpteng.co` cleanup + n8n encryption-key rotation per plan in Q65.
 
