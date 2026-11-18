@@ -727,6 +727,17 @@ Credits topped up, but "an additional issue persisted" - user deferred; revisit 
     (2026-11-15 14:05 → 2026-11-18 13:05 UTC, 0 failed, 0 odd messages); edge logs hourly :05
     all HTTP 200 Nov 16–18; zero function-edge errors; contract 200/401/401; Sweep exec 2090
     (2026-11-18 05:00) success. Verified 2026-11-18.
-  - **Remaining:** checklist hand-back to Lovable → then retire Lovable + rotate old service-role
-    key + tagger/`cdn.gpteng.co` cleanup + n8n encryption-key rotation per plan in Q65.
+  - **Lovable final review RECEIVED 2026-11-18** (`Downloads\BookScanIQ-Lovable-Final-Review.md`):
+    accepted Gates 1+2 + Q17/Q24/Q25/Q64; **disputed Q45 — upheld, our answer was wrong**
+    (4 edge fns refresh+persist tokens → 3 concurrent writers; options (a) app read-only /
+    (b) CAS lock → **owner decision pending**); corrected Q63 (DNS-to-old-stack fallback dead);
+    **6 retirement conditions now gate old-backend retirement**: Q45 fixed · Q52 E2E passes ·
+    old-DB final export + row-count compare · fresh backup restore-tested · Lovable preview
+    callbacks removed (Google/Xero/Intuit) · old service-role key rotated. Also flagged:
+    **n8n encryption-key rotation now (not Phase E)**, fresh backup + test restore, leftover
+    secrets on disk (`n8n-inventory/`, `dump-full.sql`, VM JSONs), Q22/Q26 evidence attach,
+    confirm QB production realm was intentional.
+  - **Remaining:** work Lovable's 6 retirement conditions → then retire Lovable + rotate keys
+    per plan in Q65. Rollback backup `~/sweep_fix_backup_20261115/` still awaiting
+    owner delete/keep decision.
 
